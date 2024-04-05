@@ -54,8 +54,8 @@ names(hake_recruitment_mcmc) <- gsub(pattern = "R_",
                                      replacement = "",
                                      x = names(hake_recruitment_mcmc))
 
-hake_recruitment <- as_tibble(hake_recruitment_mcmc/1e6)    # Convert from thousands
-                                                            # to billions of fish
+hake_recruitment_mcmc <- as_tibble(hake_recruitment_mcmc/1e6)    # Convert from thousands
+                                                                 # to billions of fish
 usethis::use_data(hake_recruitment_mcmc,
                   overwrite = TRUE)
 
