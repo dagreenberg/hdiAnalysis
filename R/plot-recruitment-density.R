@@ -50,8 +50,17 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
     if(is.null(main_title)) {
       main_title <- "HDI 95% interval"
     }
-
   }
+
+  # Calculate the pdf value at low and high x values, have to interpolate
+
+  i <- findInterval(low, dens$x)  # low is between x[low_i] and x[low_i + 1]
+  y_low <- dens$y[i] + (dens$y[i+1] - dens$y[i])/(dens$x[i+1] - dens$x[i]) *
+           (low - dens$x[i])
+
+  i <- findInterval(high, dens$x)  # high is between x[low_i] and x[low_i + 1]
+  y_high <- dens$y[i] + (dens$y[i+1] - dens$y[i])/(dens$x[i+1] - dens$x[i]) *
+           (high - dens$x[i])
 
   plot(dens,
        xlab = x_lab,
@@ -65,15 +74,15 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
           main = "")
 
   # Low tail
-  polygon(c(dens$x[dens$x <= low], low),
-          c(dens$y[dens$x <= low], 0),
+  polygon(c(dens$x[dens$x <= low], low, low),
+          c(dens$y[dens$x <= low], y_low, 0),
           col = col_tail,
           border = col_tail,
           main = "")
 
   # High tail
-  polygon(c(dens$x[dens$x >= high], high),
-          c(dens$y[dens$x >= high], 0),
+  polygon(c(high, dens$x[dens$x >= high], high),
+          c(y_high, dens$y[dens$x >= high], 0),
           col = col_tail,
           border = col_tail,
           main = "")
