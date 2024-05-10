@@ -87,5 +87,8 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
           border = col_tail,
           main = "")
 
+  # Make an if once figured out:
+  abline(h = y_low)
+
   invisible()
 }

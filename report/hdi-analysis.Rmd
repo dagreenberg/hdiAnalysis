@@ -1,0 +1,56 @@
+---
+title: "HDI analyses"
+author: "Andrew Edwards"
+output: pdf_document
+fontsize: 12pt
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  fig.width = 10,
+  fig.height = 8
+)
+```
+
+```{r, packages}
+library(dplyr)
+# library(pacea)
+load_all()
+```
+
+First copying over what I had in the sandbox, then deleting down what isn't
+needed. Had originally (in 2022) tried making histograms as they avoid smoothing, but fiddly and best
+not to, as don't demonstrate the issue as clearly as I'd thought, because of the
+first bins in the tails not being the same height (because they are bins); see
+hdi-notes.pdf.
+
+From ?hdi:
+Kruschke, J. K. 2011. _Doing Bayesian data analysis: a tutorial
+     with R and BUGS._ Elsevier, Amsterdam, section 3.3.5.
+
+
+## Recruitment
+
+```{r rec}
+par(mfrow = c(2,1))
+plot_recruitment_density(year = 2021, type = "equal")
+plot_recruitment_density(year = 2021, type = "hdi")
+
+```
+D TODO make the lines vertical
+D draw horizontal line across
+
+HERE
+
+- show area in right-hand side in a diff colour.
+- shade areas to show the problem
+
+HERE - D - functionalise the above.
+
+
+
+
+See if Marie knows more about `?density` kernels etc.
