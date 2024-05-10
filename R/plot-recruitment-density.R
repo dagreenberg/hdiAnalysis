@@ -54,9 +54,17 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
     }
   }
 
-  # Calculate the pdf value at low and high x values, have to interpolate
+  # Calculate the pdf value at low and high x values, have to interpolate.
+  # Don't need to for HDI, since values will be exact x values, which I hadn't
+  # realised when first doing this. (Need to check about 2.5 and 97.5).
+  # And since intervals are considered [ , ) and HDI intervals are actually
+  # bigger than the 'true' HDI interval, my original interpolation was actually,
+  # I think, just selecting the i_high+1 value by mistake. See .Rmd for
+  # thoughts.
+  # Actually no, dens is a smoothed version. Think I just need to go the other
+  # way for the high value??
 
-  i_low <- findInterval(low, dens$x)  # low is between x[i_low] and x[i_low + 1]
+  i_low <- findInterval(low, dens$x)  # low is between dens$x[i_low] and dens$x[i_low + 1]
   y_low <- dens$y[i_low] + (dens$y[i_low+1] - dens$y[i_low])/(dens$x[i_low+1] - dens$x[i_low]) *
            (low - dens$x[i_low])
 
@@ -76,6 +84,7 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
        lwd = 2,
        xlim = x_lim,
        main = main_title)
+
 
   # Full distribution
   polygon(dens,

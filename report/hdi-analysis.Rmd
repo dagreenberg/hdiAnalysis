@@ -70,6 +70,12 @@ object, which explains why the y values look different above. So, let's confirm 
 year <- 2021
 one_year_mcmc <- pull(hake_recruitment_mcmc,
                       as.character(year))    # Full 8000 MCMC samples for that year
+one_year_mcmc_sort <- sort(one_year_mcmc)    # Useful later
+
+head(one_year_mcmc_sort)
+tail(one_year_mcmc_sort)
+summary(one_year_mcmc_sort)
+
 
 hdi_res <- HDInterval::hdi(one_year_mcmc)
 hdi_res
@@ -117,7 +123,46 @@ hdiVector <- function(object, credMass=0.95, ...) {
 
 So, because the calculated interval is actually wider than the 'true' interval,
 the interpolation in my figure should be tweaked. Doing that now in
-`plot_recruitment_density()`.
+`plot_recruitment_density()`, with some thinking here:
+
+```{r calcs}
+range(diff(res$dens$x))      # x values are equally spaced
+res$i_low
+res$low
+res$dens$x[(res$i_low - 1):(res$i_low + 1)]   # The recruitment values around the
+                                              # HDI low
+res$y_low
+res$dens$y[(res$i_low - 1):(res$i_low + 1)]   # The density values around the
+                                              # HDI low
+# Can see both are in interval what corresponds to [i_low, i_low+1), so original interpolation is
+# correct in plot_recruitment_density().
+
+# Do the same for high:
+res$i_high
+res$high
+res$dens$x[(res$i_high - 1):(res$i_high + 1)]   # The recruitment values around the
+                                                # HDI high
+res$y_high
+res$dens$y[(res$i_high - 1):(res$i_high + 1)]   # The density values around the
+                                                # HDI high
+
+# So again, both are indeed correctly in what corresponds to [i_high,
+# i_high+1).
+```
+
+So the trouble is actually the HDI calculation NOT doing any interpolation, only
+using the given values. But in the tail these are spread out. ALSO, `density()`
+does equally spaced values, but the tail of the data is so spread out:
+```{r tail}
+tail(one_year_mcmc_sort)
+```
+so lots of values are wasted in the big gap at the end.
+```{r rug}
+plot(res$dens)
+rug(one_year_mcmc_sort)
+```
+
+
 
 
 See if Marie knows more about `?density` kernels etc.
