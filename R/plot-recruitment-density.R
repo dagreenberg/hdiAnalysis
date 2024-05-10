@@ -26,6 +26,7 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
+# Should really filter by year first, as that's the only one we're using
   if(is.null(rec_intervals)){
     rec_intervals <- create_intervals(dat_mcmc)
   }
@@ -38,6 +39,7 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
   dens <- density(pull(dat_mcmc,
                        as.character(year)))
 
+  # low and high values of the interval
   if(type == "equal"){
     low <- filter(rec_intervals, name == year)$`2.5`
     high <- filter(rec_intervals, name == year)$`97.5`
@@ -54,13 +56,20 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
 
   # Calculate the pdf value at low and high x values, have to interpolate
 
-  i <- findInterval(low, dens$x)  # low is between x[low_i] and x[low_i + 1]
-  y_low <- dens$y[i] + (dens$y[i+1] - dens$y[i])/(dens$x[i+1] - dens$x[i]) *
-           (low - dens$x[i])
+  i_low <- findInterval(low, dens$x)  # low is between x[i_low] and x[i_low + 1]
+  y_low <- dens$y[i_low] + (dens$y[i_low+1] - dens$y[i_low])/(dens$x[i_low+1] - dens$x[i_low]) *
+           (low - dens$x[i_low])
 
-  i <- findInterval(high, dens$x)  # high is between x[low_i] and x[low_i + 1]
-  y_high <- dens$y[i] + (dens$y[i+1] - dens$y[i])/(dens$x[i+1] - dens$x[i]) *
-           (high - dens$x[i])
+  i_high <- findInterval(high, dens$x)  # high is between x[i_high] and x[i_high + 1]
+  y_high <- dens$y[i_high] + (dens$y[i_high+1] - dens$y[i_high])/(dens$x[i_high+1] - dens$x[i_high]) *
+           (high - dens$x[i_high])
+
+  # OR maybe assume the low value is more accurate. Strange that these are
+  # somewhat different:
+  # y_low
+  # y_high
+  # Should presumably be equal
+
 
   plot(dens,
        xlab = x_lab,
@@ -90,5 +99,12 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
   # Make an if once figured out:
   abline(h = y_low)
 
-  invisible()
+  # Prob remove this once fixed, just easier to debug with values in
+  return(list(dens = dens,
+              low = low,
+              high = high,
+              i_low = i_low,
+              y_low = y_low,
+              i_high = i_high,
+              y_high = y_high))
 }
