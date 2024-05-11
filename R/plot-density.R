@@ -14,9 +14,9 @@
 ##' plot_recruitment_density()
 ##' plot_recruitment_density(year = 2021)
 ##' }
-plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
-                                     rec_intervals = NULL,
-                                     year = 2010,
+plot_density <- function(dat_mcmc = one_year_mcmc,
+                                    dens_intervals = NULL,
+                                     year = 2021,
                                      type = "hdi",
                                      x_lim = c(0, 40),  # default for 2010
                                      col_main = "red",
@@ -26,71 +26,78 @@ plot_recruitment_density <- function(dat_mcmc = hake_recruitment_mcmc,
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
-  # Just use for title, maybe also low and high, actually prob not
+  if(is.null(dens_intervals)){
+    dens_intervals <- calc_density(dat_mcmc)
+  }
+
+  dens <- dens_intervals$dens
+
+  # Reorder Just use for title, maybe also low and high, actually prob not
   if(type == "equal"){
-    low <- rec_intervals$`2.5`
-    high <- rec_intervals$`97.5`
-    if(is.null(main_title)) {
+      if(is.null(main_title)) {
       main_title <- "Equal-tailed 95% interval"
     }
   } else { # type == "hdi"
-    low <- filter(rec_intervals, name == year)$hdi_lower
-    high <- filter(rec_intervals, name == year)$hdi_upper
     if(is.null(main_title)) {
       main_title <- "HDI 95% interval"
     }
   }
 
-
-# just import one year of data, don't do filtering in here
-
-# Should really filter by year first, as that's the only one we're using
-  if(is.null(rec_intervals)){
-    rec_intervals <- create_intervals(dat_mcmc)
-  }
-
-
   if(is.null(x_lab)){
     x_lab <- paste0("Recruitment in ", year, " (billions of fish)")
   }
 
-# moved to calc_density()
+  # TODO change to x_interval_low etc.
+  # low and high values of the interval for plotting, already calculated
+  if(type == "equal"){
+     interval_low <- dens_intervals$ints$`2.5`
+     interval_high <- dens_intervals$ints$`97.5`
+     y_interval_low <- dens_intervals$ints$y_low_equal_interp
+     y_interval_high <- dens_intervals$ints$y_high_equal_interp
+  } else { # type == "hdi"
+     interval_low <- dens_intervals$ints$hdi_lower
+     interval_high <- dens_intervals$ints$hdi_upper
+     y_interval_low <- dens_intervals$ints$y_low_hdi_interp
+     y_interval_high <- dens_intervals$ints$y_high_hdi_interp
+  }
 
   plot(dens,
        xlab = x_lab,
        lwd = 2,
        xlim = x_lim,
        main = main_title)
-
+# STILL need to think and CHECK EVERYTHING AGAIN
 
   # Full distribution
   polygon(dens,
           col = col_main,
           main = "")
 
-  # Low tail
-  polygon(c(dens$x[dens$x <= low], low, low),
-          c(dens$y[dens$x <= low], y_low, 0),
+  # Interval_Low tail
+  polygon(c(dens$x[dens$x <= interval_low], interval_low, interval_low),
+          c(dens$y[dens$x <= interval_low], y_interval_low, 0),
           col = col_tail,
           border = col_tail,
           main = "")
 
   # High tail
-  polygon(c(high, dens$x[dens$x >= high], high),
-          c(y_high, dens$y[dens$x >= high], 0),
+  polygon(c(interval_high, dens$x[dens$x >= interval_high], interval_high),
+          c(y_interval_high, dens$y[dens$x >= interval_high], 0),
           col = col_tail,
           border = col_tail,
           main = "")
 
   # Make an if once figured out:
-  abline(h = y_low)
+  abline(h = y_interval_low)
+
+
 
   # Prob remove this once fixed, just easier to debug with values in
-  return(list(dens = dens,
-              low = low,
-              high = high,
-              i_low = i_low,
-              y_low = y_low,
-              i_high = i_high,
-              y_high = y_high))
+#  return(list(dens = dens,
+#              low = low,
+#               high = high,
+#               i_low = i_low,
+#               y_low = y_low,
+#               i_high = i_high,
+#               y_high = y_high))
 }

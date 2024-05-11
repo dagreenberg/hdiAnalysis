@@ -70,6 +70,8 @@ object, which explains why the y values look different above. So, let's confirm 
 year <- 2021
 one_year_mcmc <- pull(hake_recruitment_mcmc,
                       as.character(year))    # Full 8000 MCMC samples for that year
+# TODO save that as an object
+
 one_year_mcmc_sort <- sort(one_year_mcmc)    # Useful later
 
 head(one_year_mcmc_sort)
@@ -160,9 +162,24 @@ so lots of values are wasted in the big gap at the end.
 ```{r rug}
 plot(res$dens)
 rug(one_year_mcmc_sort)
+
+# abline(v = rr$dens$x[rr$ints$i_high_hdi])
 ```
 
+HERE - roughly what was doing, need to tidy things up.
+```{r fripm}
+rr <- calc_density(one_year_mcmc)
+plot_density()
+abline(v = rr$dens$x[rr$ints$i_high_hdi])
+abline(v = rr$dens$x[rr$ints$i_high_hdi-1], col="green")
+abline(v = rr$dens$x[rr$ints$i_low_hdi-1], col="green")
+abline(v = rr$dens$x[rr$ints$i_low_hdi], col="black")
+```
 
-
+How about doing the HDI on the density version (which is kind of what I assumed
+it was doing anyway). Ideally like to figure out the problem with doing it on
+the MCMC values, but that could be an option. Need to draw some figures.
+Don't think I need `plot_recruitment_density()` in it's current state, as
+simplified to `plot_density()`.
 
 See if Marie knows more about `?density` kernels etc.
