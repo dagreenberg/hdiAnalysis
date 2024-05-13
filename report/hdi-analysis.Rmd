@@ -235,6 +235,64 @@ simplified to `plot_density()`.
 See if Marie knows more about `?density` kernels etc.
 
 
+## Longer chain of 32000
+
+```{r long}
+year <- 2021
+one_year_mcmc_32000 <- pull(hake_recruitment_mcmc_14_long,
+                      as.character(year))    # Full 32000 MCMC samples for that year
+one_year_mcmc_32000_sort <- sort(one_year_mcmc_32000)    # Useful later
+# TODO save that as a data object in the package, prob don't need sort
+
+head(one_year_mcmc_32000_sort)
+tail(one_year_mcmc_32000_sort)
+summary(one_year_mcmc_32000_sort)
+```
+
+So presumably the longer chain should not have some of the above issues:
+```{r reclong, fig.height = 10}
+par(mfrow = c(2,1))
+plot_density(one_year_mcmc_32000, year = 2021, type = "equal")
+plot_density(one_year_mcmc_32000, year = 2021, type = "hdi")
+```
+
+wtf it does. Maybe it's still too sparse in that area.
+```{r calcs7}
+sum(one_year_mcmc_32000 < 28 & one_year_mcmc_32000 > 23)
+```
+
+Do the calculations:
+```{r calclong}
+one_year_res_32000 <- calc_density(one_year_mcmc_32000_sort)
+one_year_res_32000
+one_year_res_32000$intervals %>% a()
+```
+
+
+```{r reclong2, fig.height = 10}
+# par(mfrow = c(2,1))
+# plot_density(one_year_mcmc_32000, year = 2021, type = "equal")
+plot_density(one_year_mcmc_32000, x_lim = c(20, 30), year = 2021, type = "hdi")
+rug(one_year_mcmc_32000)
+rug(one_year_res_32000$density$x, side = 3)
+```
+Think that shouldn't happen and there's a bug somewhere. Try the other end:
+
+```{r reclong88, fig.height = 10}
+# par(mfrow = c(2,1))
+# plot_density(one_year_mcmc_32000, year = 2021, type = "equal")
+plot_density(one_year_mcmc_32000, x_lim = c(0, 5), year = 2021, type = "hdi")
+rug(one_year_mcmc_32000)
+rug(one_year_res_32000$density$x, side = 3)
+```
+
+Does feel like it would be better to do the calculation on the density? Because
+it can use the pdf values (I think one of the functions can) and be closer to
+the 'true' HDI. Seems clear that extra MCMC samples isn't helping, but I think
+there's a bug somewhere.
+
+
+
 ## Other packages?
 
 - From `?HDInterval::hdi`:
