@@ -1,4 +1,4 @@
-##' Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
+##' DEPRECATED I think for plot-density (so more generic). Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
 ##'
 ##' @param dat_mcmc a tibble where each row represents an MCMC sample, and each
 ##'   column is a quantity which we want to summarise with credible intervals.

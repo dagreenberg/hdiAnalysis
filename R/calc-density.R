@@ -8,7 +8,7 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' one_year_mcmc <- pull(hake_recruitment_mcmc, 2021)
+##' one_year_mcmc <- dplyr::pull(hake_recruitment_mcmc, 2021)
 ##' calc_density(one_year_mcmc)
 ##' }
 calc_density <- function(dat_mcmc,
@@ -79,6 +79,6 @@ calc_density <- function(dat_mcmc,
                        i_high_hdi = i_high_hdi,
                        y_high_hdi_interp = y_high_hdi_interp)
 
-  return(list(ints = res,
-              dens = dens))
+  return(list(intervals = res,
+              density = dens))
 }

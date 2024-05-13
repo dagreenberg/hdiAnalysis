@@ -1,7 +1,6 @@
 ##' Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
 ##'
-##' @param dat_mcmc a tibble where each row represents an MCMC sample, and each
-##'   column is a quantity which we want to summarise with credible intervals.
+##' @param dat_mcmc a numeric vector representing an MCMC sample.
 ##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
 ##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
 ##' @param year Which year of recruitment (age-0) to plot
@@ -15,14 +14,14 @@
 ##' plot_recruitment_density(year = 2021)
 ##' }
 plot_density <- function(dat_mcmc = one_year_mcmc,
-                                    dens_intervals = NULL,
-                                     year = 2021,
-                                     type = "hdi",
-                                     x_lim = c(0, 40),  # default for 2010
-                                     col_main = "red",
-                                     col_tail = "blue",
-                                     main_title = NULL,
-                                     x_lab = NULL){
+                         dens_intervals = NULL,
+                         year = 2021,
+                         type = "hdi",
+                         x_lim = c(0, 40),  # default for 2010
+                         col_main = "red",
+                         col_tail = "blue",
+                         main_title = NULL,
+                         x_lab = NULL){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
@@ -30,7 +29,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
     dens_intervals <- calc_density(dat_mcmc)
   }
 
-  dens <- dens_intervals$dens
+  dens <- dens_intervals$density
 
   # Reorder Just use for title, maybe also low and high, actually prob not
   if(type == "equal"){
@@ -50,15 +49,15 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
   # TODO change to x_interval_low etc.
   # low and high values of the interval for plotting, already calculated
   if(type == "equal"){
-     interval_low <- dens_intervals$ints$`2.5`
-     interval_high <- dens_intervals$ints$`97.5`
-     y_interval_low <- dens_intervals$ints$y_low_equal_interp
-     y_interval_high <- dens_intervals$ints$y_high_equal_interp
+     interval_low <- dens_intervals$intervals$`2.5`
+     interval_high <- dens_intervals$intervals$`97.5`
+     y_interval_low <- dens_intervals$intervals$y_low_equal_interp
+     y_interval_high <- dens_intervals$intervals$y_high_equal_interp
   } else { # type == "hdi"
-     interval_low <- dens_intervals$ints$hdi_lower
-     interval_high <- dens_intervals$ints$hdi_upper
-     y_interval_low <- dens_intervals$ints$y_low_hdi_interp
-     y_interval_high <- dens_intervals$ints$y_high_hdi_interp
+     interval_low <- dens_intervals$intervals$hdi_lower
+     interval_high <- dens_intervals$intervals$hdi_upper
+     y_interval_low <- dens_intervals$intervals$y_low_hdi_interp
+     y_interval_high <- dens_intervals$intervals$y_high_hdi_interp
   }
 
   plot(dens,
