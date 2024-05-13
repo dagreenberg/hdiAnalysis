@@ -25,8 +25,7 @@ library(dplyr)
 load_all()
 ```
 
-First copying over what I had in the sandbox, then deleting down what isn't
-needed. Had originally (in 2022) tried making histograms as they avoid smoothing, but fiddly and best
+Had originally (in 2022) tried making histograms as they avoid smoothing, but fiddly and best
 not to, as don't demonstrate the issue as clearly as I'd thought, because of the
 first bins in the tails not being the same height (because they are bins); see
 hdi-notes.pdf.
@@ -35,21 +34,36 @@ From ?hdi:
 Kruschke, J. K. 2011. _Doing Bayesian data analysis: a tutorial
      with R and BUGS._ Elsevier, Amsterdam, section 3.3.5.
 
+## Recruitment from Pacific Hake assessment
 
-## Recruitment
+Next figure shows the idea. Top panel is what we calculate from the MCMC
+outputs (for many quantities), with 95\% credible intervals calculated as having
+endpoints at the 2.5\% and 97.5\% percentiles.
+
+Bottom panel is calculating the highest density interval (HDI), which is meant
+to be the narrowest of all possible 95\% credible intervals. It is calculated
+using `HDInterval::hdi()`.
 
 ```{r rec}
 par(mfrow = c(2,1))
 plot_recruitment_density(year = 2021, type = "equal")
 plot_recruitment_density(year = 2021, type = "hdi")
-
 ```
 
-Doesn't quite look right.
+However, the bottom panel does not quite look right, as the horizontal line
+should intersect with the blue/red boundary. See
+
+Started to:
 
 - fix the right-hand side
 - shade areas to show the problem
 
+Realise I should look around for alternative R packages (else we'll end up
+reinventing the wheel and coming up with new methods, although such results
+would be of broader interest probably). First explain `HDInterval::hdi()`.
+
+
+## How does `HDInterval::hdi()` work?
 
 Dig into analyses to understand better. From `?HDInterval::hdi`:
 
@@ -70,9 +84,8 @@ object, which explains why the y values look different above. So, let's confirm 
 year <- 2021
 one_year_mcmc <- pull(hake_recruitment_mcmc,
                       as.character(year))    # Full 8000 MCMC samples for that year
-# TODO save that as an object
-
 one_year_mcmc_sort <- sort(one_year_mcmc)    # Useful later
+# TODO save that as a data object in the package, prob don't need sort
 
 head(one_year_mcmc_sort)
 tail(one_year_mcmc_sort)
@@ -183,3 +196,99 @@ Don't think I need `plot_recruitment_density()` in it's current state, as
 simplified to `plot_density()`.
 
 See if Marie knows more about `?density` kernels etc.
+
+
+## Other packages?
+
+Before writing new methods, see what else is available in R.
+
+- Could calculate the pdf values based on the log(pdf)? Not sure.
+- The longer answer here (scroll down) has some interesting ideas:
+  https://stats.stackexchange.com/questions/381520/how-can-i-estimate-the-highest-posterior-density-interval-from-a-set-of-x-y-valu
+
+- `bayestestR::hdi()` -- also has `eti()` (equal-tailed intervals
+  function). Gives credit to HDInterval, so maybe uses that anyway. Start
+  digging:
+
+
+
+## Further thoughts
+
+- Equal-tailed intervals do not change under a nonlinear transformation of the values, but
+HDI ones will. Kruschke 2015 p343 explains it nicely, and points out that
+usually we're working on the correct scale anyway (do we care about numbers of
+fish, or log of the numbers of fish?).
+
+- There's also talk of 89\% intervals (something to do with 89 being the highest
+  prime number below 95; see `bayestestR::hdi()`.
+
+- Kruschke 2015 (saved pdf), searching whole book for `hdi`. Comes up a lot as
+  in lots of figures, and a bit repetitive (think book is designed to read
+  chapters somewhat independently), but haven't found clear explanation of how
+  calcualted on MCMC samples. Lots is to do with if HDI overlaps some value of
+  interest (e.g. 0, kind of null hypothesis).
+
+ - p87 on credible intervals. Explains why sticking
+  with HDI (great, we can just reference), and also says posterior highest
+  density intervals (priors can have them too). Then see p342, which has the
+  usual figure (as does something earlier). p184 talks about
+  ESS and HDI, recommend 10,000 (based on experience). We could test. Or even
+  simulate from a lognormal with a long tail. But whole book doesn't really seem
+  to dig into how to calculate the HDI from empiricial data -- though lots of
+  examples so it must do somewhere. Does say (p117):
+  "You will notice that for sparse grids on $\theta$, it is usually impossible to span grid values that
+exactly achieve the desired HDI, and therefore, the bars that minimally exceed the HDI
+mass are displayed. " Sounds like same method as HDInterval; could dig into
+  their code which is given somewhere. p181: mentions different chains giving
+  slightly different HDI. for infinite chains, all converge,
+
+  - p294 uses `HDIofICDF()` that comes with book (not sure what ICDF stands for
+    yet). See also mention on p346.
+
+  - p330 different widths based on simulations and sample size: " Suppose we contemplate a survey that polls 500
+people. By simulating the experiment over and over, using the hypothesized random
+θ ≈ 0.60 and N = 500, we can generate simulated data, and then derive a Bayesian
+posterior distribution for every set of simulated data. For every posterior distribution,
+we determine some measure of accuracy, such as the width of the 95\% HDI. From
+many simulated experiments, we get a sampling distribution of HDI widths. From the
+sampling distribution of HDI widths, we can decide whether N = 500 typically yields
+high enough accuracy for our purposes.If not, we repeat the simulation with a larger N.
+Once we know how big N needs to be to get the accuracy we seek, we can decide
+whether or not it is feasible to conduct such a study."
+
+  - p365: "There are other ways to express mathematically the goal of precision in estimation. For
+example, another way of using HDIs was described by Joseph, Wolfson, and du Berger
+(1995a, 1995b). They considered an “average length criterion,” which requires that
+the average HDI width, across repeated simulated data, does not exceed some maximal
+value L. There is no explicit mention of power, i.e., the probability of achieving the
+goal, because the sample size is chosen so that the goal is definitely achieved. The goal
+itself is probabilistic, however, because it regards an average:  While some data sets will
+have HDI width less than L, many other data sets will not have an HDI width greater
+than L." Not quite sure of the point here.
+
+  - p369 has some code, think still really just need `HDIofICDF()` (haven't come
+    across it yet) in `DBDA2E-utilities.R`. Ooh, there's also `HDIofMCMC()`
+    first seen on p373 -- described on p725 (see below).
+
+  - p371, simulation study for sample size needed for HDI to have a given
+    maximal width, for coin flipping.
+
+  - p386 Figure is what we were going to do (just bottom panels), given a long
+    chain. Maybe don't need the width one, ooh, just the sample size one but for
+    independently run MCMC chains (so some might stop earlier).
+	Dashed lines are the ROPE, which I don't understand yet, don't think we need.
+
+  - p725 - rising tide description of HDI, with poles. And code, which is also
+    given and adapted in
+    https://bookdown.org/content/3686/tools-in-the-trunk.html#functions-for-computing-highest-density-intervals
+    who says:
+	Just in case you’re curious, Kruschke’s `HDIofMCMC()` function returns the same information as `tidybayes::hdi()`. Let’s confirm.
+
+  - Looks like Kruschke's code does the same as `HDInterval::hdi()`.
+
+
+## Proposition -- can we do density first and then calculate HDI?
+
+This is what I kind of assumed was being done. Not ideal as is approximating the
+density of the MCMC sample. But given the issues with our HDI not really being
+the HDI (even for 8,000 samples; admittedly the recommendation is 10,000).
