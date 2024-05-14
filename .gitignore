@@ -6,3 +6,5 @@ data-raw/hake-2024/*
 
 report/hake-lengths-wrangling-2.Rmd
 report/hdi-notes.pdf
+
+*.Rproj
