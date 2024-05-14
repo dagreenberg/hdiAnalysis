@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 
 ```{r, packages}
 library(dplyr)
+library(devtools)
 # library(pacea)
 load_all()
 ```

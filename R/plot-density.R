@@ -89,7 +89,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
   # Make an if once figured out:
   abline(h = y_interval_low)
 
-
+  rug(dens$x, side=3)
+  rug(dat_mcmc)
 
   # Prob remove this once fixed, just easier to debug with values in
 #  return(list(dens = dens,
