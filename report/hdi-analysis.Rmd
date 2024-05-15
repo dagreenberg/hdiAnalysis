@@ -64,6 +64,12 @@ plot_density_fig1(year = 2021, type = "equal")
 plot_density(year = 2021, type = "hdi")
 ```
 
+Figure for supplementary material to explain the regions of equal-tail.
+
+```{r fig.regions.equal.tail, fig.width = 8, fig.height= 5}
+plot_density_fig_sup(year = 2021, type = "equal")
+```
+
 However, the bottom panel does not quite look right, as the horizontal line
 should intersect with the blue/red boundary.
 
