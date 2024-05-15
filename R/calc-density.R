@@ -21,7 +21,8 @@ calc_density <- function(dat_mcmc,
                          ){
   if(is.null(intervals)){
     if(density){
-      intervals <- create_intervals.density(dat_mcmc)  # tibble, even if only one row
+      intervals <- create_intervals.density(dat_mcmc,
+                                            ...)  # tibble, even if only one row
     }else{
       intervals <- create_intervals.numeric(dat_mcmc)  # tibble, even if only one row
     }

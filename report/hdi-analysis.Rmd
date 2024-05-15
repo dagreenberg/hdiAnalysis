@@ -406,5 +406,20 @@ accurate HDI. We were still getting the original issue with higher $n$.
 head(one_year_mcmc_sort)
 tail(one_year_mcmc_sort)
 
+res_high_n <- calc_density(one_year_mcmc_sort, n = 1e5)
+res_high_n$intervals %>% a()
+plot_density(one_year_mcmc_sort,
+             dens_intervals = res_high_n)
+```
 
+## Longer 32,000 chain
+
+```{r highnlong}
+head(one_year_mcmc_32000_sort)
+tail(one_year_mcmc_32000_sort)
+
+res_high_n_32000 <- calc_density(one_year_mcmc_32000_sort, n = 1e5)
+res_high_n_32000$intervals %>% a()
+plot_density(one_year_mcmc_32000_sort,
+             dens_intervals = res_high_n)
 ```
