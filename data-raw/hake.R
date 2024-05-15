@@ -66,6 +66,32 @@ usethis::use_data(hake_recruitment_mcmc,
 #  "Pacific Hake recruitment (billions of age-0 fish)"
 
 
+# Relative spawning biomass
+
+hake_relative_biomass_mcmc <- dplyr::select(hake_mcmc,
+                                            "Bratio_1967":"Bratio_2027")
+                                            # There is no
+                                            # Bratio_unfished, presumably since
+                                            # should all be 1
+hake_relative_biomass_mcmc
+
+names(hake_relative_biomass_mcmc) <- gsub(pattern = "Bratio_",
+                                          replacement = "",
+                                          x = names(hake_relative_biomass_mcmc))
+
+quantile(hake_relative_biomass_mcmc$`2024`, c(0.05, 0.50, 0.95))   # These match
+                                                                   # Table g first row
+
+quantile(hake_relative_biomass_mcmc$`2027`, c(0.05, 0.50, 0.95))   # These don't
+                                                                   # match anything, so remove them
+hake_relative_biomass_mcmc <- dplyr::select(hake_relative_biomass_mcmc,
+                                            -c("2025", "2026", "2027"))
+
+usethis::use_data(hake_relative_biomass_mcmc,
+                  overwrite = TRUE)
+
+
+
 
 # Trying to get experimental MCMC chains from server, as being used for Kelli's
 # manuscript. Use exp for suffix for now.

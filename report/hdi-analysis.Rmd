@@ -414,6 +414,9 @@ plot_density(one_year_mcmc_sort,
 
 ## Longer 32,000 chain
 
+TODO check figure still looks the same as previous, I had `res_high_n` instead
+of `res_high_n_32000` here
+
 ```{r highnlong}
 head(one_year_mcmc_32000_sort)
 tail(one_year_mcmc_32000_sort)
@@ -421,5 +424,27 @@ tail(one_year_mcmc_32000_sort)
 res_high_n_32000 <- calc_density(one_year_mcmc_32000_sort, n = 1e5)
 res_high_n_32000$intervals %>% a()
 plot_density(one_year_mcmc_32000_sort,
-             dens_intervals = res_high_n)
+             dens_intervals = res_high_n_32000)
+```
+
+
+## Relative spawning biomass
+
+Using 2024 base case model relative biomass MCMC results, saved in package.
+
+```{r relbiomass}
+current_relative_biomass_mcmc <- pull(hake_relative_biomass_mcmc,
+                                       as.character(2024))    # Full 8000 MCMC samples for that year
+current_relative_biomass_mcmc_sort <- sort(current_relative_biomass_mcmc)
+
+head(current_relative_biomass_mcmc_sort)
+tail(current_relative_biomass_mcmc_sort)
+
+res_relative_biomass <- calc_density(current_relative_biomass_mcmc_sort,
+                                     n = 1e5)
+res_relative_biomass$intervals %>% a()
+plot_density(current_relative_biomass_mcmc_sort,
+             dens_intervals = res_relative_biomass,
+             x_lim = c(0, 4),
+             x_lab = "Relative spawning biomass in 2024")
 ```
