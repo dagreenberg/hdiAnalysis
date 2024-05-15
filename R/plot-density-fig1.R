@@ -28,7 +28,7 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
     stop("type needs to equal or hdi.")}
 
   if(is.null(dens_intervals)){
-    dens_intervals <- calc_density(dat_mcmc)
+    dens_intervals <- calc_density(dat_mcmc, n=1e5)
   }
 
   dens <- dens_intervals$density
@@ -71,29 +71,11 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
 
   # legend(x = "topright", legend =c("1  lower tail", "2  upper tail", "3  included (but as probable as lower tail)"), 
   #        col = c(col_tail_low, col_tail_high, col_included), pch = 19, bty = "n", pt.cex = 2.2, x.intersp = -0.32)
-  legend(x = "topright", legend =c("Tails", "Included (but as probable as lower tail)"), 
-         col = c(col_tail_low,  col_included), pch = 19, bty = "n", pt.cex = 2.2)
+  legend(x = "topright", legend =c("Tails"), 
+         col = c(col_tail_low), pch = 19, bty = "n", pt.cex = 2.2)
   
   
     # STILL need to think and CHECK EVERYTHING AGAIN
-  
-  
-  # Make an if once figured out:
-  #abline(h = y_interval_low)
-  
-  # Area missed by 95% credible interval
-  i_left_side <- max(which(dens$y > y_interval_low))
-  
-  polygon(c(dens$x[i_left_side+1], dens$x[dens$x > dens$x[i_left_side] & dens$x <= interval_high], interval_high, interval_high, dens$x[i_left_side+1]),
-          c(dens$y[i_left_side +1], dens$y[dens$x > dens$x[i_left_side] & dens$x <= interval_high], y_interval_high, 0, 0),
-          col = col_included,
-          border = NA,
-          main = "")
-  
-  # # Full distribution
-  # polygon(dens,
-  #         col = col_main,
-  #         main = "")
   
   
 
