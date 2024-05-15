@@ -59,7 +59,8 @@ NOTE: default for hdi method is now to use density not the moving window method.
 
 ```{r rec, fig.height = 10}
 par(mfrow = c(2,1))
-plot_density(year = 2021, type = "equal")
+# 
+plot_density_fig1(year = 2021, type = "equal")
 plot_density(year = 2021, type = "hdi")
 ```
 
