@@ -19,16 +19,18 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
                          type = "hdi",
                          x_lim = c(0, 50),  # default for 2010
                          col_main = NA,
-                         col_tail_low = rgb(0, 114, 178, maxColorValue = 255), # Blue from color blind pallet (Okabe-Ito)
-                         col_tail_high =rgb(0, 114, 178, maxColorValue = 255), # Sky blue from color blind pallet (Okabe-Ito)
-                         col_included = rgb(204, 121, 167, maxColorValue = 255), # Reddish purple from color blind pallet (Okabe-Ito) #rgb(230, 159, 0, maxColorValue = 255), # Orange from color blind pallet (Okabe-Ito)
+                         col_tail_low = rgb(86, 180, 233, maxColorValue = 255), # Sky blue from color blind pallet (Okabe-Ito)
+                         col_tail_high = rgb(86, 180, 233, maxColorValue = 255), # Sky blue from color blind pallet (Okabe-Ito)
+                         col_95 = rgb(240, 228, 66, maxColorValue = 255), # Yellow from color blind pallet (Okabe-Ito)
+                         col_included = rgb(204, 121, 167, maxColorValue = 255), # Reddish purple from color blind pallet (Okabe-Ito) 
+                         col_exclued = rgb(230, 159, 0, maxColorValue = 255), # Orange from color blind pallet (Okabe-Ito)
                          main_title = NULL,
                          x_lab = NULL){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
   if(is.null(dens_intervals)){
-    dens_intervals <- calc_density(dat_mcmc)
+    dens_intervals <- calc_density(dat_mcmc, n=1e6)
   }
 
   dens <- dens_intervals$density
@@ -69,10 +71,34 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
        main = main_title,
        las=1)
 
-  # legend(x = "topright", legend =c("1  lower tail", "2  upper tail", "3  included (but as probable as lower tail)"), 
-  #        col = c(col_tail_low, col_tail_high, col_included), pch = 19, bty = "n", pt.cex = 2.2, x.intersp = -0.32)
-  legend(x = "topright", legend =c("Tails", "Included (but as probable as lower tail)"), 
-         col = c(col_tail_low,  col_included), pch = 19, bty = "n", pt.cex = 2.2)
+  #Lower tail barkground
+  polygon(c(x_lim[1] - 10, x_lim[1] - 10, interval_low, interval_low),
+          c(0, 10, 10, 0),
+          col = col_tail_low,
+          border = NA,
+          main = "")
+  
+  # High tail background
+  polygon(c(interval_high, interval_high, x_lim[2] + 10, x_lim[2] +10),
+          c(0, 10, 10, 0),
+          col = col_tail_high,
+          border = NA,
+          main = "")
+  # 
+  # 
+  # # Interval_Low tail
+  # polygon(c(x_lim[1] - 10, x_lim[1] - 10, interval_low, interval_low),
+  #         c(0, 10, 10, 0),
+  #         col = col_tail_low,
+  #         border = NA,
+  #         main = "")
+  
+  # Area in 95% Credible interval
+  polygon(c(interval_low, interval_low, interval_high, interval_high),
+          c(0, 10, 10, 0),
+          col = col_95,
+          border = NA,
+          main = "")
   
   
     # STILL need to think and CHECK EVERYTHING AGAIN
@@ -81,7 +107,7 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
   # Make an if once figured out:
   #abline(h = y_interval_low)
   
-  # Area missed by 95% credible interval
+  # Area of included values but as probable as lower tail
   i_left_side <- max(which(dens$y > y_interval_low))
   
   polygon(c(dens$x[i_left_side+1], dens$x[dens$x > dens$x[i_left_side] & dens$x <= interval_high], interval_high, interval_high, dens$x[i_left_side+1]),
@@ -90,6 +116,19 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
           border = NA,
           main = "")
   
+  # Area of excluded values but more probable than upper tail
+  i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
+  
+  polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
+          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
+          col = col_excluded,
+          border = NA,
+          main = "")
+  abline(h = y_interval_high, lty=2)
+  abline(h = y_interval_low, lty=2)
+  
+    
+  
   # # Full distribution
   # polygon(dens,
   #         col = col_main,
@@ -97,19 +136,19 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
   
   
 
-  # Interval_Low tail
-  polygon(c(dens$x[dens$x <= interval_low], interval_low, interval_low),
-          c(dens$y[dens$x <= interval_low], y_interval_low, 0),
-          col = col_tail_low,
-          border = NA,
-          main = "")
+  # # Interval_Low tail
+  # polygon(c(dens$x[dens$x <= interval_low], interval_low, interval_low),
+  #         c(dens$y[dens$x <= interval_low], y_interval_low, 0),
+  #         col = col_tail_low,
+  #         border = NA,
+  #         main = "")
 
   # High tail
-  polygon(c(interval_high, dens$x[dens$x >= interval_high], interval_high),
-          c(y_interval_high, dens$y[dens$x >= interval_high], 0),
-          col = col_tail_high,
-          border = NA,
-          main = "")
+  # polygon(c(interval_high, dens$x[dens$x >= interval_high], interval_high),
+  #         c(y_interval_high, dens$y[dens$x >= interval_high], 0),
+  #         col = col_tail_high,
+  #         border = NA,
+  #         main = "")
 
   
 
@@ -120,12 +159,19 @@ plot_density_fig1 <- function(dat_mcmc = one_year_mcmc,
        xlim = x_lim,
        main = main_title,
        las=1)
+  box()
   
   
   
   
   #rug(dens$x, side=3)
   rug(dat_mcmc, ticksize = 0.025, lwd=0.2)
+  
+  
+  # legend(x = "topright", legend =c("1  lower tail", "2  upper tail", "3  included (but as probable as lower tail)"), 
+  #        col = c(col_tail_low, col_tail_high, col_included), pch = 19, bty = "n", pt.cex = 2.2, x.intersp = -0.32)
+  legend(x = "topright", legend =c("95% interval", "Included (but as probable as lower tail)", "Excluded (but more probable that upper tail)"), 
+         col = c(col_tail_low,  col_included, col_excluded), pch = 19, bty = "n", pt.cex = 2.2)
   
   
 

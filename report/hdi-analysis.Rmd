@@ -57,9 +57,9 @@ summary(one_year_mcmc_sort)
 
 NOTE: default for hdi method is now to use density not the moving window method.
 
-```{r rec, fig.height = 10}
+```{r rec, fig.width = 8, fig.height= 8}
 par(mfrow = c(2,1))
-# Equal probablity 95% with regions 
+# Equal probability 95% with regions 
 plot_density_fig1(year = 2021, type = "equal")
 plot_density(year = 2021, type = "hdi")
 ```
