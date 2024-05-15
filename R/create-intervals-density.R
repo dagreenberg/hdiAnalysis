@@ -1,4 +1,4 @@
-##' Create credible intervals from a numeric vector
+##' Create credible intervals from a numeric vector using the density approach
 ##'
 ##'  <desc>
 ##'
@@ -21,7 +21,7 @@
 ##' \dontrun{
 ##' rec_intervals <- create_intervals(dplyr::pull(hake_recruitment_mcmc, "2021")
 ##' }
-create_intervals.density <- function(dat,
+create_intervals_density <- function(dat,
                                      ...){
   dens <- density(dat,
                   ...)

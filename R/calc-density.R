@@ -4,7 +4,7 @@
 ##' @param dat_mcmc
 ##' @param intervals
 ##' @param density
-##' @param ... arguments to pass to `create_intervals.density()`, that then get
+##' @param ... arguments to pass to `create_intervals_density()`, that then get
 ##'   passed onto `density()`
 ##' @return
 ##' @export
@@ -21,7 +21,7 @@ calc_density <- function(dat_mcmc,
                          ){
   if(is.null(intervals)){
     if(density){
-      intervals <- create_intervals.density(dat_mcmc,
+      intervals <- create_intervals_density(dat_mcmc,
                                             ...)  # tibble, even if only one row
     }else{
       intervals <- create_intervals.numeric(dat_mcmc)  # tibble, even if only one row

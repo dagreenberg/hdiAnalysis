@@ -1,6 +1,6 @@
 ##' Create credible intervals from a numeric vector
 ##'
-##' See `create_intervals.density()` for density object. TODO could tweak this one.
+##' See `create_intervals_density()` for density object. TODO could tweak this one.
 ##'
 ##' @param dat a numeric vector consisting of MCMC samples that we want to
 ##'   summarise with credible intervals
