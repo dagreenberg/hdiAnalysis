@@ -55,6 +55,7 @@ tail(one_year_mcmc_sort)
 summary(one_year_mcmc_sort)
 ```
 
+NOTE: default for hdi method is now to use density not the moving window method.
 
 ```{r rec, fig.height = 10}
 par(mfrow = c(2,1))
@@ -90,10 +91,6 @@ one_year_res <- calc_density(one_year_mcmc_sort)
 one_year_res
 one_year_res$intervals %>% a()
 ```
-
-
-
-
 
 ## How does `HDInterval::hdi()` work?
 
@@ -390,8 +387,24 @@ than L." Not quite sure of the point here.
   - Looks like Kruschke's code does the same as `HDInterval::hdi()`.
 
 
-## Proposition -- can we do density first and then calculate HDI?
+## Proposition -- can we do density first and then calculate HDI? Yes, this can
+## be done in `HDIinterval::hdi()`
 
 This is what I kind of assumed was being done. Not ideal as is approximating the
 density of the MCMC sample. But given the issues with our HDI not really being
 the HDI (even for 8,000 samples; admittedly the recommendation is 10,000).
+
+# Wednesday at UBC
+
+Increasing $n$ for the density calculations does not change the wiggliness of
+the density plot, but will increase resolutions and presumably generate a more
+accurate HDI. We were still getting the original issue with higher $n$.
+
+## Original 2021 data set, with higher $n$ to then calculate the density
+
+```{r highn}
+head(one_year_mcmc_sort)
+tail(one_year_mcmc_sort)
+
+
+```

@@ -4,8 +4,9 @@
 ##'
 ##' @param dat a numeric vector consisting of MCMC samples that we want to
 ##'   summarise with credible intervals
-##' @param n n number of equally-spaced points at which density is to be
-##'   estimated, passed on to `density()`
+##' @param ... arguments to pass onto `density()`, in particular `n` which is
+##'   the number of equally-spaced points at which density is to be
+##'   estimated.
 ##' @return tibble of one row (to be consistent with
 ##'   `create_intervals.data.frame()`) with columns `median`, `2.5` and `97.5`
 ##'   representing the equal-tailed interval, `hdi_lower` and `hdi_upper`
@@ -21,9 +22,10 @@
 ##' rec_intervals <- create_intervals(dplyr::pull(hake_recruitment_mcmc, "2021")
 ##' }
 create_intervals.density <- function(dat,
-                                     n = 512){
-  dens <- density(dat, n = n)
-  hdi_res <- HDInterval::hdi(dens) # Could add object density TO DO
+                                     ...){
+  dens <- density(dat,
+                  ...)
+  hdi_res <- HDInterval::hdi(dens)
   res <- tibble("median" = median(dat),
                 "2.5" = quantile(dat, probs = c(0.025)),
                 "97.5" = quantile(dat, probs = c(0.975)),
