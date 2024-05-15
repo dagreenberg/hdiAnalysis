@@ -1,6 +1,6 @@
 ##' Create credible intervals from a numeric vector
 ##'
-##'  <desc>
+##' See `create_intervals.density()` for density object. TODO could tweak this one.
 ##'
 ##' @param dat a numeric vector consisting of MCMC samples that we want to
 ##'   summarise with credible intervals
@@ -19,7 +19,7 @@
 ##' rec_intervals <- create_intervals(dplyr::pull(hake_recruitment_mcmc, "2021")
 ##' }
 create_intervals.numeric <- function(dat){
-  hdi_res <- HDInterval::hdi(dat) # Could add object density TO DO
+  hdi_res <- HDInterval::hdi(dat)
   res <- tibble("median" = median(dat),
                 "2.5" = quantile(dat, probs = c(0.025)),
                 "97.5" = quantile(dat, probs = c(0.975)),
