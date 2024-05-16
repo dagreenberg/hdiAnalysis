@@ -100,6 +100,8 @@ So we have `one_year_mcmc_sort` which has length
 ```{r calc}
 one_year_res <- calc_density(one_year_mcmc_sort)
 one_year_res
+
+
 one_year_res$intervals %>% a()
 ```
 
@@ -445,7 +447,7 @@ Using 2024 base case model relative biomass MCMC results, saved in package.
 
 ```{r relbiomass}
 current_relative_biomass_mcmc <- pull(hake_relative_biomass_mcmc,
-                                       as.character(2024))    # Full 8000 MCMC samples for that year
+                                      as.character(2024))    # Full 8000 MCMC samples for that year
 current_relative_biomass_mcmc_sort <- sort(current_relative_biomass_mcmc)
 
 head(current_relative_biomass_mcmc_sort)
@@ -458,4 +460,62 @@ plot_density(current_relative_biomass_mcmc_sort,
              dens_intervals = res_relative_biomass,
              x_lim = c(0, 4),
              x_lab = "Relative spawning biomass in 2024")
+```
+
+## Now do all years for relative spawning biomass
+
+Do here then make a function (TODO), generalised for recruitment also
+```{r allyears}
+res_all_years <- list()
+intervals_all_years <- tibble()
+for(i in 1:ncol(hake_relative_biomass_mcmc)){
+  this_year = as.numeric(names(hake_relative_biomass_mcmc))[i]
+
+  this_year_mcmc <- pull(hake_relative_biomass_mcmc,
+                         as.character(this_year))    # Full MCMC samples for that year
+
+  res <- calc_density(this_year_mcmc,
+                      n = 1e5)
+  res_all_years[[i]] <- res
+  res_all_years[[i]]$year <- this_year
+  intervals_all_years <- rbind(
+    intervals_all_years,
+    cbind("year" = this_year,
+          res$intervals))
+}
+intervals_all_years <- as_tibble(intervals_all_years)
+intervals_all_years %>% a()
+```
+
+Now a quick plot:
+```{r biomassseries}
+plot(intervals_all_years$year,
+     intervals_all_years$median,
+     type = "o",
+     ylim = c(0, 2.5),
+     xlab = "Year",
+     ylab = "Relative spawning biomass")
+lines(intervals_all_years$year,
+      intervals_all_years$`2.5`,
+      col = "blue")
+lines(intervals_all_years$year,
+      intervals_all_years$hdi_lower,
+      col = "red")
+
+lines(intervals_all_years$year,
+      intervals_all_years$`97.5`,
+      col = "blue")
+lines(intervals_all_years$year,
+      intervals_all_years$hdi_upper,
+      col = "red")
+
+abline(h = c(0.4))
+```
+
+For which years is the lower equal-tailed interval above 0.4 but the lower HDI
+interval falls below 0.4?
+```{r whichyears}
+filter(intervals_all_years,
+       `2.5` > 0.4,
+       hdi_lower < 0.4)
 ```

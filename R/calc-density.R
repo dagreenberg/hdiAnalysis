@@ -3,7 +3,8 @@
 ##'
 ##' @param dat_mcmc
 ##' @param intervals
-##' @param density
+##' @param density if TRUE (the default) then use the density approach for the HDI
+##'   calculation, rather than the `hdi()` default of just the sample values.
 ##' @param ... arguments to pass to `create_intervals_density()`, that then get
 ##'   passed onto `density()`
 ##' @return
