@@ -57,11 +57,22 @@ summary(one_year_mcmc_sort)
 
 NOTE: default for hdi method is now to use density not the moving window method.
 
-TO DO: add arrows with equal-atil to explain 2.5%, add 95%, and line to hdi 
+Original fun Superman colours:
+
+```{r recorig, fig.width = 8, fig.height= 8}
+par(mfrow = c(2,1))
+# Equal probability 95% with regions
+plot_density(year = 2021, type = "equal")
+plot_density(year = 2021, type = "hdi")
+```
+
+
+
+TO DO: add arrows with equal-atil to explain 2.5%, add 95%, and line to hdi
 
 ```{r rec, fig.width = 8, fig.height= 8}
 par(mfrow = c(2,1))
-# Equal probability 95% with regions 
+# Equal probability 95% with regions
 plot_density_fig1(year = 2021, type = "equal")
 plot_density_fig1(year = 2021, type = "hdi")
 ```
@@ -487,6 +498,14 @@ intervals_all_years <- as_tibble(intervals_all_years)
 intervals_all_years %>% a()
 ```
 
+Test my new function:
+```{r testfun}
+new_res <- calc_density_many_years(hake_relative_biomass_mcmc)
+expect_equal(intervals_all_years,
+             new_res$intervals_all_years)
+new_res$intervals_all_years
+```
+
 Now a quick plot:
 ```{r biomassseries}
 plot(intervals_all_years$year,
@@ -519,3 +538,7 @@ filter(intervals_all_years,
        `2.5` > 0.4,
        hdi_lower < 0.4)
 ```
+
+So, not too important for historical trajectory. Will focus on, say, last 10
+years, and do two years of projections (TODO Andy get the full MCMC projection
+results).
