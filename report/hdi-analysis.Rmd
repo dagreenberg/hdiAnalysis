@@ -477,33 +477,33 @@ plot_density(current_relative_biomass_mcmc_sort,
 
 Do for all years with new function:
 ```{r allyears}
-relative_biomass_res <- calc_density_many_years(hake_relative_biomass_mcmc)  # n=1e5 is hardwired
+# TODO - if going to stick with this forecast, just add it to the data object:
+hake_relative_with_forecast <- cbind(hake_relative_biomass_mcmc,
+                                       hake_relative_biomass_mcmc_forecast)
+relative_biomass_res <- calc_density_many_years(hake_relative_with_forecast)  # n=1e5 is hardwired
 relative_biomass_res$intervals_all_years   # Also returns densities, so could
-                                        # plot each year if wanted
+                                           # plot each year if wanted
+relative_biomass_res$intervals_all_years %>% tail()
+# Check with Table b, these all match (obviously no 2025+):
+relative_biomass_res$intervals_all_years %>%
+  select(year, `2.5`, median, `97.5`) %>%
+  filter(year >= 2015) %>%
+  mutate(`2.5` = `2.5` * 100,
+         median = median * 100,
+         `97.5` = `97.5` * 100) %>%
+  a() %>%
+  print.data.frame(digits = 4)
 ```
-Now a quick plot: TODO make a function
+
+And a plot, which includes the forecasts:
 ```{r biomassseries}
-plot(relative_biomass_res$intervals_all_years$year,
-     relative_biomass_res$intervals_all_years$median,
-     type = "o",
-     ylim = c(0, 2.5),
-     xlab = "Year",
-     ylab = "Relative spawning biomass")
-lines(relative_biomass_res$intervals_all_years$year,
-      relative_biomass_res$intervals_all_years$`2.5`,
-      col = "blue")
-lines(relative_biomass_res$intervals_all_years$year,
-      relative_biomass_res$intervals_all_years$hdi_lower,
-      col = "red")
-
-lines(relative_biomass_res$intervals_all_years$year,
-      relative_biomass_res$intervals_all_years$`97.5`,
-      col = "blue")
-lines(relative_biomass_res$intervals_all_years$year,
-      relative_biomass_res$intervals_all_years$hdi_upper,
-      col = "red")
-
-abline(h = c(0.4))
+plot_series(relative_biomass_res$intervals_all_years,
+            y_max = 2.6,
+            xlim = c(2010, 2027),
+            add_line_at_0.4 = TRUE,
+            inc = 0.05,
+            leg_loc = "topleft",
+            ylab = "Relative spawning biomass")
 ```
 
 For which years is the lower equal-tailed interval above 0.4 but the lower HDI
@@ -514,9 +514,6 @@ filter(relative_biomass_res$intervals_all_years,
        hdi_lower < 0.4)
 ```
 
-So, not too important for historical trajectory. Will focus on, say, last 10
-years, and do two years of projections (TODO Andy get the full MCMC projection
-results).
 
 ## Now do recruitment
 

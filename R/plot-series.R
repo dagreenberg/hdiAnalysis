@@ -53,6 +53,7 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
                         cex_val = 0.8,   # Size of points for medians
                         inset = c(0, 0), #c(0.1,-0.02),   # For shifting legend
                         add_legend = TRUE,
+                        leg_loc = "topright",
                         ...
                                    ){
 # pacea was this:
@@ -160,7 +161,7 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
        tcl = -0.2)
 
   if(add_legend){
-    legend("topright",
+    legend(leg_loc,
            legend = c("Equal-tailed interval",
                       "Highest density interval"),
            lty = 1,
