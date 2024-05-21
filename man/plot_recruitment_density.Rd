@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-recruitment-density.R
 \name{plot_recruitment_density}
 \alias{plot_recruitment_density}
-\title{Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified}
+\title{DEPRECATED I think for plot-density (so more generic). Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified}
 \usage{
 plot_recruitment_density(
   dat_mcmc = hake_recruitment_mcmc,
@@ -31,7 +31,7 @@ if not supplied. May be worth supplying so it's not being repeatedly calculated.
 invisible
 }
 \description{
-Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
+DEPRECATED I think for plot-density (so more generic). Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
 }
 \examples{
 \dontrun{

@@ -5,7 +5,14 @@
 \title{For a vector of values, calculate the equal and HDI intervals and the kernel
 density with corresponding equal and HDI intervals}
 \usage{
-calc_density(dat_mcmc, intervals = NULL)
+calc_density(dat_mcmc, intervals = NULL, density = TRUE, ...)
+}
+\arguments{
+\item{density}{if TRUE (the default) then use the density approach for the HDI
+calculation, rather than the \code{hdi()} default of just the sample values.}
+
+\item{...}{arguments to pass to \code{create_intervals_density()}, that then get
+passed onto \code{density()}}
 }
 \description{
 For a vector of values, calculate the equal and HDI intervals and the kernel
@@ -13,7 +20,7 @@ density with corresponding equal and HDI intervals
 }
 \examples{
 \dontrun{
-one_year_mcmc <- pull(hake_recruitment_mcmc, 2021)
+one_year_mcmc <- dplyr::pull(hake_recruitment_mcmc, `2021`)
 calc_density(one_year_mcmc)
 }
 }

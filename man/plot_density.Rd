@@ -17,8 +17,7 @@ plot_density(
 )
 }
 \arguments{
-\item{dat_mcmc}{a tibble where each row represents an MCMC sample, and each
-column is a quantity which we want to summarise with credible intervals.}
+\item{dat_mcmc}{a numeric vector representing an MCMC sample.}
 
 \item{year}{Which year of recruitment (age-0) to plot}
 
