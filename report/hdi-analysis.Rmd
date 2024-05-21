@@ -529,28 +529,11 @@ recruitment_intervals
 recruitment_intervals$width_diff
 sum(recruitment_intervals$width_diff)
 ```
-Very quick plot, can adapt the usual recruitment style:
-```{r recquickplot}
-plot(recruitment_intervals$year,
-     recruitment_intervals$median,
-     type = "o",
-     ylim = c(0, 30),
-     xlab = "Year",
-     ylab = "Recruitment")
-lines(recruitment_intervals$year,
-      recruitment_intervals$`2.5`,
-      col = "blue")
-lines(recruitment_intervals$year,
-      recruitment_intervals$hdi_lower,
-      col = "red")
 
-lines(recruitment_intervals$year,
-      recruitment_intervals$`97.5`,
-      col = "blue")
-lines(recruitment_intervals$year,
-      recruitment_intervals$hdi_upper,
-      col = "red")
+Have written a function for these:
+```{r recseries}
+plot_series(recruitment_intervals)
 ```
 
 There were some warnings, and some of the `hdi_lower` come out negative. TODO
-look into those. Hmmm......
+look into those. Hmmm...... Try changing `density()` option `from`.

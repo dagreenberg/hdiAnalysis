@@ -48,7 +48,7 @@ expect_equal(hake_mcmc["R_Virgin", ],
 
 hake_recruitment_mcmc <- dplyr::select(hake_mcmc,
                                        "R_Virgin",
-                                       "R_1966":"R_2027")
+                                       "R_1966":"R_2024")
 
 names(hake_recruitment_mcmc) <- gsub(pattern = "R_",
                                      replacement = "",
@@ -130,7 +130,7 @@ keep
 # Copying from above to just have recruitment, need 14_long
 hake_recruitment_mcmc_14_long <- dplyr::select(keep,
                                                "R_Virgin",
-                                               "R_1966":"R_2027")
+                                               "R_1966":"R_2024")
 
 names(hake_recruitment_mcmc_14_long) <- gsub(pattern = "R_",
                                              replacement = "",
