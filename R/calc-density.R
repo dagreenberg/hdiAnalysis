@@ -6,7 +6,8 @@
 ##' @param density if TRUE (the default) then use the density approach for the HDI
 ##'   calculation, rather than the `hdi()` default of just the sample values.
 ##' @param ... arguments to pass to `create_intervals_density()`, that then get
-##'   passed onto `density()`
+##'   passed onto `density()` TODO check as also have directly to `density()`
+##'   now, seems to be okay?
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
@@ -30,7 +31,8 @@ calc_density <- function(dat_mcmc,
 
   }
 
-  dens <- density(dat_mcmc)       # Gives values with equal spacing, so high
+  dens <- density(dat_mcmc,
+                  ...)       # Gives values with equal spacing, so high
                                   # resolution in the tail which has sparse data
 
 

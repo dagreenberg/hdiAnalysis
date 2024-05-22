@@ -60,6 +60,15 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
      y_interval_high <- dens_intervals$intervals$y_high_hdi_interp
   }
 
+  # If low end of interval is 0 then its corresponding y value is >0, and so
+  # need to add a 0,0 point to make the polygons work (since they draw
+  # a line back to the first point, which worked fine for low end !=
+  # 0). Actually, may as well always include (0,0), which creates a hard
+  # vertical line at 0 if HDI y value is >0.
+
+  dens$x <- c(0, dens$x)
+  dens$y <- c(0, dens$y)
+
   plot(dens,
        xlab = x_lab,
        lwd = 2,

@@ -35,7 +35,8 @@ calc_density_many_years <- function(dat_mcmc,
                                         # useful for sample size analysis
 
     res <- calc_density(this_year_mcmc,
-                        n = 1e5)
+                        n = 1e5,
+                        ...)
 
     res_all_years[[i]] <- res
     res_all_years[[i]]$year <- this_year

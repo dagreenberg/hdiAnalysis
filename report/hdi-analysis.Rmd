@@ -26,6 +26,9 @@ library(devtools)
 load_all()
 ```
 
+Some of the early figures (in particular) may not match the text, as we did
+change the defaults once we had figured some things out.
+
 Had originally (in 2022) tried making histograms as they avoid smoothing, but fiddly and best
 not to, as don't demonstrate the issue as clearly as I'd thought, because of the
 first bins in the tails not being the same height (because they are bins); see
@@ -426,6 +429,8 @@ accurate HDI. We were still getting the original issue with higher $n$.
 
 ## Original 2021 data set, with higher $n$ to then calculate the density
 
+Also adding on the green lines that we had earlier, representing the density
+x-values of (I think) the left endpoint of the bin that contains the HDI endpoints:
 ```{r highn}
 head(one_year_mcmc_sort)
 tail(one_year_mcmc_sort)
@@ -434,7 +439,16 @@ res_high_n <- calc_density(one_year_mcmc_sort, n = 1e5)
 res_high_n$intervals %>% a()
 plot_density(one_year_mcmc_sort,
              dens_intervals = res_high_n)
+
+abline(v = res_high_n$dens$x[res_high_n$intervals$i_high_hdi])
+abline(v = res_high_n$dens$x[res_high_n$intervals$i_high_hdi-1], col="green")
+abline(v = res_high_n$dens$x[res_high_n$intervals$i_low_hdi-1], col="green")
+abline(v = res_high_n$dens$x[res_high_n$intervals$i_low_hdi], col="black")
 ```
+
+Great. With the better resolution the green and black lines are on top of each
+other, indicating a more accurate HDI than earlier. So, we can indeed drop the
+`i_high_hdi` values in future (or at least not look at them in detail).
 
 ## Longer 32,000 chain
 
@@ -533,8 +547,74 @@ Have written a function for these:
 plot_series(recruitment_intervals)
 ```
 
-There were some warnings, and some of the `hdi_lower` come out negative. TODO
-look into those. Hmmm...... Try changing `density()` option `from`.
+There were some warnings, and some of the `hdi_lower` come out negative. Try
+changing `density()` option `from`, it should just get passed through the functions:
+
+```{r recfrom}
+recruitment_res_from <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
+                                                              -"Virgin"),
+                                                from = 0)
+recruitment_intervals_from <- recruitment_res_from$intervals_all_years
+recruitment_intervals_from
+recruitment_intervals_from$width_diff
+sum(recruitment_intervals_from$width_diff)
+```
+Now get three warnings about the HDI being discontinuous (had two without the
+from option, so that didn't fix it and we should investigate individual years).
+
+How does the plot look:
+```{r recseriesfrom}
+plot_series(recruitment_intervals_from, main = "With from = 0")
+```
+
+## Look at specific years
+
+TODO HERE This works now, just make a function to loop through all years and
+make a big plot.
+
+This is a start, need to specify the correct data though, and maybe make a
+function. See next section, these both don't work if HDI includes 0.
+```{r specyears}
+this_year <- 1966
+
+dens_intervals_this_year <- recruitment_res_from$res_all_years[[1]] # TODO
+                                        # automate.
+hake_recruitment_this_year <- pull(select(hake_recruitment_mcmc, -"Virgin"),
+                                   '1966')
+plot_density(hake_recruitment_this_year,
+  dens_intervals_this_year)
+```
+
+### Just try one year to get it working - can delete once done above.
+
+This code works for year being 2021, but not 1966 or 1969 (which has HDI to
+0). Works for 1970 (HDI not to 0). So need to dig into `plot_density()`.
+
+```{r onefrom}
+one_year_mcmc_1966 <- pull(hake_recruitment_mcmc,
+                           `1966`)    # Full 8000 MCMC samples for that year
+
+one_year_res_1966 <- calc_density(one_year_mcmc_1966,
+                                  from = 0,
+                                  n = 1e5)
+one_year_res_1966
+one_year_res_1966$intervals %>% a()
+plot_density(dat_mcmc = one_year_mcmc_1966,
+             dens_intervals = one_year_res_1966)
+```
+
+Aha, the issue is the first y value (at x=0) is not 0 (is actually quite high),
+and so that messes up the polygons:
+```{r onefromvals}
+head(one_year_res_1966$density$x)
+head(one_year_res_1966$density$y)
+```
+and just plotting the density shows this (and it's not just minor):
+```{r onefromdens}
+plot(one_year_res_1966$density, main = "Recruitment in 1966")
+```
+
+
 
 
 ## How do recruitment in 2021 (as used earlier) intervals change with number
