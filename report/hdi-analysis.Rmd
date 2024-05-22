@@ -476,8 +476,9 @@ plot_density(current_relative_biomass_mcmc_sort,
 ## Now do all years for relative spawning biomass
 
 Do for all years with new function:
+TODO - if going to stick with this forecast, just add it to the data object:
+
 ```{r allyears}
-# TODO - if going to stick with this forecast, just add it to the data object:
 hake_relative_with_forecast <- cbind(hake_relative_biomass_mcmc,
                                        hake_relative_biomass_mcmc_forecast)
 relative_biomass_res <- calc_density_many_years(hake_relative_with_forecast)  # n=1e5 is hardwired
@@ -514,8 +515,8 @@ filter(relative_biomass_res$intervals_all_years,
        hdi_lower < 0.4)
 ```
 
-
 ## Now do recruitment
+
 
 ```{r recallyears}
 recruitment_res <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
@@ -534,3 +535,67 @@ plot_series(recruitment_intervals)
 
 There were some warnings, and some of the `hdi_lower` come out negative. TODO
 look into those. Hmmm...... Try changing `density()` option `from`.
+
+
+## How do recruitment in 2021 (as used earlier) intervals change with number
+of MCMC samples?
+
+Just want to have a quick look, can do more extensive analysis in manuscript
+with hake colleagues. But no need to use different chains, just use the existing
+8,000 and only look at the first 1000, 2000, etc. samples. Hopefully our density
+approach gets round the issue of smaller sample size. 1000 is likely
+unrealistically small anyway.
+
+```{r recsmall}
+length(one_year_mcmc)
+head(one_year_mcmc)     # original MCMC chain, not sorted
+
+# Can use calc_density_many_years() again, kind of fudging the years to be
+# sample sizes. May just have to adapt it to deal with the different lengths of
+# each year's sample
+one_year_different_samples <- as.data.frame(one_year_mcmc)
+# Just double the size each time
+for(i in 1:3){
+  one_year_different_samples <- cbind(one_year_different_samples,
+                                      one_year_different_samples)
+}
+
+sample_sizes <- seq(1000,
+                    8000,
+                    by = 1000)
+names(one_year_different_samples) <- sample_sizes
+head(one_year_different_samples)
+
+# Now replace shorter chains with NA's where appropriate:
+for(i in 1:(length(sample_sizes)-1)){
+  one_year_different_samples[(sample_sizes[i]+1):8000, i] <- NA
+}
+one_year_different_samples <- as_tibble(one_year_different_samples)
+one_year_different_samples
+one_year_different_samples[4998:5003, ]
+```
+
+Now just pretend the sample size column names are year:
+
+```{r oneyearcalcs}
+one_year_samples_res <- calc_density_many_years(one_year_different_samples)
+one_year_samples_res$intervals_all_years
+```
+
+Now can just plot again, this is for 2021 recruitments only:
+```{r recseries2}
+plot_series(one_year_samples_res$intervals_all_years,
+            inc = 20,
+            join_intervals = TRUE,
+            xlab = "Number of MCMC samples")
+```
+
+How do the numbers look:
+```{r recnumbers2}
+select(one_year_samples_res$intervals_all_years, year, `2.5`, `97.5`,
+       width_equal, hdi_lower, hdi_upper, width_hdi)
+```
+
+So not overly drastic. And encouraging that HDI seems fairly consistent (for
+this one example) until get the smallest sample sizes. ETI looks to bounce
+around a bit more. TODO could join ends of the intervals up for this example to see.

@@ -54,6 +54,8 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
                         inset = c(0, 0), #c(0.1,-0.02),   # For shifting legend
                         add_legend = TRUE,
                         leg_loc = "topright",
+                        join_intervals = FALSE, # join up the ends of the
+                                        # intervals, useful for sample size plot
                         ...
                                    ){
 # pacea was this:
@@ -118,6 +120,28 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
          cex = cex_val)         # plot points again to be on top of bars
 
   # abline(h = 0, col = "lightgrey")
+
+  if(join_intervals){
+    lines(eti_year,
+          obj$`2.5`,
+          col = eti_bar_col,
+          lty = 2)
+
+    lines(eti_year,
+          obj$`97.5`,
+          col = eti_bar_col,
+          lty = 2)
+
+    lines(hdi_year,
+          obj$hdi_lower,
+          col = hdi_bar_col,
+          lty = 2)
+
+    lines(hdi_year,
+          obj$hdi_upper,
+          col = hdi_bar_col,
+          lty = 2)
+  }
 
   # For relative biomass plots
   if(add_line_at_0.4){

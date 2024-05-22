@@ -31,6 +31,9 @@ calc_density_many_years <- function(dat_mcmc,
     this_year_mcmc <- pull(dat_mcmc,
                            as.character(this_year))    # Full MCMC samples for that year
 
+    this_year_mcmc <- this_year_mcmc[!is.na(this_year_mcmc)]  # Remove NA's,
+                                        # useful for sample size analysis
+
     res <- calc_density(this_year_mcmc,
                         n = 1e5)
 
