@@ -22,8 +22,10 @@
 ##' rec_intervals <- create_intervals(dplyr::pull(hake_recruitment_mcmc, "2021")
 ##' }
 create_intervals_density <- function(dat,
+                                     from = 0,
                                      ...){
   dens <- density(dat,
+                  from = from,
                   ...)
   hdi_res <- HDInterval::hdi(dens)
   res <- tibble("median" = median(dat),

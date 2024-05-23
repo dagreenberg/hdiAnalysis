@@ -19,6 +19,7 @@
 calc_density <- function(dat_mcmc,
                          intervals = NULL,
                          density = TRUE,
+                         from = 0,
                          ...
                          ){
   if(is.null(intervals)){
@@ -32,6 +33,7 @@ calc_density <- function(dat_mcmc,
   }
 
   dens <- density(dat_mcmc,
+                  from = from,
                   ...)       # Gives values with equal spacing, so high
                                   # resolution in the tail which has sparse data
 

@@ -150,7 +150,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   y_arrow,
                   interval_low,
                   y_arrow,
-                  code = 2,
+                  code = 3,
                   col = col_tail,
                   arr.type="triangle",
                   arr.adj = 1)
