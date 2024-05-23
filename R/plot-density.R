@@ -13,6 +13,9 @@
 ##' @param rug_bottom logical whether to show rug at the bottom for the raw data values
 ##' @param interval_arrows logical whether to show arrows depicting intervals
 ##' @param y_arrow value on y-axis to show the arrows depicting intervals
+##' @param col_bars colour of the bars showing regions A and B
+##' @param bars_multiplier numeric multiplier, so nudge the bars higher (value of
+##'   1.0 puts them exactly at the height of the right-hand end of low credible interval)
 ##' @param ... arguments to pass onto `plot()`
 ##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
 ##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
@@ -29,7 +32,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                          year = 2021,
                          type = "hdi",
                          x_lim = c(0, 40),  # default for 2010
-                         col_main = "yellow3",  # worse than blue!
+                         col_main = "blue3",
                          col_tail = "red",
                          main_title = NULL,
                          x_lab = NULL,
@@ -37,7 +40,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                          rug_bottom = FALSE,
                          interval_arrows = FALSE,
                          y_arrow = 0.095,
-
+                         col_bars = "darkgreen",
+                         bars_multiplier = 1.25,
                          ...){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
@@ -88,7 +92,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
 
   plot(dens,
        xlab = x_lab,
-       lwd = 2,
+       lwd = 3,
        xlim = x_lim,
        main = main_title,
        ...)
@@ -127,12 +131,14 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
 
   if(interval_arrows){
     # 95% interval
-    arrows(interval_low,
-           y_arrow,
-           interval_high,
-           y_arrow,
-           code = 3,
-           col = col_main)
+    shape::Arrows(interval_low,
+                  y_arrow,
+                  interval_high,
+                  y_arrow,
+                  code = 3,
+                  col = col_main,
+                  arr.type="triangle",
+                  arr.adj = 1)
     text(mean(c(interval_low, interval_high)),
          y_arrow,
          "95%",
@@ -140,19 +146,23 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
          pos = 3
          )
     # Left-hand tail
-    arrows(0,
-           y_arrow,
-           interval_low,
-           y_arrow,
-           code = 2,
-           col = col_tail)
+    shape::Arrows(0,
+                  y_arrow,
+                  interval_low,
+                  y_arrow,
+                  code = 2,
+                  col = col_tail,
+                  arr.type="triangle",
+                  arr.adj = 1)
     # Right-hand tail
-    arrows(interval_high,
-           y_arrow,
-           par("usr")[2],
-           y_arrow,
-           code = 1,
-           col = col_tail)
+    shape::Arrows(interval_high,
+                  y_arrow,
+                  par("usr")[2],
+                  y_arrow,
+                  code = 1,
+                  col = col_tail,
+                  arr.type="triangle",
+                  arr.adj = 1)
     # Annotate if ETI
     if(type == "equal"){
       text(interval_low/2,
@@ -166,22 +176,65 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
            col = col_tail,
            pos = 3)
     }
-
   }
 
   # Show included/exluded values for ETI
   if(type == "equal"){
-    # Right-hand bar: area of included values but as probable as some of lower
+
+  # Left-hand bar: area of excluded values but more probable than parts of upper
+  # tail. Right side of bar:
+  i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
+
+    shape::Arrows(
+#      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
+      dens$x[i_right_side],
+      y_interval_low * bars_multiplier,
+      interval_low,
+      y_interval_low * bars_multiplier,
+      lwd = 2,
+      code = 3,
+      col = col_bars,
+      arr.type="T",
+      arr.adj = 1)
+
+    text(mean(c(dens$x[i_right_side],
+                interval_low)),
+         y_interval_low * bars_multiplier,
+         "A",
+         col = col_bars,
+         pos = 3)
+
+  ## polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
+  ##          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
+  ##          col = col_excluded,
+  ##          border = NA,
+    ##          main = "")
+
+        # Right-hand bar: area of included values but as probable as some of lower
     # tail. Left side of bar:
     i_left_side <- max(which(dens$y > y_interval_low))
 
 
-    lines(c(dens$x[i_left_side + 1],
-            max(dens$x[dens$x > dens$x[i_left_side] & dens$x <=
-            interval_high])),  # TODO is that not just interval_high?
-      c(y_interval_low, y_interval_low), # need to generalise
-          lwd = 2,
-          col = "darkgreen") # need to generalise
+    shape::Arrows(dens$x[i_left_side + 1],
+                  y_interval_low * bars_multiplier,
+                  interval_high,
+                  #max(dens$x[dens$x > dens$x[i_left_side] & dens$x <=
+                  #           interval_high]),  # TODO is that not just interval_high?
+                  y_interval_low * bars_multiplier,
+                  lwd = 2,
+                  code = 3,
+                  col = col_bars,
+                  arr.type="T",
+                  arr.adj = 1)
+
+    text(mean(c(dens$x[i_left_side + 1],
+                interval_high)),
+         y_interval_low * bars_multiplier,
+         "B",
+         col = col_bars,
+         pos = 3)
+
+   # need to generalise
     # TODO Marie had +1 in first bit below, think about; might be because of
     # polygon not line - now added in above, it's to stop it crossing over main curve
 
@@ -194,23 +247,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
     ##       border = NA,
     ##       main = "")
 
-  # Left side: area of excluded values but more probable than parts of upper
-  # tail. Right side of bar:
-  i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
 
-    lines(c(
-#      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
-      dens$x[i_right_side],
-      interval_low),
-      c(y_interval_low, y_interval_low), # TODO genralise and col
-      lwd = 2,
-      col = "darkgreen")
-
-  ## polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
-  ##          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
-  ##          col = col_excluded,
-  ##          border = NA,
-  ##          main = "")
   }
 
 }
