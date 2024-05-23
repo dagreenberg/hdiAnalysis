@@ -56,6 +56,7 @@ one_year_mcmc_sort <- sort(one_year_mcmc)    # Useful later
 head(one_year_mcmc_sort)
 tail(one_year_mcmc_sort)
 summary(one_year_mcmc_sort)
+years <- names(hake_recruitment_mcmc)   # Characters, since first is "Virgin"
 ```
 
 NOTE: default for hdi method is now to use density not the moving window method.
@@ -531,11 +532,14 @@ filter(relative_biomass_res$intervals_all_years,
 
 ## Now do recruitment
 
-
 ```{r recallyears}
 recruitment_res <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
                                                           -"Virgin"))     # TODO
-                                                            # check if function can use it
+                                                            # check if function
+                                                            # can use it, gives
+                                                            # error so would
+                                                            # need fixing if
+                                                            # really need it
 recruitment_intervals <- recruitment_res$intervals_all_years
 recruitment_intervals
 recruitment_intervals$width_diff
@@ -585,34 +589,32 @@ plot_density(hake_recruitment_this_year,
   dens_intervals_this_year)
 ```
 
-### Just try one year to get it working - can delete once done above.
-
-This code works for year being 2021, but not 1966 or 1969 (which has HDI to
-0). Works for 1970 (HDI not to 0). So need to dig into `plot_density()`.
-
-```{r onefrom}
-one_year_mcmc_1966 <- pull(hake_recruitment_mcmc,
-                           `1966`)    # Full 8000 MCMC samples for that year
-
-one_year_res_1966 <- calc_density(one_year_mcmc_1966,
-                                  from = 0,
-                                  n = 1e5)
-one_year_res_1966
-one_year_res_1966$intervals %>% a()
-plot_density(dat_mcmc = one_year_mcmc_1966,
-             dens_intervals = one_year_res_1966)
+Do multiple years on one plot:
+```{r multyears, fig.height = 10}
+par(mfrow = c(4,3))
+plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
+                                        # tibble of data
+                      dens_intervals_years = recruitment_res_from,  # list
+                                        # object containing results for each year
+                      years = years[2:13])  # years to plot
 ```
 
-Aha, the issue is the first y value (at x=0) is not 0 (is actually quite high),
-and so that messes up the polygons:
-```{r onefromvals}
-head(one_year_res_1966$density$x)
-head(one_year_res_1966$density$y)
+And can just do the same but for ETI:
+```{r multyearseti, fig.height = 10}
+par(mfrow = c(4,3))
+plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
+                                        # tibble of data
+                      dens_intervals_years = recruitment_res_from,  # list
+                                        # object containing results for each year
+                      years = years[2:13],
+                      type = "equal")  # years to plot
 ```
-and just plotting the density shows this (and it's not just minor):
-```{r onefromdens}
-plot(one_year_res_1966$density, main = "Recruitment in 1966")
-```
+
+
+
+
+
+
 
 
 
