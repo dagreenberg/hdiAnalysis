@@ -8,6 +8,7 @@
 ##' @param col_main
 ##' @param col_tail
 ##' @param main_title
+##' @param main_title_include logical whether to include a main title
 ##' @param x_lab
 ##' @param rug_top logical whether to show rug at the top for the density values
 ##' @param rug_bottom logical whether to show rug at the bottom for the raw data values
@@ -35,13 +36,15 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                          col_main = "blue3",
                          col_tail = "red",
                          main_title = NULL,
+                         main_title_include = FALSE,
                          x_lab = NULL,
                          rug_top = FALSE,
                          rug_bottom = FALSE,
                          interval_arrows = FALSE,
                          y_arrow = 0.095,
+                         arrowhead_length = 0.2,
                          col_bars = "darkgreen",
-                         bars_multiplier = 1.25,
+                         bars_multiplier = 1.5,
                          ...){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
@@ -55,11 +58,11 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
   # Reorder Just use for title, maybe also low and high, actually prob not
   if(type == "equal"){
       if(is.null(main_title)) {
-      main_title <- "Equal-tailed 95% interval"
+        main_title <- "Equal-tailed interval"
     }
   } else { # type == "hdi"
     if(is.null(main_title)) {
-      main_title <- "HDI 95% interval"
+      main_title <- "Highest density interval"
     }
   }
 
@@ -94,7 +97,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
        xlab = x_lab,
        lwd = 3,
        xlim = x_lim,
-       main = main_title,
+       main = "",
        ...)
 # STILL need to think and CHECK EVERYTHING AGAIN
 
@@ -138,7 +141,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   code = 3,
                   col = col_main,
                   arr.type="triangle",
-                  arr.adj = 1)
+                  arr.adj = 1,
+                  arr.length = arrowhead_length)
     text(mean(c(interval_low, interval_high)),
          y_arrow,
          "95%",
@@ -153,7 +157,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   code = 3,
                   col = col_tail,
                   arr.type="triangle",
-                  arr.adj = 1)
+                  arr.adj = 1,
+                  arr.length = arrowhead_length)
     # Right-hand tail
     shape::Arrows(interval_high,
                   y_arrow,
@@ -162,7 +167,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   code = 1,
                   col = col_tail,
                   arr.type="triangle",
-                  arr.adj = 1)
+                  arr.adj = 1,
+                  arr.length = arrowhead_length)
     # Annotate if ETI
     if(type == "equal"){
       text(interval_low/2,
@@ -194,13 +200,14 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
       lwd = 2,
       code = 3,
       col = col_bars,
-      arr.type="T",
-      arr.adj = 1)
+      arr.type = "T",
+      arr.adj = 1,
+      arr.length = arrowhead_length/2)
 
     text(mean(c(dens$x[i_right_side],
                 interval_low)),
          y_interval_low * bars_multiplier,
-         "A",
+         "a",
          col = col_bars,
          pos = 3)
 
@@ -224,13 +231,14 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   lwd = 2,
                   code = 3,
                   col = col_bars,
-                  arr.type="T",
-                  arr.adj = 1)
+                  arr.type = "T",
+                  arr.adj = 1,
+                  arr.length = arrowhead_length/2)
 
     text(mean(c(dens$x[i_left_side + 1],
                 interval_high)),
          y_interval_low * bars_multiplier,
-         "B",
+         "b",
          col = col_bars,
          pos = 3)
 
