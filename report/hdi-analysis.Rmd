@@ -610,7 +610,32 @@ plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
                       type = "equal")  # years to plot
 ```
 
+More recent years:
 
+```{r multyears3, fig.height = 10}
+par(mfrow = c(4,3))
+plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
+                                        # tibble of data
+                      dens_intervals_years = recruitment_res_from,  # list
+                                        # object containing results for each year
+                      years = as.character(2013:2024))  # years to plot
+```
+
+ETI:
+```{r multyears4, fig.height = 10}
+par(mfrow = c(4,3))
+plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
+                                        # tibble of data
+                      dens_intervals_years = recruitment_res_from,  # list
+                                        # object containing results for each year
+                      years = as.character(2013:2024),
+                      type = "equal",
+                      col_main = "lightgrey",
+                      col_tail = "red")
+```
+
+HERE: TODO next - add rug option in `plot_density()` to make optional, play with
+colours.
 
 
 
