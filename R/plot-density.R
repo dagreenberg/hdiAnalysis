@@ -29,7 +29,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                          year = 2021,
                          type = "hdi",
                          x_lim = c(0, 40),  # default for 2010
-                         col_main = "lightgoldenrod1",
+                         col_main = "yellow3",  # worse than blue!
                          col_tail = "red",
                          main_title = NULL,
                          x_lab = NULL,
@@ -167,6 +167,50 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
            pos = 3)
     }
 
+  }
+
+  # Show included/exluded values for ETI
+  if(type == "equal"){
+    # Right-hand bar: area of included values but as probable as some of lower
+    # tail. Left side of bar:
+    i_left_side <- max(which(dens$y > y_interval_low))
+
+
+    lines(c(dens$x[i_left_side],
+            max(dens$x[dens$x > dens$x[i_left_side] & dens$x <=
+            interval_high])),  # TODO is that not just interval_high?
+          c(0.09, 0.09), # need to generalise
+          lwd = 2,
+          col = "darkgreen") # need to generalise
+    # TODO Marie had +1 in first bit below, think about; might be because of
+    # polygon not line
+
+    ## polygon(c(dens$x[i_left_side+1], dens$x[dens$x > dens$x[i_left_side] &
+    ##       dens$x <= interval_high], interval_high, interval_high,
+    ##       dens$x[i_left_side+1]),
+    ##       c(dens$y[i_left_side +1], dens$y[dens$x > dens$x[i_left_side] & dens$x
+    ##       <= interval_high], y_interval_high, 0, 0),
+    ##       col = col_included,
+    ##       border = NA,
+    ##       main = "")
+
+  # Left side: area of excluded values but more probable than parts of upper
+  # tail. Right side of bar:
+  i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
+
+    lines(c(
+#      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
+      dens$x[i_right_side],
+      interval_low),
+      c(0.09, 0.09), # TODO genralise and col
+      lwd = 2,
+      col = "darkgreen")
+
+  ## polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
+  ##          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
+  ##          col = col_excluded,
+  ##          border = NA,
+  ##          main = "")
   }
 
 }

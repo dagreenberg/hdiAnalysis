@@ -71,9 +71,6 @@ plot_density(year = 2021, type = "hdi")
 ```
 
 
-
-TO DO: add arrows with equal-atil to explain 2.5%, add 95%, and line to hdi
-
 ```{r rec, fig.width = 8, fig.height= 8}
 par(mfrow = c(2,1))
 # Equal probability 95% with regions
@@ -637,14 +634,20 @@ plot_density_multiple(dat_mcmc_years = hake_recruitment_mcmc,       # original
 #               "#F0E442","#0072B2","#D55E00","#CC79A7")
 ```
 
-HERE: TODO next - add rug option in `plot_density()` to make optional, play with
-colours.
 
+## Messing around with arrows and bars
 
+HERE: carry on adding arrows (play with options, maybe see grid package arrow
+function, can add bar ends) and bars to plot, label the bars A and B, as Marie
+was suggesting:
 
-
-
-
+Hardwiring some things to try an tailor the first figure.
+```{r arrowsbars}
+plot_density(year = 2021,
+             type = "equal",
+             ylim = c(0, 0.1),
+             interval_arrows = TRUE)
+```
 
 
 ## How do recruitment in 2021 (as used earlier) intervals change with number
