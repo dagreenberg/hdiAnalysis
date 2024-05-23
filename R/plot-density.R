@@ -1,10 +1,21 @@
 ##' Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
 ##'
 ##' @param dat_mcmc a numeric vector representing an MCMC sample.
-##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
-##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
+##' @param dens_intervals
 ##' @param year Which year of recruitment (age-0) to plot
 ##' @param type type of intervals: either `hdi` or `equal`
+##' @param x_lim
+##' @param col_main
+##' @param col_tail
+##' @param main_title
+##' @param x_lab
+##' @param rug_top logical whether to show rug at the top for the density values
+##' @param rug_bottom logical whether to show rug at the bottom for the raw data values
+##' @param interval_arrows logical whether to show arrows depicting intervals
+##' @param y_arrow value on y-axis to show the arrows depicting intervals
+##' @param ... arguments to pass onto `plot()`
+##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
+##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
 ##' @return invisible
 ##' @export
 ##' @author Andrew Edwards
@@ -18,10 +29,16 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                          year = 2021,
                          type = "hdi",
                          x_lim = c(0, 40),  # default for 2010
-                         col_main = "red",
-                         col_tail = "blue",
+                         col_main = "lightgoldenrod1",
+                         col_tail = "red",
                          main_title = NULL,
-                         x_lab = NULL){
+                         x_lab = NULL,
+                         rug_top = FALSE,
+                         rug_bottom = FALSE,
+                         interval_arrows = FALSE,
+                         y_arrow = 0.095,
+
+                         ...){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
@@ -73,7 +90,8 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
        xlab = x_lab,
        lwd = 2,
        xlim = x_lim,
-       main = main_title)
+       main = main_title,
+       ...)
 # STILL need to think and CHECK EVERYTHING AGAIN
 
   # Full distribution
@@ -96,17 +114,59 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
           main = "")
 
   # Make an if once figured out:
-  abline(h = y_interval_low)
+  # abline(h = y_interval_low)
 
-  rug(dens$x, side=3)
-  rug(dat_mcmc)
+  if(rug_top){
+    rug(dens$x,
+        side=3)
+  }
 
-  # Prob remove this once fixed, just easier to debug with values in
-#  return(list(dens = dens,
-#              low = low,
-#               high = high,
-#               i_low = i_low,
-#               y_low = y_low,
-#               i_high = i_high,
-#               y_high = y_high))
+  if(rug_bottom){
+    rug(dat_mcmc)
+  }
+
+  if(interval_arrows){
+    # 95% interval
+    arrows(interval_low,
+           y_arrow,
+           interval_high,
+           y_arrow,
+           code = 3,
+           col = col_main)
+    text(mean(c(interval_low, interval_high)),
+         y_arrow,
+         "95%",
+         col = col_main,
+         pos = 3
+         )
+    # Left-hand tail
+    arrows(0,
+           y_arrow,
+           interval_low,
+           y_arrow,
+           code = 2,
+           col = col_tail)
+    # Right-hand tail
+    arrows(interval_high,
+           y_arrow,
+           par("usr")[2],
+           y_arrow,
+           code = 1,
+           col = col_tail)
+    # Annotate if ETI
+    if(type == "equal"){
+      text(interval_low/2,
+           y_arrow,
+           "2.5%",
+           col = col_tail,
+           pos = 3)
+      text(mean(c(interval_high, par("usr")[2])),
+           y_arrow,
+           "2.5%",
+           col = col_tail,
+           pos = 3)
+    }
+
+  }
+
 }
