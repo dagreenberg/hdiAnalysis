@@ -4,7 +4,7 @@
 \alias{create_intervals_density}
 \title{Create credible intervals from a numeric vector using the density approach}
 \usage{
-create_intervals_density(dat, ...)
+create_intervals_density(dat, from = 0, ...)
 }
 \arguments{
 \item{dat}{a numeric vector consisting of MCMC samples that we want to
