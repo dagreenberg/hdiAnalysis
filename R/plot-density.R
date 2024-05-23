@@ -176,14 +176,14 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
     i_left_side <- max(which(dens$y > y_interval_low))
 
 
-    lines(c(dens$x[i_left_side],
+    lines(c(dens$x[i_left_side + 1],
             max(dens$x[dens$x > dens$x[i_left_side] & dens$x <=
             interval_high])),  # TODO is that not just interval_high?
-          c(0.09, 0.09), # need to generalise
+      c(y_interval_low, y_interval_low), # need to generalise
           lwd = 2,
           col = "darkgreen") # need to generalise
     # TODO Marie had +1 in first bit below, think about; might be because of
-    # polygon not line
+    # polygon not line - now added in above, it's to stop it crossing over main curve
 
     ## polygon(c(dens$x[i_left_side+1], dens$x[dens$x > dens$x[i_left_side] &
     ##       dens$x <= interval_high], interval_high, interval_high,
@@ -202,7 +202,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
 #      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
       dens$x[i_right_side],
       interval_low),
-      c(0.09, 0.09), # TODO genralise and col
+      c(y_interval_low, y_interval_low), # TODO genralise and col
       lwd = 2,
       col = "darkgreen")
 
