@@ -46,7 +46,7 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
                         y_max = 35,          # default for recruitment
                         add_line_at_0.4 = FALSE,
                         add_line_at_0.4_col = "darkgreen",
-                        add_line_at_0.4_lty = 2,
+                        add_line_at_0.4_lty = 5,
                         y_tick_start = 0,
                         y_tick_end = NULL,
                         y_tick_by = 1,
@@ -56,6 +56,7 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
                         leg_loc = "topright",
                         join_intervals = FALSE, # join up the ends of the
                                         # intervals, useful for sample size plot
+                        arrowhead_length = 0.15,
                         ...
                                    ){
 # pacea was this:
@@ -148,6 +149,27 @@ plot_series <- function(obj,   # the $intervals_all_years output from calc_densi
     abline(h = 0.4,
            col = add_line_at_0.4_col,
            lty = add_line_at_0.4_lty)
+    # Also denote 'now' and 'projections', likely only want if adding the line
+    # (implying relative spawning biomass plots; TODO should generalise).
+    text(2024,
+         0.07,
+         "Now")
+         # adj = c(0.5, 1))
+#         pos = 4)
+    shape::Arrows(2025,
+                  -0.05,
+                  2027.5,
+                  -0.05,
+                  lwd = 1,
+                  code = 2,
+                  col = "black",,
+                  arr.type = "triangle",
+                  arr.adj = 1,
+                  arr.length = arrowhead_length)
+    text(2024.7,
+         0.05,
+         "Projections",
+         pos = 4)
   }
 
 

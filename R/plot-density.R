@@ -140,7 +140,7 @@ plot_density <- function(dat_mcmc = one_year_mcmc,
                   y_arrow,
                   code = 3,
                   col = col_main,
-                  arr.type="triangle",
+                  arr.type = "triangle",
                   arr.adj = 1,
                   arr.length = arrowhead_length)
     text(mean(c(interval_low, interval_high)),

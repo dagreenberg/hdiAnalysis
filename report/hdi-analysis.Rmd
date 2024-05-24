@@ -539,17 +539,63 @@ recruitment_res <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
                                                             # really need it
 recruitment_intervals <- recruitment_res$intervals_all_years
 recruitment_intervals
+select(recruitment_intervals,
+       year, `2.5`, `97.5`, `hdi_lower`, `hdi_upper`, `width_diff`) %>% a()
 recruitment_intervals$width_diff
 sum(recruitment_intervals$width_diff)
 ```
-
 Have written a function for these:
 ```{r recseries}
 plot_series(recruitment_intervals)
 ```
 
+And years for which the HDI includes zero is
+```{r hdi0}
+years_recruitment_hdi_0 <- filter(recruitment_intervals,
+                                  hdi_lower == 0) %>%
+  select(year, `2.5`, `97.5`, `hdi_lower`, `hdi_upper`, `width_diff`) %>% a()
+years_recruitment_hdi_0
+nrow(years_recruitment_hdi_0)
+```
+So `r nrow(years_recruitment_hdi_0)` in all.
+
+Check that no `hdi_upper` values are below `2.5` (doubtful, but worth checking):
+```{r checkbelow}
+filter(recruitment_intervals,
+       hdi_upper < `2.5`)
+```
+
+Blow up the y-axis:
+Have written a function for these:
+```{r recseries}
+plot_series(recruitment_intervals,
+            y_max = 2)
+```
+
+From the above, interesting years to show in manuscript look to be 2019, 2021,
+and relative biomass in 2024 and 2025.
+
+```{r toshow}
+filter(recruitment_intervals,
+       year %in% c(2019, 2021)) %>%
+  select(year, `2.5`, `97.5`, `hdi_lower`, `hdi_upper`, `width_diff`) %>%
+  a()
+```
+And biomass:
+```{r biomassshow}
+filter(relative_biomass_res$intervals_all_years,
+       year %in% c(2024, 2025)) %>%
+  select(year, `2.5`, `97.5`, `hdi_lower`, `hdi_upper`, `width_diff`) %>%
+  a()
+
+```
+
+
+
 There were some warnings, and some of the `hdi_lower` come out negative. Try
-changing `density()` option `from`, it should just get passed through the functions:
+changing `density()` option `from`, it should just get passed through the
+functions:  [NOW included in default, so numbers above should match and can
+delete this part TODO]
 
 ```{r recfrom}
 recruitment_res_from <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
@@ -703,9 +749,9 @@ around a bit more. TODO could join ends of the intervals up for this example to 
 ## Tailoring figure 1
 
 Have added arrows and bars. Now tailor for our Figure 1 for 2021 recruitment
-(the default)
+(the default), just run this function (makes a pdf file of the right size, so not evaluating here
+or showing resulting figure)
 
-```{r figure1}
-
-
+```{r figure1, eval = FALSE}
+figure_1()
 ```
