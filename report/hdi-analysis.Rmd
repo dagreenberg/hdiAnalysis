@@ -567,7 +567,7 @@ filter(recruitment_intervals,
 
 Blow up the y-axis:
 Have written a function for these:
-```{r recseries}
+```{r recseries77}
 plot_series(recruitment_intervals,
             y_max = 2)
 ```
@@ -755,3 +755,77 @@ or showing resulting figure)
 ```{r figure1, eval = FALSE}
 figure_1()
 ```
+
+## Friday 24th May Zoom call
+
+### What is the red line for HDI's of 0
+
+Seems to be because I added in the (0,0) to create the polygons, so need to
+tweak code to fix that because HDI includes 0; so no red tail on the left-hand
+side. TODO.
+
+### Is the 0 an artifact of the density function?
+
+We dug into the issue of recruitment HDI including 0. Is it an artifact of the
+density.
+
+Marie suggested changing `adjust` in `density()`, which multiplies the default
+bandwith. Just picked 1966 as HDI hits 0.
+
+```{r default1966}
+one_year_mcmc_1966 <- pull(hake_recruitment_mcmc,
+                           as.character(1966))
+res_1966 <- calc_density(one_year_mcmc_1966)
+res_1966
+
+plot_density(one_year_mcmc_1966,
+             res_1966)
+
+head(res_1966$density$x, 10)
+head(res_1966$density$y, 10)
+head(sort(one_year_mcmc_1966), 10)
+```
+
+
+```{r adjust1966}
+res_1966_adjust <- calc_density(one_year_mcmc_1966, adjust = 0.01)
+res_1966_adjust
+
+plot_density(one_year_mcmc_1966,
+             res_1966_adjust)
+
+head(res_1966_adjust$density$x, 10)
+head(res_1966_adjust$density$y, 10)
+head(sort(one_year_mcmc_1966), 10)
+```
+
+Super jagged because the bandwith is so fine (the normals approximating points
+are very narrow)
+
+Try increasing $n$, shouldn't make a difference (TODO check):
+```{r res1996n}
+res_1966_n <- calc_density(one_year_mcmc_1966, n=1e06)
+plot_density(one_year_mcmc_1966,
+             res_1966_n)
+
+head(res_1966_n$density$x, 10)
+head(res_1966_n$density$y, 10)
+sum(res_1966$density$x < 0.00613024)
+```
+
+And then try changing adjust to 0.5 but n high still:
+```{r res1996adjustn}
+res_1966_n_adjust <- calc_density(one_year_mcmc_1966, n=1e06, adjust = 0.5)
+plot_density(one_year_mcmc_1966,
+             res_1966_n_adjust)
+
+head(res_1966_n_adjust$density$x, 10)
+head(res_1966_n_adjust$density$y, 10)
+sum(res_1966$density$x < 0.00613024)
+```
+
+TODO look at and summarise. Should fix the 0 issue with plotting first of all.
+
+Could try all years with bandwidth at 0.5. TODO (for Methods, want to try some
+things). Could start HDI at $>0$ if necessary, but ideally don't want to start
+doing that.
