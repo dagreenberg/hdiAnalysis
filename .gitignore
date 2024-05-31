@@ -5,7 +5,10 @@
 data-raw/hake-2024/*
 
 report/hake-lengths-wrangling-2.Rmd
-report/hdi-notes.pdf
+report/*.pdf
+report/*.eps
+
+data/hake_recruitment_mcmc_14_long.rda
 
 *.Rproj
 /report/figure-1.pdf
