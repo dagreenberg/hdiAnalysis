@@ -10,3 +10,5 @@ data-raw/*
 
 ^README\.Rmd$
 vignettes/
+
+R-orig/*
