@@ -605,6 +605,9 @@ recruitment_intervals_from <- recruitment_res_from$intervals_all_years
 recruitment_intervals_from
 recruitment_intervals_from$width_diff
 sum(recruitment_intervals_from$width_diff)
+# Shouldn't really include 2023 and 2024 since no data:
+sum(filter(recruitment_intervals_from,
+           year < 2023)$width_diff)
 ```
 Now get three warnings about the HDI being discontinuous (had two without the
 from option, so that didn't fix it and we should investigate individual years).
@@ -829,3 +832,23 @@ TODO look at and summarise. Should fix the 0 issue with plotting first of all.
 Could try all years with bandwidth at 0.5. TODO (for Methods, want to try some
 things). Could start HDI at $>0$ if necessary, but ideally don't want to start
 doing that.
+
+## Digging into the `HDInterval::hdi.density()` function
+
+Went through carefully and understand it. However, noticed there is no check
+about the height at one end being close to height at the other. And doesn't deal
+with zeros.
+
+This is true even for the example given.
+
+```{r hdiexample}
+set.seed(42)
+tst <- rgamma(1e5, 2.5, 2)
+dens <- density(tst)
+dens_hdi <- hdi(dens)   # Example has 0.8 but doing 0.95 now to use my plotting,
+                        # will generalise
+# plot_density(tst, x_lim = c(0, 5))
+plot_density(tst, x_lim = c(0, 5))
+abline(h = attr(dens_hdi, "height"))
+rug(dens$x)
+```
