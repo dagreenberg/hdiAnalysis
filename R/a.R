@@ -5,15 +5,12 @@
 ##'
 ##' @param tib `tibble` to be printed to console, R Markdown file, etc.
 ##'
-##' @return print `a` as a data.frame, so show all the rows
+##' @return print `a` as a data.frame, so show all the rows.
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' # To see all the years (rows of a long tibble):
-##' oni %>% a()
-##'
-##' # To see all the species (columns of a wide tibble):
-##' tail(zooplankton_sog) %>% a()
+##' # For a tibble 'tib', to see all the rows and columns:
+##' tib %>% a()
 ##' }
 ##' @export
 a <- function(tib){

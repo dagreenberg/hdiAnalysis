@@ -10,7 +10,7 @@ a(tib)
 \item{tib}{\code{tibble} to be printed to console, R Markdown file, etc.}
 }
 \value{
-print \code{a} as a data.frame, so show all the rows
+print \code{a} as a data.frame, so show all the rows.
 }
 \description{
 Shorthand for \code{as.data.frame()} for printing all of a tibble.
@@ -21,11 +21,8 @@ is cumbersome.
 }
 \examples{
 \dontrun{
-# To see all the years (rows of a long tibble):
-oni \%>\% a()
-
-# To see all the species (columns of a wide tibble):
-tail(zooplankton_sog) \%>\% a()
+# For a tibble 'tib', to see all the rows and columns:
+tib \%>\% a()
 }
 }
 \author{
