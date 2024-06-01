@@ -59,11 +59,17 @@ hake_recruitment_mcmc <- as_tibble(hake_recruitment_mcmc/1e6)    # Convert from 
 usethis::use_data(hake_recruitment_mcmc,
                   overwrite = TRUE)
 
+rec_2021 <- dplyr::pull(hake_recruitment_mcmc,
+                        `2021`)
+
+attr(rec_2021, "axis_name") <-
+  "Recruitment (billions of age-0 fish)"
+
+usethis::use_data(rec_2021,
+                  overwrite = TRUE)
 
 # class(hake_recruitment_new) <- c("pacea_recruitment",
 #                                 class(hake_recruitment_new))
-# attr(hake_recruitment_new, "axis_name") <-
-#  "Pacific Hake recruitment (billions of age-0 fish)"
 
 
 # Relative spawning biomass
