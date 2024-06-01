@@ -2,3 +2,4 @@
 
 export(a)
 export(create_intervals)
+export(create_intervals.data.frame)

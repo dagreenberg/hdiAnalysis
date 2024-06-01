@@ -10,6 +10,7 @@ create_intervals(
   credibility = 0.95,
   from = 0,
   n = 16384,
+  tolerance = 0.01,
   ...
 )
 }
@@ -31,6 +32,11 @@ to be estimated. We found the \code{density()} default of 512 to give
 inaccurate results, so increased it (as a power of 2, see
 \code{?density}). Changing \code{n} changes the resolution of the density kernel but
 not the wiggliness.}
+
+\item{tolerance}{amount (as a proportion) that the relative difference
+between \code{y_hdi_lower} and \code{y_hdi_upper} can be, calculated as their
+absolute difference divided by their mean. If the calculation is larger
+than \code{tolerance} then a warning is given. Only applicable when \code{density = TRUE}.}
 
 \item{...}{arguments to pass onto \code{density()}, including \code{to} which is
 the right-most equivalent to \code{from}}
