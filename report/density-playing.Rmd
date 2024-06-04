@@ -1,0 +1,554 @@
+---
+title: "Testing density options"
+author: "Andrew Edwards"
+output: pdf_document
+fontsize: 12pt
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r, echo = FALSE, eval = FALSE}
+rmarkdown::render("density-playing.Rmd")
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  fig.width = 10,
+  fig.height = 8
+)
+```
+
+```{r, packages}
+library(dplyr)
+library(devtools)
+# library(pacea)
+library(HDInterval)
+library(kdensity)   # not going to end up using
+library(spatstat.geom)   # for interval
+library(BMS)        # for quantile.density
+library(hdrcde)     # Hydman's, need to see about 0
+load_all()
+```
+
+Wanted to resolve the zero issue, how to force density to 0 at 0, but with enough
+resolution to get exact HDIs. Lots of ideas here but nothing that worked, which
+could be the reason that we hadn't found any solutions for this problem
+elsewhere.
+
+So not resolvable, but for stock assessments that's okay, as it's the
+recruitments that this issue came up, not relative biomass. And the projections
+are done on the MCMC samples, so no real conservation issue there.
+
+## Simulate from a lognormal then try different options
+
+```{r simulate}
+set.seed(42)
+dat <- rlnorm(8000, meanlog = 1)
+sort(dat)[1:10]            # Lowest 10 values
+lowest <- min(dat)
+lowest
+```
+
+After doing much of the later stuff (so the text won't compare to this calculation), realised I hadn't calculate the theoretical HDI.
+```{r hditheoretical}
+theory <- HDInterval::hdi(qlnorm, 0.95, meanlog = 1)
+theory
+plnorm(theory["lower"], meanlog = 1)
+plnorm(theory["upper"], meanlog = 1)
+```
+Those seem close enough.
+
+Just do the simple hdi with high n:
+```{r hdiunlog}
+HDInterval::hdi(density(dat, n = 1e05), meanlog = 1)
+```
+Not far off the theoretical. Then do with density cut off at 0 (looking into
+more below)
+```{r hdiunlogzero}
+HDInterval::hdi(density(dat, n = 1e05, from = 0), meanlog = 1)
+```
+So it's pretty close to the theoretical. Maybe we just shouldn't worry too much
+about the 0 issue after all (as Marie said on today's Zoom call).
+
+```{r simulatedens}
+dens <- density(dat)
+dens
+plot(dens)
+dlnorm(0, meanlog = 1)     # pdf is 0 at x=0
+
+```
+
+Problem is that goes negative, when the 'true' lognormal should not. So set `from`:
+```{r simulate2}
+dens2 <- density(dat, from = 0)
+dens2
+plot(dens2)
+dens2$x[1:10]
+dens2$y[1:10]
+HDInterval::hdi(dens2)
+```
+
+Problem is it does not fall to 0 at 0, as the resolution is not fine enough
+there. Try increasing `n`:
+```{r simulate3}
+dens3 <- density(dat, from = 0, n = 1e05)
+dens3
+plot(dens3)
+dens3$x[1:10]
+dens3$y[1:10]
+sum(dens3$x < lowest)      # Number below the lowest data point.
+```
+
+Problem still not resolved. Try whacking up `n` further:
+```{r simulate4}
+dens4 <- density(dat, from = 0, n = 1e07)
+dens4
+plot(dens4)
+dens4$x[1:10]
+dens4$y[1:10]
+sum(dens4$x < lowest)      # Number below the lowest data point.
+```
+
+Still doesn't change. Marie said try reducing `adjust`:
+```{r simulate5}
+dens5 <- density(dat, from = 0, n = 1e07, adjust = 0.5)
+dens5
+plot(dens5)
+dens5$x[1:10]
+dens5$y[1:10]
+sum(dens5$x < lowest)      # Number below the lowest data point.
+```
+
+Takes a long time to plot, more wiggly in the tail. Still doesn't reach 0.
+
+Quick try of the `SJ` method mentioned in `?density`, putting `n` back
+```{r simulate6}
+dens6 <- density(dat, from = 0, bw = "SJ", n = 1e05)
+dens6
+plot(dens6)
+dens6$x[1:10]
+dens6$y[1:10]
+sum(dens6$x < lowest)      # Number below the lowest data point.
+```
+
+Does get further down but more wiggly in tails. Marie hadn't thought algorithms
+would help.
+
+## Do density on a log scale then transform back
+
+This is on the log scale:
+
+```{r simulate7}
+log_dat <- log(dat)
+dens7 <- density(log_dat, n = 1e05)
+dens7
+plot(dens7)
+dens7$x[1:10]
+dens7$y[1:10]
+```
+
+Now transform back, still want to call it a density object. Don't think that
+`plot()` uses the bandwidth, or assumes equally spaced `x` values (HDInterval
+does not either)
+```{r simulate7a}
+dens7_unlog <- dens7                # Get the right format
+dens7_unlog$x <- exp(dens7$x)
+# need to transform y also:
+dens7_unlog$y <- dens7$y / dens7_unlog$x
+dens7_unlog
+
+plot(dens7_unlog)
+dens7_unlog$x[1:10]
+dens7_unlog$y[1:10]
+```
+
+Looks good. Now check the intervals:
+```{r simulate7b}
+hdi_7 <- HDInterval::hdi(dens7_unlog)
+hdi_7
+plot(dens7_unlog, xlim = c(0, 40))
+abline(h = attr(hdi_7, "height"))
+abline(v = hdi_7["lower"])
+abline(v = hdi_7["upper"])
+```
+
+Woo-hoo. That looks to work. Check with Marie, and do a few confirmation
+calculations:
+
+
+```{r simulate7c}
+head(diff(dens7_unlog$x), 10)
+diff(head(diff(dens7_unlog$x), 10))
+tail(diff(dens7_unlog$x), 10)
+diff(tail(diff(dens7_unlog$x), 10))
+```
+So the differences are still small, hence the smoothness of the plot.
+
+So the `dens7_unlog` that worked did not give a warning about the interval being
+split, presumably because it is smoothed out enough.
+
+Check the integral of the HDI:
+
+```{r simulate7d}
+spatstat.geom::integral(dens7_unlog)
+spatstat.geom::integral(dens7_unlog,
+                        domain = c(as.numeric(hdi_7["lower"]),
+                                   as.numeric(hdi_7["upper"])))
+```
+
+wtf, should be 0.95.
+
+Marie realised the HDI is wrong because of the `cumsum` aspect in
+`hdi.density()`. It takes a density argument and assumes the `x` values are
+equally spaced, but they're not (as I fudged it). But we can scale them by the
+widths between values to calculate the HDI and also check the integral (there's
+a `weight` option in `spatstat.geom::integral.density()` that should presumably
+result in the same answer; also that function doesn't seem to assume equally
+spaced x).
+
+```{r scaled}
+dens7_unlog_scaled <- dens7_unlog     # To get the same format. Going to give
+                                      # midpoints of x gaps and the density
+                                      # being the mean height for each gap; so
+                                      # one less value
+scaled_dx <- diff(dens7_unlog$x)      # Differences between x values.
+dens7_unlog_scaled$x <- dens7_unlog$x[-length(dens7_unlog$x)] + scaled_dx / 2  # Gives midpoints
+dens7_unlog_scaled$y <- (dens7_unlog$y[-1] +
+                         dens7_unlog$y[-length(dens7_unlog$y)]) / 2
+# Gives scaled density that takes into account each x gap
+plot(dens7_unlog_scaled, xlim = c(0, 30))
+```
+
+Now do the HDI on this, and also the interval:
+```{r scaled2}
+hdi_7_scaled <- HDInterval::hdi(dens7_unlog_scaled)
+hdi_7_scaled
+plot(dens7_unlog_scaled, xlim = c(0, 20))
+abline(h = attr(hdi_7_scaled, "height"))
+abline(v = hdi_7_scaled["lower"])
+abline(v = hdi_7_scaled["upper"])
+```
+
+Numbers look very similar to `hdi_7`, which is slightly unexpected?
+
+Now check the integrals:
+
+```{r scaled3}
+spatstat.geom::integral(dens7_unlog_scaled)
+spatstat.geom::integral(dens7_unlog_scaled,
+                        domain = c(as.numeric(hdi_7_scaled["lower"]),
+                                   as.numeric(hdi_7_scaled["upper"])))
+```
+
+wtff - still not close enough. Maybe it's the integral calculation, especially
+with all the trapezoid assumptions in the `integral.density()`.
+
+What does it give for each tail:
+```{r scaled4}
+spatstat.geom::integral(dens7_unlog_scaled,
+                        domain = c(0,
+                                   as.numeric(hdi_7_scaled["lower"])))
+
+spatstat.geom::integral(dens7_unlog_scaled,
+                        domain = c(as.numeric(hdi_7_scaled["upper"]),
+                                   Inf))
+```
+So it's the upper tail that seems (more) inaccurate.
+
+
+Can check the integral on the density calculated on a regular grid (do a new one
+here):
+```{r scaled5}
+dens_reg <- density(dat, n = 1e04)
+spatstat.geom::integral(dens_reg)
+spatstat.geom::integral(dens_reg,
+                        domain = c(as.numeric(hdi_7_scaled["lower"]),
+                                   as.numeric(hdi_7_scaled["upper"])))
+spatstat.geom::integral(dens_reg,
+                        domain = c(as.numeric(hdi_7_scaled["upper"]),
+                                   Inf))
+
+```
+
+Nope.
+
+So it could be the resolution of the grid around the upper end of HDI (kind of
+what we first got into early on).
+```{r scaled6}
+hdi_7_scaled["lower"]
+lower_ind <- findInterval(hdi_7_scaled["lower"],
+                          dens_reg$x)   # approx correct, see create_intervals
+                                        # if want to make exact
+lower_ind
+dens_reg$x[lower_ind + seq(-5, 5)]
+dens_reg$y[lower_ind + seq(-5, 5)]
+
+
+upper_ind <- findInterval(hdi_7_scaled["upper"],
+                          dens_reg$x)   # approx correct, see above
+dens_reg$x[upper_ind + seq(-5, 5)]
+dens_reg$y[upper_ind + seq(-5, 5)]
+
+cumsum(dens_reg$y[upper_ind])
+```
+
+## Maybe don't need such a high n when doing on the log scale
+
+Repeat above but with `n` back to default, at least see how it changes calcs.
+
+Copying it all then editing/deleting as needed:
+
+```{r simulate10}
+log_dat <- log(dat)
+dens10 <- density(log_dat)
+dens10
+plot(dens10)
+dens10$x[1:10]
+dens10$y[1:10]
+```
+
+Now transform back, still want to call it a density object. Don't think that
+`plot()` uses the bandwidth, or assumes equally spaced `x` values (HDInterval
+does not either)
+```{r simulate10a}
+dens10_unlog <- dens10                # Get the right format
+dens10_unlog$x <- exp(dens10$x)
+# need to transform y also:
+dens10_unlog$y <- dens10$y / dens10_unlog$x
+dens10_unlog
+
+plot(dens10_unlog)
+dens10_unlog$x[1:10]
+dens10_unlog$y[1:10]
+```
+
+Looks good. Now check the intervals:
+```{r simulate10b}
+hdi_10 <- HDInterval::hdi(dens10_unlog)
+hdi_10
+plot(dens10_unlog, xlim = c(0, 40))
+abline(h = attr(hdi_10, "height"))
+abline(v = hdi_10["lower"])
+abline(v = hdi_10["upper"])
+```
+
+That works again. Do a few confirmation
+calculations:
+
+```{r simulate10c}
+head(diff(dens10_unlog$x), 10)
+diff(head(diff(dens10_unlog$x), 10))
+tail(diff(dens10_unlog$x), 10)
+diff(tail(diff(dens10_unlog$x), 10))
+```
+So the differences are still small, hence the smoothness of the plot.
+
+Check the integral of the HDI:
+
+```{r simulate10d}
+spatstat.geom::integral(dens10_unlog)
+spatstat.geom::integral(dens10_unlog,
+                        domain = c(as.numeric(hdi_10["lower"]),
+                                   as.numeric(hdi_10["upper"])))
+```
+
+wtf, should be 0.95. But still 0.81. Try the other ideas we had earlier:
+
+```{r scaled10}
+dens10_unlog_scaled <- dens10_unlog     # To get the same format. Going to give
+                                      # midpoints of x gaps and the density
+                                      # being the mean height for each gap; so
+                                      # one less value
+scaled_dx <- diff(dens10_unlog$x)      # Differences between x values.
+dens10_unlog_scaled$x <- dens10_unlog$x[-length(dens10_unlog$x)] + scaled_dx / 2  # Gives midpoints
+dens10_unlog_scaled$y <- (dens10_unlog$y[-1] +
+                         dens10_unlog$y[-length(dens10_unlog$y)]) / 2
+# Gives scaled density that takes into account each x gap
+plot(dens10_unlog_scaled, xlim = c(0, 30))
+```
+
+Now do the HDI on this, and also the interval:
+```{r scaled11}
+hdi_10_scaled <- HDInterval::hdi(dens10_unlog_scaled)
+hdi_10_scaled
+plot(dens10_unlog_scaled, xlim = c(0, 20))
+abline(h = attr(hdi_10_scaled, "height"))
+abline(v = hdi_10_scaled["lower"])
+abline(v = hdi_10_scaled["upper"])
+```
+
+Numbers look very similar to `hdi_10` and earlier ones I think; these values
+aren't changing much.
+
+Now check the integrals:
+
+```{r scaled12}
+spatstat.geom::integral(dens10_unlog_scaled)
+spatstat.geom::integral(dens10_unlog_scaled,
+                        domain = c(as.numeric(hdi_10_scaled["lower"]),
+                                   as.numeric(hdi_10_scaled["upper"])))
+```
+
+wtff - still not close enough. Maybe it's the integral calculation, especially
+with all the trapezoid assumptions in the `integral.density()`.
+
+What does it give for each tail:
+```{r scaled13}
+spatstat.geom::integral(dens10_unlog_scaled,
+                        domain = c(0,
+                                   as.numeric(hdi_10_scaled["lower"])))
+
+spatstat.geom::integral(dens10_unlog_scaled,
+                        domain = c(as.numeric(hdi_10_scaled["upper"]),
+                                   Inf))
+```
+So it's the upper tail that seems (more) inaccurate.
+
+
+Can check the integral on the density calculated on a regular grid (do a new one
+here):
+```{r scaled14}
+dens_reg <- density(dat, n = 1e04)
+spatstat.geom::integral(dens_reg)
+spatstat.geom::integral(dens_reg,
+                        domain = c(as.numeric(hdi_10_scaled["lower"]),
+                                   as.numeric(hdi_10_scaled["upper"])))
+spatstat.geom::integral(dens_reg,
+                        domain = c(as.numeric(hdi_10_scaled["upper"]),
+                                   Inf))
+
+```
+
+Nope.
+
+So it could be the resolution of the grid around the upper end of HDI (kind of
+what we first got into early on).
+```{r scaled15}
+hdi_10_scaled["lower"]
+lower_ind <- findInterval(hdi_10_scaled["lower"],
+                          dens_reg$x)   # approx correct, see create_intervals
+                                        # if want to make exact
+lower_ind
+dens_reg$x[lower_ind + seq(-5, 5)]
+dens_reg$y[lower_ind + seq(-5, 5)]
+
+
+upper_ind <- findInterval(hdi_10_scaled["upper"],
+                          dens_reg$x)   # approx correct, see above
+dens_reg$x[upper_ind + seq(-5, 5)]
+dens_reg$y[upper_ind + seq(-5, 5)]
+
+cumsum(dens_reg$y[upper_ind])
+```
+
+
+
+END of copying all
+
+## Found hdrcde package
+
+Try hdrcde package.
+```{r hdrcde}
+res_h <- hdr(dat, prob = 95)
+res_h
+```
+So default goes below 0, as expected. Try the options, though the help says to
+use $lambda < 1$ to force non-zero only, but not clear exactly what to set it at.
+```{r hdrcde2}
+res_h2 <- hdr(dat, prob = 95, lambda = 0)
+res_h2
+
+res_h3 <- hdr(dat, prob = 95, lambda = 0.25)
+res_h3
+
+res_h4 <- hdr(dat, prob = 95, lambda = 0.5)
+res_h4
+
+res_h5 <- hdr(dat, prob = 95, lambda = 0.9)
+res_h5
+
+```
+Don't make too much sense to me.
+
+What about using the density from earlier:
+```{r hrdcde3}
+dens7_unlog
+res_h5 <- hdr(den = dens7_unlog, prob = 95)
+res_h5
+
+spatstat.geom::integral(dens7_unlog)   # as above
+spatstat.geom::integral(dens7_unlog,
+                        domain = c(as.numeric(res_h5$hdr[,1]),
+                                   as.numeric(res_h5$hdr[,2])))
+```
+Again, not 0.95. Maybe the integral function is messing up. Find something else.
+
+
+
+## Further ideas, but not as good
+
+Calculate the interval on the linear scale, with high `n`, and no `from = 0`:
+```{r simulate8}
+dens8 <- density(dat, n = 1e05)
+hdi_8 <- HDInterval::hdi(dens8)
+hdi_8
+plot(dens8, xlim = c(0, 40))
+abline(h = attr(hdi_8, "height"))
+abline(v = hdi_8["lower"])
+abline(v = hdi_8["upper"])
+```
+
+The lines actually match up, but the lower end is unrealistically negative.
+
+And with `from = 0` we get:
+```{r simulate9}
+dens9 <- density(dat, n = 1e05, from = 0)
+hdi_9 <- HDInterval::hdi(dens9)
+hdi_9
+plot(dens9, xlim = c(0, 40))
+abline(h = attr(hdi_9, "height"))
+abline(v = hdi_9["lower"])
+abline(v = hdi_9["upper"])
+```
+which will mess up the plotting, and I'm not sure integrates correctly.
+
+
+## Try the kdensity package
+
+Came across `kdensity` package (which does have a few dependencies, which would be nice to
+avoid), basically includes a forced zero option to avoid boundary bias on the
+half line. And it seems to be being updated.
+
+Try it here, using their example
+
+```{r kdensity}
+kde <- kdensity(airquality$Wind, start = "gamma", kernel = "gamma")
+plot(kde, main = "Wind speed (mph)")
+lines(kde, plot_start = TRUE, col = "red")   # not clear on README what the
+                                        # difference is, have to dig a bit
+lines(density(airquality$Wind, adjust = 2), col = "blue")   # usual density,
+                                        # goes below 0
+rug(airquality$Wind)
+```
+
+But I don't think it will work with HDIinterval, as not of class `density`:
+```{r kdensity2}
+class(kde)
+# HDInterval::hdi(kde)    # Gives Error, as no applicable method
+```
+
+Could check how the log transform idea matches with this though:
+```{r kdelog}
+dens_wind_log <- density(log(airquality$Wind), n= 1e05)
+dens_wind_unlog <- dens_wind_log     # Get the right format
+dens_wind_unlog$x <- exp(dens_wind_log$x)
+dens_wind_unlog$y <- dens_wind_log$y / dens_wind_unlog$x
+
+plot(kde, main = "Wind speed (mph)")
+lines(kde, plot_start = TRUE, col = "red")
+lines(dens_wind_unlog, col = "green")
+```
+Okay, not great, but very sparse data, way less than we'd have.
+
+So worth looking at but doesn't look usable.

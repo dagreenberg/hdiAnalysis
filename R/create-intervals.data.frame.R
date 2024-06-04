@@ -17,6 +17,8 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
+##' res <- create_intervals.data.frame(hake_recruitment_mcmc)   # this works,
+##'   next doesn't yet
 ##' res <- create_intervals(hake_recruitment_mcmc)
 ##' res
 ##' }
