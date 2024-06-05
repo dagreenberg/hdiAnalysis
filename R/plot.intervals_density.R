@@ -1,5 +1,8 @@
-##' Plot kernel density function of a vector of samples from a distribution, with
+##' Plot kernel density function of an `intervals_density` object, with
 ##' tails shaded as specified and optional explanatory lines added
+##'
+##' TODO creates plot on object of class `intervals_density`, which is the
+##' result of running `create_intervals()` on a vector of values.
 ##'
 ##' @param dat_mcmc a numeric vector representing an MCMC sample.
 ##' @param dens_intervals
@@ -29,24 +32,22 @@
 ##' plot_recruitment_density()
 ##' plot_recruitment_density(year = 2021)
 ##' }
-plot_density <- function(dat_mcmc = one_year_mcmc,
-                         dens_intervals = NULL,
-                         year = 2021,
-                         type = "hdi",
-                         x_lim = c(0, 40),  # default for 2010
-                         col_main = "blue3",
-                         col_tail = "red",
-                         main_title = NULL,
-                         main_title_include = FALSE,
-                         x_lab = NULL,
-                         rug_top = FALSE,
-                         rug_bottom = FALSE,
-                         interval_arrows = FALSE,
-                         y_arrow = 0.095,
-                         arrowhead_length = 0.2,
-                         col_bars = "darkgreen",
-                         bars_multiplier = 1.5,
-                         ...){
+plot.intervals_density <- function(dens_int,
+                                   type = "hdi",
+                                   x_lim = c(0, 40),  # default for 2021
+                                   col_main = "blue3",
+                                   col_tail = "red",
+                                   main_title = NULL,
+                                   main_title_include = FALSE,
+                                   x_lab = NULL,
+                                   rug_top = FALSE,
+                                   rug_bottom = FALSE,
+                                   interval_arrows = FALSE,
+                                   y_arrow = 0.095,
+                                   arrowhead_length = 0.2,
+                                   col_bars = "darkgreen",
+                                   bars_multiplier = 1.5,
+                                   ...){
   if(!(type %in% c("equal", "hdi"))){
     stop("type needs to equal or hdi.")}
 
