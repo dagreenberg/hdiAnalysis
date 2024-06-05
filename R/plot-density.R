@@ -1,4 +1,5 @@
-##' Plot density function (smoothed) of MCMC recruitment for a given year, with tails shaded as specified
+##' Plot kernel density function of a vector of samples from a distribution, with
+##' tails shaded as specified and optional explanatory lines added
 ##'
 ##' @param dat_mcmc a numeric vector representing an MCMC sample.
 ##' @param dens_intervals
