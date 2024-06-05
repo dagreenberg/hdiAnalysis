@@ -48,6 +48,7 @@ plot.intervals_density <- function(ints_dens,
                                    arrowhead_length = 0.2,
                                    col_bars = "black",
                                    bars_multiplier = 1.5,
+                                   lwd_border = 0.4,
                                    ...){
 
   if(!(type %in% c("eti", "hdi"))){
@@ -91,12 +92,14 @@ plot.intervals_density <- function(ints_dens,
   # vertical line at 0 if HDI y value is >0.
 
   # TODO think about more
-  dens$x <- c(0, dens$x)
-  dens$y <- c(0, dens$y)
+#  dens$x <- c(0, dens$x)
+#  dens$y <- c(0, dens$y)
 
+  # Get the right size
   plot(dens,
-       lwd = 2,
        main = "",
+       col = NULL,
+       zero.line = FALSE,
        ...)
 
   # TODO STILL need to think and CHECK EVERYTHING AGAIN
@@ -105,6 +108,7 @@ plot.intervals_density <- function(ints_dens,
   polygon(dens,
           col = col_main,
           border = col_main,
+          lwd = lwd_border,
           main = "")
 
   # Interval_Low tail
@@ -112,6 +116,7 @@ plot.intervals_density <- function(ints_dens,
           c(dens$y[dens$x <= interval_low], y_interval_low, 0),
           col = col_tail,
           border = col_tail,
+          lwd = lwd_border,
           main = "")
 
   # High tail
@@ -119,13 +124,17 @@ plot.intervals_density <- function(ints_dens,
           c(y_interval_high, dens$y[dens$x >= interval_high], 0),
           col = col_tail,
           border = col_tail,
+          lwd = lwd_border,
           main = "")
 
-  # Make an if once figured out:
+  lines(dens,
+        lwd = 0.4)
+
+  # Add horizontal line for HDI
   if(type == "hdi" & hdi_horizontal){
     abline(h = y_interval_low,
            col = col_hdi_horizontal,
-           lwd = 0.5)
+           lwd = 1)
   }
 
   if(rug_top){
