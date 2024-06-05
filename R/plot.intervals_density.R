@@ -36,6 +36,7 @@ plot.intervals_density <- function(ints_dens,
                                    dat = NULL,   # include if want rugs added
                                    type = "hdi",
                                    col_main = "lightblue3",
+                                   col_main_text = NULL,
                                    col_tail = "red",
                                    main_title = NULL,
                                    main_title_include = FALSE,
@@ -44,8 +45,13 @@ plot.intervals_density <- function(ints_dens,
                                    rug_top = FALSE,
                                    rug_bottom = FALSE,
                                    interval_arrows = FALSE,
-                                   y_arrow = 0.095,
+                                   y_arrow = 0.098,
                                    arrowhead_length = 0.2,
+                                   arrowhead_gap = 0,  # half the gap between arrow heads
+                                        # manually tweak to give a slight gap
+                                        # between them as they default is they
+                                        # touch too much. Half since applied to
+                                        # each arrow
                                    col_bars = "black",
                                    bars_multiplier = 1.5,
                                    lwd_border = 0.4,
@@ -57,6 +63,11 @@ plot.intervals_density <- function(ints_dens,
 
   if(!(type %in% c("eti", "hdi"))){
     stop("type needs to eti or hdi.")}
+
+  # Default is to make text the same colour for main interval
+  if(is.null(col_main_text)){
+    col_main_tex <- col_main
+  }
 
   ints <- ints_dens$intervals
   dens <- ints_dens$density
@@ -156,9 +167,9 @@ plot.intervals_density <- function(ints_dens,
 
   if(interval_arrows){
     # 95% interval
-    shape::Arrows(interval_low,
+    shape::Arrows(interval_low + arrowhead_gap,
                   y_arrow,
-                  interval_high,
+                  interval_high - arrowhead_gap,
                   y_arrow,
                   code = 3,
                   col = col_main,
@@ -168,13 +179,14 @@ plot.intervals_density <- function(ints_dens,
     text(mean(c(interval_low, interval_high)),
          y_arrow,
          "95%",
-         col = col_main,
-         pos = 3
+         col = col_main_text,
+         pos = 3,
+
          )
     # Left-hand tail
     shape::Arrows(0,
                   y_arrow,
-                  interval_low,
+                  interval_low - arrowhead_gap,
                   y_arrow,
                   code = 3,
                   col = col_tail,
@@ -182,7 +194,7 @@ plot.intervals_density <- function(ints_dens,
                   arr.adj = 1,
                   arr.length = arrowhead_length)
     # Right-hand tail
-    shape::Arrows(interval_high,
+    shape::Arrows(interval_high + arrowhead_gap,
                   y_arrow,
                   par("usr")[2],
                   y_arrow,

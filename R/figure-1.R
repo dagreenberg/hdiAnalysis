@@ -33,6 +33,7 @@ figure_1 <- function(file = "figure-1.pdf",
        ylim = c(0, 0.11),
        interval_arrows = TRUE,
        xlab = xlab,
+       arrowhead_gap = 0.1,
        ...)
 
   mtext("A. Equal-tailed interval", side = 3, adj = 0, cex = 0.7,
@@ -44,6 +45,7 @@ figure_1 <- function(file = "figure-1.pdf",
        ylim = c(0, 0.11),
        interval_arrows = TRUE,
        xlab = xlab,
+       arrowhead_gap = 0.1,
        ...)
 
   mtext("B. Highest density interval", side = 3, adj = 0, cex = 0.7,
