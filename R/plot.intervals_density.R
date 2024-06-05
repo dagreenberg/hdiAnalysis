@@ -49,6 +49,10 @@ plot.intervals_density <- function(ints_dens,
                                    col_bars = "black",
                                    bars_multiplier = 1.5,
                                    lwd_border = 0.4,
+                                   x_small_ticks_add = TRUE,  # whether to add
+                                        # them or not
+                                   x_small_ticks_by = NULL, # use to fine tune
+                                   ticks_tcl = -0.2,
                                    ...){
 
   if(!(type %in% c("eti", "hdi"))){
@@ -100,7 +104,10 @@ plot.intervals_density <- function(ints_dens,
        main = "",
        col = NULL,
        zero.line = FALSE,
+       # las = 1,
        ...)
+
+  add_minor_tickmarks()
 
   # TODO STILL need to think and CHECK EVERYTHING AGAIN
 
