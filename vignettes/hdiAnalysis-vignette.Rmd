@@ -1,0 +1,64 @@
+---
+title: "Vignette for hdiAnalysis"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette for hdiAnalysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("hdiAnalysis-vignette.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+## Figure 1
+
+```{r setup}
+load_all()      # TODO change to library(hdiAnalysis) when done
+library(dplyr)
+```
+
+ROUGH for now to remake figures
+
+The hake Markov chain Montel Carlo (MCMC) recruitment and relative biomass
+values are saved in the package.
+
+```{r rec1}
+summary(rec_2021)
+length(rec_2021)
+res_2021 <- create_intervals(rec_2021)
+res_2021
+res_2021$intervals %>% a()
+```
+
+Check the integral, needs the `spatstat.geom` package to evaluate an integral on
+a density object:
+```{r rec2}
+spatstat.geom::integral(res_2021$density)
+spatstat.geom::integral(res_2021$density,
+                        domain = c(as.numeric(res_2021$intervals$eti_lower),
+                                   as.numeric(res_2021$intervals$eti_upper)))
+
+spatstat.geom::integral(res_2021$density,
+                        domain = c(as.numeric(res_2021$intervals$hdi_lower),
+                                   as.numeric(res_2021$intervals$hdi_upper)))
+```
+So the ETI approach is actually only a 94% interval, so it's actually narrower
+than the true 95% ETI interval. Because it hasn't used the density, which could
+be changed to make a more accurate interval. But no-one ever has so we shouldn't
+get into. So maybe mention in Extended Methods.
+
+HDI is bang on, which is a good confirmation. TODO do that with other options
+that didn't work.

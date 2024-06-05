@@ -12,3 +12,4 @@ data/hake_recruitment_mcmc_14_long.rda
 
 *.Rproj
 /report/figure-1.pdf
+vignettes/populations.Rmd
