@@ -32,14 +32,13 @@
 ##' plot_recruitment_density()
 ##' plot_recruitment_density(year = 2021)
 ##' }
-plot.intervals_density <- function(dens_int,
+plot.intervals_density <- function(ints_dens,
+                                   dat = NULL,   # include if want rugs added
                                    type = "hdi",
-                                   x_lim = c(0, 40),  # default for 2021
                                    col_main = "blue3",
                                    col_tail = "red",
                                    main_title = NULL,
                                    main_title_include = FALSE,
-                                   x_lab = NULL,
                                    rug_top = FALSE,
                                    rug_bottom = FALSE,
                                    interval_arrows = FALSE,
@@ -48,17 +47,15 @@ plot.intervals_density <- function(dens_int,
                                    col_bars = "darkgreen",
                                    bars_multiplier = 1.5,
                                    ...){
-  if(!(type %in% c("equal", "hdi"))){
-    stop("type needs to equal or hdi.")}
 
-  if(is.null(dens_intervals)){
-    dens_intervals <- calc_density(dat_mcmc)
-  }
+  if(!(type %in% c("eti", "hdi"))){
+    stop("type needs to eti or hdi.")}
 
-  dens <- dens_intervals$density
+  ints <- ints_dens$intervals
+  dens <- ints_dens$density
 
   # Reorder Just use for title, maybe also low and high, actually prob not
-  if(type == "equal"){
+  if(type == "eti"){
       if(is.null(main_title)) {
         main_title <- "Equal-tailed interval"
     }
@@ -68,22 +65,21 @@ plot.intervals_density <- function(dens_int,
     }
   }
 
-  if(is.null(x_lab)){
-    x_lab <- paste0("Recruitment in ", year, " (billions of fish)")
-  }
+  # TODO do the attribute axis name, may be getting too clever
+
 
   # TODO change to x_interval_low etc.
   # low and high values of the interval for plotting, already calculated
-  if(type == "equal"){
-     interval_low <- dens_intervals$intervals$`2.5`
-     interval_high <- dens_intervals$intervals$`97.5`
-     y_interval_low <- dens_intervals$intervals$y_low_equal_interp
-     y_interval_high <- dens_intervals$intervals$y_high_equal_interp
+  if(type == "eti"){
+     interval_low <- ints$eti_lower
+     interval_high <- ints$eti_upper
+     y_interval_low <- ints$y_eti_lower
+     y_interval_high <- ints$y_eti_upper
   } else { # type == "hdi"
-     interval_low <- dens_intervals$intervals$hdi_lower
-     interval_high <- dens_intervals$intervals$hdi_upper
-     y_interval_low <- dens_intervals$intervals$y_low_hdi_interp
-     y_interval_high <- dens_intervals$intervals$y_high_hdi_interp
+     interval_low <- ints$hdi_lower
+     interval_high <- ints$hdi_upper
+     y_interval_low <- ints$y_hdi_lower
+     y_interval_high <- ints$y_hdi_upper
   }
 
   # If low end of interval is 0 then its corresponding y value is >0, and so
@@ -96,12 +92,11 @@ plot.intervals_density <- function(dens_int,
   dens$y <- c(0, dens$y)
 
   plot(dens,
-       xlab = x_lab,
        lwd = 3,
-       xlim = x_lim,
        main = "",
        ...)
-# STILL need to think and CHECK EVERYTHING AGAIN
+
+  # TODO STILL need to think and CHECK EVERYTHING AGAIN
 
   # Full distribution
   polygon(dens,
@@ -172,7 +167,7 @@ plot.intervals_density <- function(dens_int,
                   arr.adj = 1,
                   arr.length = arrowhead_length)
     # Annotate if ETI
-    if(type == "equal"){
+    if(type == "eti"){
       text(interval_low/2,
            y_arrow,
            "2.5%",
@@ -187,7 +182,7 @@ plot.intervals_density <- function(dens_int,
   }
 
   # Show included/exluded values for ETI
-  if(type == "equal"){
+  if(type == "eti"){
 
   # Left-hand bar: area of excluded values but more probable than parts of upper
   # tail. Right side of bar:

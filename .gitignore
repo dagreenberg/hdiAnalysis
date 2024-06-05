@@ -1,5 +1,6 @@
 *.html
 *.docx
+*.pdf
 
 .Rproj.user
 data-raw/hake-2024/*
