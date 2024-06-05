@@ -35,16 +35,18 @@
 plot.intervals_density <- function(ints_dens,
                                    dat = NULL,   # include if want rugs added
                                    type = "hdi",
-                                   col_main = "blue3",
+                                   col_main = "lightblue3",
                                    col_tail = "red",
                                    main_title = NULL,
                                    main_title_include = FALSE,
+                                   hdi_horizontal = TRUE,
+                                   col_hdi_horizontal = "darkblue",
                                    rug_top = FALSE,
                                    rug_bottom = FALSE,
                                    interval_arrows = FALSE,
                                    y_arrow = 0.095,
                                    arrowhead_length = 0.2,
-                                   col_bars = "darkgreen",
+                                   col_bars = "black",
                                    bars_multiplier = 1.5,
                                    ...){
 
@@ -88,11 +90,12 @@ plot.intervals_density <- function(ints_dens,
   # 0). Actually, may as well always include (0,0), which creates a hard
   # vertical line at 0 if HDI y value is >0.
 
+  # TODO think about more
   dens$x <- c(0, dens$x)
   dens$y <- c(0, dens$y)
 
   plot(dens,
-       lwd = 3,
+       lwd = 2,
        main = "",
        ...)
 
@@ -101,6 +104,7 @@ plot.intervals_density <- function(ints_dens,
   # Full distribution
   polygon(dens,
           col = col_main,
+          border = col_main,
           main = "")
 
   # Interval_Low tail
@@ -118,16 +122,21 @@ plot.intervals_density <- function(ints_dens,
           main = "")
 
   # Make an if once figured out:
-  # abline(h = y_interval_low)
+  if(type == "hdi" & hdi_horizontal){
+    abline(h = y_interval_low,
+           col = col_hdi_horizontal,
+           lwd = 0.5)
+  }
 
   if(rug_top){
     rug(dens$x,
         side=3)
   }
 
-  if(rug_bottom){
-    rug(dat_mcmc)
-  }
+  # Data not included in function, but user could just add manually
+  # if(rug_bottom){
+  #  rug(dat_mcmc)
+  #}
 
   if(interval_arrows){
     # 95% interval
@@ -183,23 +192,22 @@ plot.intervals_density <- function(ints_dens,
 
   # Show included/exluded values for ETI
   if(type == "eti"){
-
-  # Left-hand bar: area of excluded values but more probable than parts of upper
-  # tail. Right side of bar:
-  i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
+    # Left-hand bar: area of excluded values but more probable than parts of upper
+    # tail. Right side of bar:
+    i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
 
     shape::Arrows(
-#      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
-      dens$x[i_right_side],
-      y_interval_low * bars_multiplier,
-      interval_low,
-      y_interval_low * bars_multiplier,
-      lwd = 2,
-      code = 3,
-      col = col_bars,
-      arr.type = "T",
-      arr.adj = 1,
-      arr.length = arrowhead_length/2)
+             #      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
+             dens$x[i_right_side],
+             y_interval_low * bars_multiplier,
+             interval_low,
+             y_interval_low * bars_multiplier,
+             lwd = 2,
+             code = 3,
+             col = col_bars,
+             arr.type = "T",
+             arr.adj = 1,
+             arr.length = arrowhead_length/2)
 
     text(mean(c(dens$x[i_right_side],
                 interval_low)),
@@ -208,13 +216,13 @@ plot.intervals_density <- function(ints_dens,
          col = col_bars,
          pos = 3)
 
-  ## polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
-  ##          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
-  ##          col = col_excluded,
-  ##          border = NA,
+    ## polygon(c(dens$x[i_right_side], dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side]),
+    ##          c(dens$y[i_right_side], dens$y[dens$x > dens$x[i_right_side] & dens$x <= interval_low], y_interval_low, 0, 0),
+    ##          col = col_excluded,
+    ##          border = NA,
     ##          main = "")
 
-        # Right-hand bar: area of included values but as probable as some of lower
+    # Right-hand bar: area of included values but as probable as some of lower
     # tail. Left side of bar:
     i_left_side <- max(which(dens$y > y_interval_low))
 
@@ -251,8 +259,5 @@ plot.intervals_density <- function(ints_dens,
     ##       col = col_included,
     ##       border = NA,
     ##       main = "")
-
-
   }
-
 }

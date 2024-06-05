@@ -9,10 +9,11 @@
 ##'   be specified (0.95 for 95%, 0.90 for 90%, etc.)
 ##' @param from the left-most point of the grid at which the density is to be estimated
 ##' @param n the number of equally spaced points at which the density is
-##'   to be estimated. We found the `density()` default of 512 to give
-##'   inaccurate results, so increased it (as a power of 2, see
-##'   `?density`). Changing `n` changes the resolution of the density kernel but
-##'   not the wiggliness.
+##'   to be estimated, to be passed onto `density()`. We found the `density()`
+##'   default of 512 to give inaccurate results, so set a higher default here as
+##'   1e05 (`?density` advises to use powers of 2 as the value gets rounded up
+##'   anyway, but we found this not to be the case). Changing `n` changes the
+##'   resolution of the density kernel but not the wiggliness.
 ##' @param tolerance amount (as a proportion) that the relative difference
 ##'   between `y_hdi_lower` and `y_hdi_upper` can be, calculated as their
 ##'   absolute difference divided by their mean. If the calculation is larger
@@ -62,7 +63,7 @@ create_intervals <- function(dat,
                              density = TRUE,
                              credibility = 0.95,
                              from = 0,
-                             n = 16384,
+                             n = 1e05,
                              tolerance = 0.01,
                              ...
                              ){
