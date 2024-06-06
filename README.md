@@ -22,6 +22,9 @@ coverage](https://codecov.io/gh/andrew-edwards/hdiAnalysis/branch/main/graph/bad
 
 An R package for investigating the use of hdi in stock assessments
 
+**UNDER DEVELOPMENT** Will likely not make any sense yet to anyone else
+yet!
+
 ## Installation
 
 Okay, if you’re convinced this package might be useful for you, then to
