@@ -23,11 +23,16 @@ knitr::opts_chunk$set(
 )
 ```
 
+We present what works, to be used as a template for other analyses, and then
+change some code settings to show what did not work for our investigations.
+
 ## Figure 1
 
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
 library(dplyr)
+library(spatstat.geom)   # Needed for checking some integrals
+library(coda)            # Needed to test alternative code
 ```
 
 ROUGH for now to remake figures
@@ -92,35 +97,129 @@ is reproduced with the command `figure_1()`, which can be adapted by users if
 desired for their own data.
 
 
-## Trying the default HDInterval options (prob need to rearrange)
+## Trying the default HDInterval options that is not based on density kernel
 
 Explain (see Extended Methods).
 
-```{r default}
-res_2021_default <- create_intervals(rec_2021,
+```{r nodensity}
+res_2021_no_density <- create_intervals(rec_2021,
                                      density = FALSE)
-res_2021_default
-res_2021$intervals %>% a()
+res_2021_no_density
+res_2021_no_density$intervals %>% a()
 ```
 
 The density was calculated here but only for plotting purposes, and is the same
 as above:
-```{r default1a}
-expect_equal(res_2021_default$dens, res_2021$dens)
+```{r nodensity1a}
+expect_equal(res_2021_no_density$dens, res_2021$dens)
 ```
 
+Also there is no `height` value because that was not used when calculating the
+HDI.
+
 The equivalent plot to our Fig. 1B for the calculated HDI is
-```{r defaultplot}
-plot(res_2021_default,
+```{r no_densityplot}
+plot(res_2021_no_density,
      xlim = c(0,40),
      xlab = "Recruitment (billions of age-0 fish)")
 ```
 But, as can be seen, the heights of the two endpoints of the HDI are not the
-same, with the right-hand one being lower. Furthermore, the integral over the
+same, with the right-hand one being lower.
+
+Furthermore, the integral over the
 HDI is only 94.5%, not the theoretical 95%:
-```{r default4}
-spatstat.geom::integral(res_2021_default$density,
-                        domain = c(as.numeric(res_2021_default$intervals$hdi_lower),
-                                   as.numeric(res_2021_default$intervals$hdi_upper)))
+```{r nodensity4}
+spatstat.geom::integral(res_2021_no_density$density,
+                        domain = c(as.numeric(res_2021_no_density$intervals$hdi_lower),
+                                   as.numeric(res_2021_no_density$intervals$hdi_upper)))
 ```
 This is what led us to investigate the other options.
+
+The values of the HDI calculated using density and not using density are
+different:
+```{r nodensity5}
+res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+res_2021_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+```
+
+Also try `coda::HPDinterval()`, as recommended in `emdbook::tcredint()` from Ben
+Bolker's book.
+```{r coda}
+res_2021_coda <- coda::HPDinterval(coda::as.mcmc(rec_2021))
+res_2021_coda
+# Compared to:
+res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+```
+Interval from coda is shorter. Check the integral:
+```{r codaintegral}
+spatstat.geom::integral(res_2021$density,
+                        domain = c(as.numeric(res_2021_coda[1, "lower"]),
+                                   as.numeric(res_2021_coda[1, "upper"])))
+```
+Again, not quite 95%.
+
+## Issue 2 - default kernel density approach did not quite work
+
+The default of 512 equally spaced points (`n`) at which to compute the kernal density
+estimate in the `density()` function, did not yield satisfactory
+HDIs. Setting the number of points to 512 here shows this, giving a warning
+(from our `create_intervals()` function  that the densities at the HDI lower and
+upper values are not within a tolerance of 1% of each other, and the difference
+can be seen in the plot:
+```{r n512}
+res_2021_n_512 <- create_intervals(rec_2021,
+                                   n = 512)
+plot(res_2021_n_512,
+     xlim = c(0, 40))
+```
+
+We found that increasing `n` to 100,000 gave satisfactory results. Note that
+increasing `n` does not increase the wiggliness of the kernel density estimate,
+just the number of points at which it is calculated.
+
+However, the integral of the density across this HDI with 512 points was the
+correct 95%:
+```{r n512integral}
+spatstat.geom::integral(res_2021_n_512$density,
+                        domain = c(as.numeric(res_2021_n_512$intervals$hdi_lower),
+                                   as.numeric(res_2021_n_512$intervals$hdi_upper)))
+```
+
+We also experimented with other `density()` settings, such as `adjust` and `bw`,
+but the defaults were satisfactory.
+
+## Issue 3
+
+
+## Quick long chain, but easiest to just re-run vignette with long chain results used instead
+
+Somewhere, check the longer chain, not sure if including in package (could do if
+needed, or just save these calculations somewhere else and state we did them -
+would really be redoing the vignette with longer chain. Do quick calcs here
+while writing appendix
+```{r longchain}
+rec_2021_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
+                             "2021")
+
+res_2021_long <- create_intervals(rec_2021_long)
+
+res_2021_long_no_density <- create_intervals(rec_2021_long,
+                                             density = FALSE)
+
+res_2021_long$intervals %>% a()
+res_2021_long_no_density$intervals %>% a()
+# NOTE values change anyway, including median, so gets hard to compare with
+# original
+
+plot(res_2021_long)
+
+# Using density with long MCMC
+spatstat.geom::integral(res_2021_long$density,
+                        domain = c(as.numeric(res_2021_long$intervals$hdi_lower),
+                                   as.numeric(res_2021_long$intervals$hdi_upper)))
+
+# Not using density with long MCMC
+spatstat.geom::integral(res_2021_long_no_density$density,
+                        domain = c(as.numeric(res_2021_long_no_density$intervals$hdi_lower),
+                                   as.numeric(res_2021_long_no_density$intervals$hdi_upper)))
+```
