@@ -1,4 +1,20 @@
-##' For a vector of values, calculate the ETI and HDI
+##' Make `create_intervals()` use the right method depending on class of input
+##'
+##' Based on `plot()`.
+##' @param dat
+##' @return
+##' @export
+##' @author Andrew Edwards
+##' @examples
+##' \dontrun{
+##'
+##' }
+create_intervals <- function(dat, ...){
+  UseMethod("create_intervals")
+}
+
+
+##' For a vector of numeric values, calculate the ETI and HDI
 ##'
 ##' @param dat numeric vector of values, such as MCMC samples for a quantity
 ##' @param density if TRUE (the default) then use the density approach for the HDI
@@ -59,7 +75,7 @@
 ##' \dontrun{
 ##' create_intervals(rec_2021)   # rec_2021 is the MCMC samples for hake recruitment in 2021
 ##' }
-create_intervals <- function(dat,
+create_intervals.numeric <- function(dat,
                              density = TRUE,
                              credibility = 0.95,
                              from = 0,

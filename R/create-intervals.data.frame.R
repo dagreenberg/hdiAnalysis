@@ -31,7 +31,8 @@ create_intervals.data.frame <- function(dat_mcmc,
     name = names(dat_mcmc)[i]
 
     values <- dplyr::pull(dat_mcmc,
-                          name)                # Full MCMC values for that column
+                          name)         # Full MCMC values for that
+                                        # column, numeric vector
 
     values <- values[!is.na(values)]    # Remove NA's, useful for sample size analysis
 
