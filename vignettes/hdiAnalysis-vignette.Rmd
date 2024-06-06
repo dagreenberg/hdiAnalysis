@@ -33,7 +33,8 @@ library(dplyr)
 ROUGH for now to remake figures
 
 The hake Markov chain Montel Carlo (MCMC) recruitment and relative biomass
-values are saved in the package.
+values are saved as data objects in the package, with `rec_2021` being the
+vector of 8,000 MCMC values used for our Fig. 1.
 
 ```{r rec1}
 summary(rec_2021)
@@ -62,3 +63,64 @@ get into. So maybe mention in Extended Methods.
 
 HDI is bang on, which is a good confirmation. TODO do that with other options
 that didn't work.
+
+Plotting the resulting density function and intervals is simply done using our
+custom plotting functions, with options for automatically adding intervals and lines. The ETI is:
+```{r plot}
+plot(res_2021,
+     type = "eti",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
+and the HDI is
+```{r plot2}
+plot(res_2021,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
+The `res_2021` object has our class `intervals_density`, and our custom plotting
+function `plot.intervals_density()` automatically gets used on the object. See
+`?plot.intervals_density()` for details and full options. Our complete Figure 1
+is reproduced with the command `figure_1()`, which can be adapted by users if
+desired for their own data.
+
+
+## Trying the default HDInterval options (prob need to rearrange)
+
+Explain (see Extended Methods).
+
+```{r default}
+res_2021_default <- create_intervals(rec_2021,
+                                     density = FALSE)
+res_2021_default
+res_2021$intervals %>% a()
+```
+
+The density was calculated here but only for plotting purposes, and is the same
+as above:
+```{r default1a}
+expect_equal(res_2021_default$dens, res_2021$dens)
+```
+
+The equivalent plot to our Fig. 1B for the calculated HDI is
+```{r defaultplot}
+plot(res_2021_default,
+     xlim = c(0,40),
+     xlab = "Recruitment (billions of age-0 fish)")
+```
+But, as can be seen, the heights of the two endpoints of the HDI are not the
+same, with the right-hand one being lower. Furthermore, the integral over the
+HDI is only 94.5%, not the theoretical 95%:
+```{r default4}
+spatstat.geom::integral(res_2021_default$density,
+                        domain = c(as.numeric(res_2021_default$intervals$hdi_lower),
+                                   as.numeric(res_2021_default$intervals$hdi_upper)))
+```
+This is what led us to investigate the other options.

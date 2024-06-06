@@ -35,13 +35,13 @@
 plot.intervals_density <- function(ints_dens,
                                    dat = NULL,   # include if want rugs added
                                    type = "hdi",
-                                   col_main = "lightblue3",
+                                   col_main = "blue",
                                    col_main_text = NULL,
                                    col_tail = "red",
                                    main_title = NULL,
                                    main_title_include = FALSE,
                                    hdi_horizontal = TRUE,
-                                   col_hdi_horizontal = "darkblue",
+                                   col_hdi_horizontal = "darkgrey",
                                    rug_top = FALSE,
                                    rug_bottom = FALSE,
                                    interval_arrows = FALSE,
@@ -66,7 +66,7 @@ plot.intervals_density <- function(ints_dens,
 
   # Default is to make text the same colour for main interval
   if(is.null(col_main_text)){
-    col_main_tex <- col_main
+    col_main_text <- col_main
   }
 
   ints <- ints_dens$intervals
@@ -180,9 +180,7 @@ plot.intervals_density <- function(ints_dens,
          y_arrow,
          "95%",
          col = col_main_text,
-         pos = 3,
-
-         )
+         pos = 3)
     # Left-hand tail
     shape::Arrows(0,
                   y_arrow,

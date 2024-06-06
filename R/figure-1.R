@@ -27,7 +27,7 @@ figure_1 <- function(file = "figure-1.pdf",
       mgp = c(1.6,0.5,0),
       cex = 0.6)
 
-  plot(res_2021,
+   plot(res_2021,
        type = "eti",
        xlim = xlim,
        ylim = c(0, 0.11),
