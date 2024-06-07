@@ -47,8 +47,16 @@ create_intervals.data.frame <- function(dat_mcmc,
   }
   intervals_all <- tibble::as_tibble(intervals_all)
 
+  # Look for any non-digit values in quantity. If there are not any then
+  #  convert all values to numeric.
+  if(!any(stringr::str_detect(intervals_all$quantity,
+                              '[^.0-9]+'))){
+    intervals_all$quantity <- as.numeric(intervals_all$quantity)
+  }
+
   to_return <- list(res_all = res_all,
                     intervals_all = intervals_all)
+
   class(to_return) <- c("intervals_density_list",
                         class(to_return))
   return(to_return)

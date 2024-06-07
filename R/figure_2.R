@@ -24,6 +24,10 @@ figure_2 <- function(){
 ##       mgp = c(1.6,0.5,0),
 ##       cex = 0.6)
 
+  # adapt this:
+recruitment_results <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
+-"Virgin"))
+
 ##   plot_series(recruitment_intervals)
 
 ##   mtext("A", side = 3, adj = 0, cex = 0.7,

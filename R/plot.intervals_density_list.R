@@ -48,18 +48,20 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                         type = "comparison", # or density_eti or density_hdi
                         inc = 0.15,
                         x_tick_extra_years = 20,
-                        start_decade_ticks = (min(obj$year) %/% 10) * 10,
+                        add_big_ticks_x = TRUE,
+                        start_big_ticks_x = NULL,
                         eti_bar_col = "blue",
                         hdi_bar_col = "red",
                         add_line_at_0.4 = FALSE,
                         add_line_at_0.4_col = "darkgreen",
                         add_line_at_0.4_lty = 5,
-                        ylim = NULL,
+                        ylim = NULL,   # if NULL then created automatically
                         y_tick_start = 0,
                         y_tick_end = NULL,
                         y_tick_by = 1,
                         pch = 20,
-                        cex = 0.8,   # Size of points for medians
+                        cex = 0.8,   # Size of points for medians, set to 0 to
+                                     # not show medians
                         inset = c(0, 0), #c(0.1,-0.02),   # For shifting legend
                         add_legend = TRUE,
                         leg_loc = "topright",
@@ -68,23 +70,28 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                         arrowhead_length = 0.15,
                         ...
                         ){
-  browser()
-HERE need to put option to make intervals$quantity numeric, maybe put that in
-  create_intervals. Yes, do that.
+
   if(type == "comparison"){       # Doing a comparison of intervals for each value of
                         # quantity, which will be a time series if quantity
     # represents years
 
     intervals <- obj$intervals_all
-    # TODO decide
+    if(!is.numeric(intervals$quantity)){
+      stop("plot.intervals_density_list() not yet implemented for non-numeric values of quantity")
+    }
+
    if(is.null(ylim)){
-     ylim = max(c(intervals$eti_upper,
-                  intervals$hdi_upper))
+     ylim = c(0,
+              max(c(intervals$eti_upper,
+                    intervals$hdi_upper)))
    }
 
   # ETI:
-  eti_x_val <- intervals$quantity - inc        # Shift ETI ones to the left
-  plot(eti_x_val,
+    eti_x_val <- intervals$quantity - inc        # Shift ETI ones to the left
+    median_x_val <- eti_x_val                    # Where to plot median, change
+                                                 # if don't want both ETI and HDI
+
+  plot(median_x_val,
        intervals$median,  # should be vector
        pch = pch,
        ylim = ylim,
@@ -94,16 +101,17 @@ HERE need to put option to make intervals$quantity numeric, maybe put that in
     segments(x0 = eti_x_val,
              y0 = intervals$eti_lower,
              x1 = eti_x_val,
-             y1 = intervals$upper,
+             y1 = intervals$eti_upper,
              col = eti_bar_col)
 
-    points(eti_x_val,
+    points(median_x_val,
            intervals$median,
            pch = pch,        # plot points again to be on top of bars
            cex = cex)
 
   # HDI:
-  hdi_x_val <- intervals$year + inc        # Shift HDI ones to the right
+  hdi_x_val <- intervals$quantity + inc        # Shift HDI ones to the right
+  median_x_val <- hdi_x_val                    # Do this to plot median on HDI.
 
   # HDI:
   segments(x0 = hdi_x_val,
@@ -112,10 +120,10 @@ HERE need to put option to make intervals$quantity numeric, maybe put that in
            y1 = intervals$hdi_upper,
            col = hdi_bar_col)
 
-  points(hdi_x_val,
+  points(median_x_val,
          intervals$median,
          pch = pch,
-         cex = cex)         # plot points again to be on top of bars
+         cex = cex)
 
   # abline(h = 0, col = "lightgrey")
 
@@ -173,22 +181,28 @@ HERE need to put option to make intervals$quantity numeric, maybe put that in
 
   # Adapted from pacea::add_tickmarks():
 
-  min = min(intervals$year)
-  max = max(intervals$year)
+  min = min(intervals$quantity)
+  max = max(intervals$quantity)
   axis(1,
        seq(min,
            max),
        labels = FALSE,
        tcl = -0.2)
 
-  # Slightly larger ticks every decade (since not all get labelled automatically)
-  axis(1,
-       seq(start_decade_ticks,
-           max,
-           by = 10),
-       labels = FALSE,
-       tcl = -0.3)
+    # Slightly larger ticks every 10 values of quantity (every decade if these are
+    # years) since not all get labelled automatically
+    if(add_big_ticks_x){
+      if(is.null(start_big_ticks_x)){
+        start_big_ticks_x <- (min(intervals$quantity) %/% 10) * 10
+      }
 
+      axis(1,
+           seq(start_big_ticks_x,
+               max,
+               by = 10),
+           labels = FALSE,
+           tcl = -0.3)
+    }
   # y-axis tickmarks:
   if(is.null(y_tick_start)){
     y_tick_start <- floor(par("usr")[3])
