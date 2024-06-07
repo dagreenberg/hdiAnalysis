@@ -4,9 +4,6 @@
 ##' given in each named column, calculate the ETI, HDI, and kernel density for
 ##' each column, with `create_intervals()`.
 ##'
-
-##' TODO `n=1e5` is hardwired in here
-##'
 ##' @param dat_mcmc
 ##' @param ... arguments to pass to `create_intervals()` and then `density()`
 ##'   TODO test changing from.
@@ -49,6 +46,9 @@ create_intervals.data.frame <- function(dat_mcmc,
   }
   intervals_all <- tibble::as_tibble(intervals_all)
 
-  return(list(res_all = res_all,
-              intervals_all = intervals_all))
+  to_return <- list(res_all = res_all,
+                    intervals_all = intervals_all)
+  class(to_return) <- c("intervals_density_list",
+                        class(to_return))
+  return(to_return)
 }

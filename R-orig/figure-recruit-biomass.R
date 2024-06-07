@@ -1,6 +1,6 @@
 ##' Plot figure with recruitment over all years plus relative spawning biomass
 ##'  over recent years, likely to be Figure 2. Have to run .Rmd first. TODO tidy
-##'  this up as has non-argument values in it.
+##'  this up as has non-argument values in it. TODO delete once figure_2 works.
 ##'  <desc>
 ##'
 ##' @return
