@@ -45,6 +45,7 @@
 plot.intervals_density_list <- function(obj,   # an intervals_density_list
                                         # object from create_intervals() on a
                                         # data frame
+                        type = "comparison", # or density_eti or density_hdi
                         inc = 0.15,
                         x_tick_extra_years = 20,
                         start_decade_ticks = (min(obj$year) %/% 10) * 10,
@@ -53,10 +54,12 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                         add_line_at_0.4 = FALSE,
                         add_line_at_0.4_col = "darkgreen",
                         add_line_at_0.4_lty = 5,
+                        ylim = NULL,
                         y_tick_start = 0,
                         y_tick_end = NULL,
                         y_tick_by = 1,
-                        cex_val = 0.8,   # Size of points for medians
+                        pch = 20,
+                        cex = 0.8,   # Size of points for medians
                         inset = c(0, 0), #c(0.1,-0.02),   # For shifting legend
                         add_legend = TRUE,
                         leg_loc = "topright",
@@ -64,77 +67,81 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                                         # intervals, useful for sample size plot
                         arrowhead_length = 0.15,
                         ...
-                                   ){
-  if(is.null(y_max)){
-    y_max = max(c(obj$`97.5`,
-                  obj$hdi_upper))
-  }
+                        ){
+  browser()
+HERE need to put option to make intervals$quantity numeric, maybe put that in
+  create_intervals. Yes, do that.
+  if(type == "comparison"){       # Doing a comparison of intervals for each value of
+                        # quantity, which will be a time series if quantity
+    # represents years
 
-  # Adapting from pacea::plot_with_uncertainty_discrete(), not using dates as
-  # only worrying about years here.
+    intervals <- obj$intervals_all
+    # TODO decide
+   if(is.null(ylim)){
+     ylim = max(c(intervals$eti_upper,
+                  intervals$hdi_upper))
+   }
 
   # ETI:
-  eti_year <- obj$year - inc        # Shift ETI ones to the left
-  plot(eti_year,
-       obj[["median"]], # [[]] returns a vector not a tibble
-       xlab = xlab,
-       ylab = ylab,
-       pch = 20,
-       ylim = c(0, y_max),   # specifying ylim in main plot call won't override this
-       cex = cex_val,
+  eti_x_val <- intervals$quantity - inc        # Shift ETI ones to the left
+  plot(eti_x_val,
+       intervals$median,  # should be vector
+       pch = pch,
+       ylim = ylim,
+       cex = cex,
        ...)
-  # abline(h = 0, col = "lightgrey")
 
-  segments(x0 = eti_year,
-           y0 = obj$`2.5`,
-           x1 = eti_year,
-           y1 = obj$`97.5`,
-           col = eti_bar_col)
+    segments(x0 = eti_x_val,
+             y0 = intervals$eti_lower,
+             x1 = eti_x_val,
+             y1 = intervals$upper,
+             col = eti_bar_col)
 
-  points(eti_year,
-         obj[["median"]], # [[]] returns a vector not a tibble
-         pch = 20,        # plot points again to be on top of bars
-         cex = cex_val)
-
-  # HDI:
-  hdi_year <- obj$year + inc        # Shift HDI ones to the right
+    points(eti_x_val,
+           intervals$median,
+           pch = pch,        # plot points again to be on top of bars
+           cex = cex)
 
   # HDI:
-  segments(x0 = hdi_year,
-           y0 = obj$hdi_lower,
-           x1 = hdi_year,
-           y1 = obj$hdi_upper,
+  hdi_x_val <- intervals$year + inc        # Shift HDI ones to the right
+
+  # HDI:
+  segments(x0 = hdi_x_val,
+           y0 = intervals$hdi_lower,
+           x1 = hdi_x_val,
+           y1 = intervals$hdi_upper,
            col = hdi_bar_col)
 
-  points(hdi_year,
-         obj[["median"]], # [[]] returns a vector not a tibble
-         pch = 20,
-         cex = cex_val)         # plot points again to be on top of bars
+  points(hdi_x_val,
+         intervals$median,
+         pch = pch,
+         cex = cex)         # plot points again to be on top of bars
 
   # abline(h = 0, col = "lightgrey")
 
   if(join_intervals){
-    lines(eti_year,
-          obj$`2.5`,
+    lines(eti_x_val,
+          intervals$eti_lower,
           col = eti_bar_col,
           lty = 2)
 
-    lines(eti_year,
-          obj$`97.5`,
+    lines(eti_x_val,
+          intervals$eti_upper,
           col = eti_bar_col,
           lty = 2)
 
-    lines(hdi_year,
-          obj$hdi_lower,
+    lines(hdi_x_val,
+          intervals$hdi_lower,
           col = hdi_bar_col,
           lty = 2)
 
-    lines(hdi_year,
-          obj$hdi_upper,
+    lines(hdi_x_val,
+          intervals$hdi_upper,
           col = hdi_bar_col,
           lty = 2)
   }
 
+    # TODO leave these for now
   # For relative biomass plots
   if(add_line_at_0.4){
     abline(h = 0.4,
@@ -166,8 +173,8 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
 
   # Adapted from pacea::add_tickmarks():
 
-  min = min(obj$year)
-  max = max(obj$year)
+  min = min(intervals$year)
+  max = max(intervals$year)
   axis(1,
        seq(min,
            max),
@@ -210,12 +217,12 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
   }
 
 
-#  add_tickmarks(obj,
+#  add_tickmarks(intervals,
 #                y_tick_by = y_tick_by,
 #                y_tick_start = 0,
 #                y_tick_end = ceiling(par("usr")[4]),
 #                x_tick_extra_years = x_tick_extra_years,
 #                start_decade_ticks = start_decade_ticks)
-
+  }
   invisible()
 }

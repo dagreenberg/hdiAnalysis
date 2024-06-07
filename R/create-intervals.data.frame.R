@@ -7,7 +7,8 @@
 ##' @param dat_mcmc
 ##' @param ... arguments to pass to `create_intervals()` and then `density()`
 ##'   TODO test changing from.
-##' @return list TODO object of `res_all_years` which contains `year` plus
+##' @return list first column is quantity, then rest is like
+##'   `create_intervals.numeric()` TODO object of `res_all_years` which contains `year` plus
 ##'   `intervals` and `dens` for that year, plus `intervals_all_years` which
 ##'   contains all the intervals in one tibble with `year` as the first column.
 ##' @export

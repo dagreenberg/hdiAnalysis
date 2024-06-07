@@ -11,7 +11,8 @@
 TODO test changing from.}
 }
 \value{
-list TODO object of \code{res_all_years} which contains \code{year} plus
+list first column is quantity, then rest is like
+\code{create_intervals.numeric()} TODO object of \code{res_all_years} which contains \code{year} plus
 \code{intervals} and \code{dens} for that year, plus \code{intervals_all_years} which
 contains all the intervals in one tibble with \code{year} as the first column.
 }
@@ -19,9 +20,6 @@ contains all the intervals in one tibble with \code{year} as the first column.
 For a data frame of MCMC (or other) samples as rows and some quantity
 given in each named column, calculate the ETI, HDI, and kernel density for
 each column, with \code{create_intervals()}.
-}
-\details{
-TODO \code{n=1e5} is hardwired in here
 }
 \author{
 Andrew Edwards
