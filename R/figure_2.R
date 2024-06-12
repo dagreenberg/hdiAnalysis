@@ -8,30 +8,32 @@
 ##' @ontrun{
 ##' @
 ##' @}
-figure_2 <- function(){
-  # From figure_recruit_biomass which currently made figure 2:
-## figure_recruit_biomass <- function(file = "figure-recruit_biomass.pdf",
-##                                    height = 4,
-##                                    width = 114/25.4){
+figure_2 <- function(file = "figure-2.pdf",
+                     height = 4,
+                     width = 114/25.4){
+  # From figure_recruit_biomass which currently made figure 2
+  pdf(file = file,
+      height = height,
+      width = width,
+      paper="special")
 
-##  pdf(file = file,
-##             height = height,
-##             width = width,
-##             paper="special")
+  par(mai = c(0.32, 0.3, 0.15, 0.12),
+      mfrow = c(2,1),
+      mgp = c(1.6,0.5,0),
+      cex = 0.6)
 
-##   par(mai = c(0.32, 0.3, 0.15, 0.12),
-##       mfrow = c(2,1),
-##       mgp = c(1.6,0.5,0),
-##       cex = 0.6)
+  res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                  -"Virgin"))
 
-  # adapt this:
-recruitment_results <- calc_density_many_years(dplyr::select(hake_recruitment_mcmc,
--"Virgin"))
+  plot(res_all_years,
+       xlab = "Year",
+       ylab = "Recruitment (billions of fish)")
 
-##   plot_series(recruitment_intervals)
-
-##   mtext("A", side = 3, adj = 0, cex = 0.7,
-##         line = 0.3) # TODO Add to function, cex is indpt of par(cex)
+  mtext("A",
+        side = 3,
+        adj = 0,
+        cex = 0.7,
+        line = 0.3) # TODO Add to function, cex is indpt of par(cex)
 
 ##   plot_series(relative_biomass_res$intervals_all_years,
 ##               y_max = 2.6,
@@ -43,13 +45,11 @@ recruitment_results <- calc_density_many_years(dplyr::select(hake_recruitment_mc
 ##   mtext("B", side = 3, adj = 0, cex = 0.7,
 ##         line = 0.3) # TODO Add to function
 
-##   dev.off()
+   dev.off()
 ## }
   # Will need these to tailor these figures, but also see
   # Taking these out of the more generic
   # plot.intervals_density_list:
-  ## xlab = "Year",
-  ## ylab = "Recruitment (billions of fish)",
   ## inc = 0.15,
   ## x_tick_extra_years = 20,
   ## start_decade_ticks = (min(obj$year) %/% 10) * 10,
@@ -69,6 +69,4 @@ recruitment_results <- calc_density_many_years(dplyr::select(hake_recruitment_mc
   ## join_intervals = FALSE, # join up the ends of the
   ## # intervals, useful for sample size plot
   ## arrowhead_length = 0.15,
-
-
 }

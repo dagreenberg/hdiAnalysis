@@ -62,7 +62,7 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                         pch = 20,
                         cex = 0.8,   # Size of points for medians, set to 0 to
                                      # not show medians
-                        inset = c(0, 0), #c(0.1,-0.02),   # For shifting legend
+                        inset = c(0, -0.02), #c(0.1,-0.02),   # For shifting legend
                         add_legend = TRUE,
                         leg_loc = "topright",
                         join_intervals = FALSE, # join up the ends of the

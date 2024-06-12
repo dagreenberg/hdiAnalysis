@@ -12,7 +12,7 @@ figure_1 <- function(file = "figure-1.pdf",
                      height = 4,
                      width = 114/25.4,
                      xlim = c(0, 40),
-                     xlab = "Recruitment (billions of age-0 fish)",
+                     xlab = "Recruitment (billions of fish)",
                      ...){
 
   res_2021 <- create_intervals(rec_2021)
