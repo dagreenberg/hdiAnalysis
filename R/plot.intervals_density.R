@@ -38,7 +38,8 @@ plot.intervals_density <- function(ints_dens,
                                    col_main = "blue",
                                    col_main_text = NULL,
                                    col_tail = "red",
-                                   main_title = NULL,
+                                   main_title = NULL, # might not do anything
+                                        # now, need no main for dens plot
                                    main_title_include = FALSE,
                                    hdi_horizontal = TRUE,
                                    col_hdi_horizontal = "darkgrey",
@@ -62,7 +63,7 @@ plot.intervals_density <- function(ints_dens,
                                    ...){
 
   if(!(type %in% c("eti", "hdi"))){
-    stop("type needs to eti or hdi.")}
+    stop("type needs to be eti or hdi.")}
 
   # Default is to make text the same colour for main interval
   if(is.null(col_main_text)){

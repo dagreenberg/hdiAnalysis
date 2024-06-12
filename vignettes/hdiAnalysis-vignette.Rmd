@@ -61,9 +61,9 @@ spatstat.geom::integral(res_2021$density,
                         domain = c(as.numeric(res_2021$intervals$hdi_lower),
                                    as.numeric(res_2021$intervals$hdi_upper)))
 ```
-So the ETI approach is actually only a 94% interval, so it's actually narrower
-than the true 95% ETI interval. Because it hasn't used the density, which could
-be changed to make a more accurate interval. But no-one ever has so we shouldn't
+So the ETI approach is only a 94% interval, so it's actually narrower
+than the true 95% ETI interval. This isbecause it has not used the density, which could
+be changed to make a more accurate interval. But no-one ever has so we should not
 get into. So maybe mention in Extended Methods.
 
 HDI is bang on, which is a good confirmation. TODO do that with other options
@@ -107,7 +107,7 @@ hake_recruitment_mcmc
 ```
 
 To create ETIs and HDIs for estimates of recruitment for each year, simply use
-`create_intervals()` which, becuase `hake_recruitment_mcmc` has class
+`create_intervals()` which, because `hake_recruitment_mcmc` has class
 `data.frame`, uses our function `create_intervals.data.frame()` to automatically
 calculate intervals for each column (year in this case, and we will exclude the
 Virgin sample) of samples.
@@ -155,19 +155,23 @@ plot(res_all_years)
 
 The ETIs match those shown in Table 24 of the 2024 hake assessment (values
 manually checked, code not run here)
-```{r hake_mcmc7, eval = FALSE}
+```{r hake_mcmc8, eval = FALSE}
 res_all_years$intervals_all %>%
   dplyr::select(eti_lower, eti_upper) %>%
   a() %>%
   round(3) * 1000
 ```
 
+To plot all density plots:
+```{r hake_mcmc9, fig.height = 360}
+plot(res_all_years,
+     type = "eti",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(60, 1))  # 59 default
+```
 
-and then do option to show all density plots
-
-was `plot_series()`, think now make a proper `plot.intervals_density_list()`
-
-TODO dig into warnings
+TODO dig into warnings, fix zero issue, which might then fix the plotting issue automatically
 
 
 # Investigating the issues we came across

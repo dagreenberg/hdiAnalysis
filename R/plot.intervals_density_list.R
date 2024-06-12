@@ -45,7 +45,7 @@
 plot.intervals_density_list <- function(obj,   # an intervals_density_list
                                         # object from create_intervals() on a
                                         # data frame
-                        type = "comparison", # or density_eti or density_hdi
+                        type = "comparison", # or eti or hdi
                         inc = 0.15,
                         x_tick_extra_years = 20,
                         add_big_ticks_x = TRUE,
@@ -68,8 +68,20 @@ plot.intervals_density_list <- function(obj,   # an intervals_density_list
                         join_intervals = FALSE, # join up the ends of the
                                         # intervals, useful for sample size plot
                         arrowhead_length = 0.15,
+                        mfrow = NULL, # for plot_densities
                         ...
                         ){
+  if(!(type %in% c("comparison", "eti", "hdi"))){
+    stop("type needs to be comparison, eti, or hdi.")}
+
+  if(type != "comparison"){
+    plot_densities(obj,
+                   type = type,  # need to maybe add some more arguments to flow
+                   # through, like xlim, xlab, or just call them.
+                   mfrow = mfrow,
+                   ...)
+  }
+
 
   if(type == "comparison"){       # Doing a comparison of intervals for each value of
                         # quantity, which will be a time series if quantity
