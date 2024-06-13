@@ -21,6 +21,7 @@
 ##' res
 ##' }
 create_intervals.data.frame <- function(dat_mcmc,
+                                        allow_hdi_zero = FALSE,
                                         ...){
   res_all <- list()
   intervals_all <- tibble::tibble()
@@ -35,6 +36,7 @@ create_intervals.data.frame <- function(dat_mcmc,
     values <- values[!is.na(values)]    # Remove NA's, useful for sample size analysis
 
     res <- create_intervals(values,
+                            allow_hdi_zero = allow_hdi_zero,
                             ...)
 
     res_all[[i]] <- res

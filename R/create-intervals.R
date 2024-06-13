@@ -34,6 +34,9 @@ create_intervals <- function(dat, ...){
 ##'   between `y_hdi_lower` and `y_hdi_upper` can be, calculated as their
 ##'   absolute difference divided by their mean. If the calculation is larger
 ##'   than `tolerance` then a warning is given. Only applicable when `density = TRUE`.
+##' @param allow_hdi_zero logical, if TRUE then allow HDI lower bound to include
+##'   zero (assuming values are all positive); if FALSE (the default) then do
+##'   not allow it.
 ##' @param ... arguments to pass onto `density()`, including `to` which is
 ##'   the right-most equivalent to `from`
 ##' @md
@@ -81,6 +84,7 @@ create_intervals.numeric <- function(dat,
                              from = 0,
                              n = 1e05,
                              tolerance = 0.01,
+                             allow_hdi_zero = FALSE,
                              ...
                              ){
 
@@ -97,11 +101,26 @@ create_intervals.numeric <- function(dat,
                                credMass = credibility)
     hdi_height <- attr(hdi_res,
                        "height")
-  } else {
+
+    if(hdi_res["lower"] == 0 & !allow_hdi_zero){
+      # Redo dens and HDI to force lower bound to be >0, will be min(dat)
+      dens <- density(dat,
+                      from = min(dat),
+                      n = n,
+                      ...)
+
+      hdi_res <- HDInterval::hdi(dens,
+                                 credMass = credibility)
+      hdi_height <- attr(hdi_res,
+                         "height")
+    }
+  } else {           # !density
     hdi_res <- HDInterval::hdi(dat,
                                credMass = credibility)
     hdi_height <- NA
   }
+
+
 
   eti_lower_quantile <- (1 - credibility)/2
   intervals <- tibble::tibble("median" = median(dat),
