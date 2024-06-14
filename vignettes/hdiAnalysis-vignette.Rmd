@@ -171,8 +171,11 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-THIS is after fixing the zero issue with using min of data. BUT not rerunning
+HERE.This is after fixing the zero issue with using min of data. BUT not rerunning
 everything above, just want to check results didn't change for non-zero years
+Can prob remove the first one as should now be the same as
+`res_all_years`. Check. Also compare with saved `_allow_zero.html`.
+Deal with warnings, might be okay now.
 ```{r checknonzero}
 res_all_years_new <- create_intervals(dplyr::select(hake_recruitment_mcmc,
                                                                      -"Virgin"))
