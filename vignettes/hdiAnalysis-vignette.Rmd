@@ -200,9 +200,30 @@ expect_equal(filter(res_all_years$intervals_all,
 
 HERE need to include the integral calculations, maybe just in
 `create_intervals()` since want to redo interval if integral is < 0.95.
+Have done - think want to recalculate density early on if integral of it is not 1.
+Need to decided if recalculate the density, or just scale the integral by the
+total. First is properly less confusing, but may introduce errors. Maybe just do
+the latter. Think about.
 HERE. Deal with warnings, which are mine in `create_intervals(). Just do 1966
 
 ```{r warn}
+res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
+
+res_2024_allow_hdi_zero$intervals %>% a()
+
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
+
+res_2024$intervals %>% a()
+
+res_2024_allow_neg <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                       pull(), from = -2)
+
+res_2024_allow_neg$intervals %>% a()
+
+plot(res_2024_allow_neg, xlim = c(-2, 20))
+# Surpsising still doesn't cahnge the integral, though the plot looks smooth.
+
+# Prob don't need all this. Tidy up.
 res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
 
 spatstat.geom::integral(res_1966$density,
