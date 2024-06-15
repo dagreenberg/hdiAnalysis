@@ -107,9 +107,10 @@ plot.intervals_density <- function(ints_dens,
   # 0). Actually, may as well always include (0,0), which creates a hard
   # vertical line at 0 if HDI y value is >0.
 
-  # TODO think about more
-#  dens$x <- c(0, dens$x)
-#  dens$y <- c(0, dens$y)
+  # TODO think about more, putting back in again now have one solution for zero
+  # issue, to see if plot works again.
+  dens$x <- c(0, dens$x)
+  dens$y <- c(0, dens$y)
 
   # Get the right size
   plot(dens,

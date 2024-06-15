@@ -38,7 +38,7 @@ create_intervals <- function(dat, ...){
 ##'   zero (assuming values are all positive); if FALSE (the default) then do
 ##'   not allow it.
 ##' @param ... arguments to pass onto `density()`, including `to` which is
-##'   the right-most equivalent to `from`
+##'   the right-most equivalent to `from`.
 ##' @md
 ##' @return list object of class `intervals_density` (such that we can plot it
 ##'   with `plot.intervals_density()`, with objects:

@@ -37,7 +37,7 @@ library(coda)            # Needed to test alternative code
 
 ROUGH for now to remake figures
 
-The hake Markov chain Montel Carlo (MCMC) recruitment and relative biomass
+The hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
 values are saved as data objects in the package, with `rec_2021` being the
 vector of 8,000 MCMC values used for our Fig. 1.
 
@@ -171,15 +171,11 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-HERE.This is after fixing the zero issue with using min of data. BUT not rerunning
-everything above, just want to check results didn't change for non-zero years
-Can prob remove the first one as should now be the same as
-`res_all_years`. Check. Also compare with saved `_allow_zero.html`.
-Deal with warnings, might be okay now.
-```{r checknonzero}
-res_all_years_new <- create_intervals(dplyr::select(hake_recruitment_mcmc,
-                                                                     -"Virgin"))
+This is after fixing the zero issue with using min of data, which is now the
+default used above. Saved original (before fixing zero) as `_allow_zero.html`,
+though now have the option in there to switch it.
 
+```{r checknonzero}
 res_all_years_allow_hdi_zero <- create_intervals(dplyr::select(hake_recruitment_mcmc,
                                                                -"Virgin"),
                                                  allow_hdi_zero = TRUE)
@@ -188,19 +184,109 @@ years_zero <- filter(res_all_years_allow_hdi_zero$intervals_all,
                      hdi_lower == 0)$quantity
 
 # Check remaining ones are the same
-expect_equal(filter(res_all_years_new$intervals_all,
+expect_equal(filter(res_all_years$intervals_all,
                     !(quantity %in% years_zero)),
              filter(res_all_years_allow_hdi_zero$intervals_all,
                     !(quantity %in% years_zero)))
 
 # Check the zero years remaining calculationsa re the same
-expect_equal(filter(res_all_years_new$intervals_all,
+expect_equal(filter(res_all_years$intervals_all,
                     quantity %in% years_zero) %>%
              select(quantity, median, eti_lower, eti_upper),
              filter(res_all_years_allow_hdi_zero$intervals_all,
                     quantity %in% years_zero) %>%
              select(quantity, median, eti_lower, eti_upper))
 ```
+
+HERE need to include the integral calculations, maybe just in
+`create_intervals()` since want to redo interval if integral is < 0.95.
+HERE. Deal with warnings, which are mine in `create_intervals(). Just do 1966
+
+```{r warn}
+res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
+
+spatstat.geom::integral(res_1966$density,
+                        domain = c(as.numeric(res_1966$intervals$eti_lower),
+                                   as.numeric(res_1966$intervals$eti_upper)))
+
+
+spatstat.geom::integral(res_1966$density,
+                        domain = c(as.numeric(res_1966$intervals$hdi_lower),
+                                   as.numeric(res_1966$intervals$hdi_upper)))
+
+
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
+
+expect_equal(min(select(hake_recruitment_mcmc, "2024")),
+             as.numeric(res_2024$intervals$"hdi_lower"))
+
+spatstat.geom::integral(res_2024$density,
+                        domain = c(as.numeric(res_2024$intervals$eti_lower),
+                                   as.numeric(res_2024$intervals$eti_upper)))
+
+
+spatstat.geom::integral(res_2024$density,
+                        domain = c(as.numeric(res_2024$intervals$hdi_lower),
+                                   as.numeric(res_2024$intervals$hdi_upper)))
+
+# But maybe the full integral does not equal 1. Definitely best to calculate all
+# these in one go.
+spatstat.geom::integral(res_2024$density,
+                        domain = c(0, Inf))
+# So the HDI does give 95% of the assumed distribution:
+0.8705/0.9156
+#  = 0.9507427
+# HERE could tweak it down then to make it 95% of the distribution, assuming
+# (conservatively) that values cannot be lower than the minimum value.
+```
+
+
+DO ME FIRST HERE
+
+- First save the `allow_hdi_zero` as an output in create_intervals.
+- have been thinking about this slightly wrong. min data equals hdi lower
+  because we've restricted that, so then it's a one-sided tail for the HDI,
+  which we should force to be the 5%. So if HDI starts at the min add a flag for
+  this to help with plotting. Below the HDI is not a thing because we've
+  restricted it, so just need to think differently for plotting.
+- also save integral over (0,Inf) and also over ETI and HDI.
+- if integral is not 1 then could rescale it; in example above that made the HDI
+  contain 95%.
+- Then need to adapt plotting function to not add the 0,0 in if have forced the
+  HDI to be above 0. Use that in plot to draw grey line, and to not add in 0,0.
+- for text, first do we care about allowing zero (might not always),
+
+```{r plotttt}
+plot(res_2024, xlim= c (0, 40))
+
+plot(res_2024, xlim= c (0, 1))
+
+```
+
+Try changing adjust, changes wiggliness, and allow zero:
+```{r adjust}
+res_2024_allow_hdi_zero_adjust_0.1 <-
+  create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), adjust =
+                                                                       0.1,
+                   allow_hdi_zero = TRUE)
+plot(res_2024_allow_hdi_zero_adjust_0.1, xlim = c(0, 1))
+
+# Try 0.01:
+res_2024_allow_hdi_zero_adjust_0.01 <-
+  create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), adjust =
+                                                                       0.01,
+                   allow_hdi_zero = TRUE)
+plot(res_2024_allow_hdi_zero_adjust_0.01, xlim = c(0, 1))
+plot(res_2024_allow_hdi_zero_adjust_0.01, xlim = c(0, 40))
+
+```
+Tweaking adjust (to 0.1 and the above 0.01) does not seem help, and just makes
+the distribution really wiggly. Expect it makes the integrals strange - do the
+above idea first about always calculating the integral, and the intergral over
+the HDI.
+
+
+
 
 TODO dig into warnings, fix zero issue, which might then fix the plotting issue automatically
 
