@@ -72,6 +72,7 @@ create_intervals <- function(dat, ...){
 ##'   is the first `dens$x` value to push the integrated sum of the sorted
 ##'   cumulative `dens$y` values over `credibility`; see
 ##'   `HDInterval::hdi.density()`. Is `NA` if `density = FALSE`.
+##'     * allow_hdi_zero: logical of `allow_hdi_zero` used
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -94,7 +95,8 @@ create_intervals.numeric <- function(dat,
                   from = from,
                   n = n,
                   ...)       # Gives values with equal spacing, so high
-                             #  resolution in the tail which has sparse data
+                             #  resolution in the tail which has sparse
+                             #  data. Gets changed in next section if needed
 
   if(density){
     hdi_res <- HDInterval::hdi(dens,
@@ -123,13 +125,14 @@ create_intervals.numeric <- function(dat,
 
 
   eti_lower_quantile <- (1 - credibility)/2
+
   intervals <- tibble::tibble("median" = median(dat),
-                              "eti_lower" = quantile(dat,
-                                                     probs = eti_lower_quantile),
-                              "eti_upper" = quantile(dat,
-                                                     probs = 1 - eti_lower_quantile),
-                              "hdi_lower" = hdi_res["lower"],
-                              "hdi_upper" = hdi_res["upper"]) %>%
+                              "eti_lower" = as.numeric(quantile(dat,
+                                                                probs = eti_lower_quantile)),
+                              "eti_upper" = as.numeric(quantile(dat,
+                                                                probs = 1 - eti_lower_quantile)),
+                              "hdi_lower" = as.numeric(hdi_res["lower"]),
+                              "hdi_upper" = as.numeric(hdi_res["upper"])) %>%
     dplyr::mutate(width_eti = eti_upper - eti_lower,
                   width_hdi = hdi_upper - hdi_lower,
                   width_diff = width_eti - width_hdi)
@@ -210,6 +213,16 @@ create_intervals.numeric <- function(dat,
 
   }
 
+  integral_full <- spatstat.geom::integral(dens,
+                                           domain = c(0, Inf))
+
+  integral_eti <- spatstat.geom::integral(dens,
+                                          domain = c(intervals$eti_lower,
+                                                     intervals$eti_upper))
+
+  integral_hdi <- spatstat.geom::integral(dens,
+                                          domain = c(intervals$hdi_lower,
+                                                     intervals$hdi_upper))
   intervals <- dplyr::mutate(intervals,
                              i_eti_lower = i_eti_lower,
                              y_eti_lower = y_eti_lower,
@@ -219,7 +232,11 @@ create_intervals.numeric <- function(dat,
                              y_hdi_lower = y_hdi_lower,
                              i_hdi_upper = i_hdi_upper,
                              y_hdi_upper = y_hdi_upper,
-                             hdi_height = hdi_height)
+                             hdi_height = hdi_height,
+                             integral_full = integral_full,
+                             integral_eti = integral_eti,
+                             integral_hdi = integral_hdi,
+                             allow_hdi_zero = allow_hdi_zero)
 
   res <- list(intervals = intervals,
               density = dens)
