@@ -107,10 +107,22 @@ plot.intervals_density <- function(ints_dens,
   # 0). Actually, may as well always include (0,0), which creates a hard
   # vertical line at 0 if HDI y value is >0.
 
+  # Check here whether to draw the left-hand tail in red - don't want to if
+  # hdi_lower is the min of the data (before concatenating the zero).
+  # Did have this also but don't think needed. Can't actually not be ETI, but
+  # have this for clarity anyway.
+  if(ints$hdi_lower == min(dens$x & type == "eti")){
+    fill_left_tail = FALSE} else {
+                            fill_left_tail = TRUE}
+
+
   # TODO think about more, putting back in again now have one solution for zero
   # issue, to see if plot works again.
-  dens$x <- c(0, dens$x)
-  dens$y <- c(0, dens$y)
+  # HERE not sure about this, think clearly
+#  if(ints$allow_hdi_zero & ints$hdi_lower == 0){
+    dens$x <- c(0, dens$x)
+    dens$y <- c(0, dens$y)
+#  }
 
   # Get the right size
   plot(dens,
@@ -131,14 +143,15 @@ plot.intervals_density <- function(ints_dens,
           lwd = lwd_border,
           main = "")
 
-  # Interval_Low tail
-  polygon(c(dens$x[dens$x <= interval_low], interval_low, interval_low),
-          c(dens$y[dens$x <= interval_low], y_interval_low, 0),
-          col = col_tail,
-          border = col_tail,
-          lwd = lwd_border,
-          main = "")
-
+  # Interval_Low tail, but don't do one if not needed
+  if(fill_left_tail){
+    polygon(c(dens$x[dens$x <= interval_low], interval_low, interval_low),
+            c(dens$y[dens$x <= interval_low], y_interval_low, 0),
+            col = col_tail,
+            border = col_tail,
+            lwd = lwd_border,
+            main = "")
+  }
   # High tail
   polygon(c(interval_high, dens$x[dens$x >= interval_high], interval_high),
           c(y_interval_high, dens$y[dens$x >= interval_high], 0),
@@ -152,7 +165,8 @@ plot.intervals_density <- function(ints_dens,
 
   # Add horizontal line for HDI
   if(type == "hdi" & hdi_horizontal){
-    abline(h = y_interval_low,
+    abline(h = min(y_interval_low,
+                   y_interval_high),  # If not a true HDI then pick the min
            col = col_hdi_horizontal,
            lwd = 1)
   }

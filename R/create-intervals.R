@@ -110,7 +110,7 @@ create_intervals.numeric <- function(dat,
     if(hdi_res["lower"] == 0 & !allow_hdi_zero){
       # Redo dens and HDI to force lower bound to be >0, will be min(dat).
       #  If data go negative this will still use the min(dat), as from
-      #  presumably <0.
+      #  presumably <0. TODO think more, add to help.
       dens <- density(dat,
                       from = min(dat),
                       n = n,

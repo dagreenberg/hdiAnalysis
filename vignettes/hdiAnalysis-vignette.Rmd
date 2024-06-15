@@ -162,7 +162,7 @@ res_all_years$intervals_all %>%
   round(3) * 1000
 ```
 
-To plot all density plots:
+To plot all density plots and ETIs:
 ```{r hake_mcmc9, fig.height = 360}
 plot(res_all_years,
      type = "eti",
@@ -170,6 +170,16 @@ plot(res_all_years,
      xlab = "Recruitment (billions of fish)",
      mfrow = c(60, 1))  # 59 default
 ```
+
+To plot all density plots and HDis:
+```{r hake_mcmc9hdi, fig.height = 360}
+plot(res_all_years,
+     type = "hdi",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(60, 1))  # 59 default
+```
+
 
 This is after fixing the zero issue with using min of data, which is now the
 default used above. Saved original (before fixing zero) as `_allow_zero.html`,
@@ -183,11 +193,12 @@ res_all_years_allow_hdi_zero <- create_intervals(dplyr::select(hake_recruitment_
 years_zero <- filter(res_all_years_allow_hdi_zero$intervals_all,
                      hdi_lower == 0)$quantity
 
-# Check remaining ones are the same
-expect_equal(filter(res_all_years$intervals_all,
-                    !(quantity %in% years_zero)),
-             filter(res_all_years_allow_hdi_zero$intervals_all,
-                    !(quantity %in% years_zero)))
+# Check remaining ones are the same, they were until I aded in allow_hdi_zero
+# which obviously changes by definition, so commenting out now.
+# expect_equal(filter(res_all_years$intervals_all,
+#                     !(quantity %in% years_zero)),
+#             filter(res_all_years_allow_hdi_zero$intervals_all,
+#                    !(quantity %in% years_zero)))
 
 # Check the zero years remaining calculationsa re the same
 expect_equal(filter(res_all_years$intervals_all,
@@ -236,12 +247,9 @@ res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
 # Might not have redone all these
 expect_equal(min(select(hake_recruitment_mcmc, "2024")),
              as.numeric(res_2024$intervals$"hdi_lower"))
-
-
 ```
 
-
-DO ME FIRST HERE
+HERE
 
 D First save the `allow_hdi_zero` as an output in create_intervals.
   have been thinking about this slightly wrong. min data equals hdi lower
@@ -250,6 +258,7 @@ D First save the `allow_hdi_zero` as an output in create_intervals.
   this to help with plotting. Below the HDI is not a thing because we've
   restricted it, so just need to think differently for plotting.
 D also save integral over (-Inf,Inf) and also over ETI and HDI.
+- HERE it's drawing red lower for 2024 but shouldn't.
 - if integral is not 1 then could rescale it; in example above that made the HDI
   contain 95%. Now done in create intervals.
 - Then need to adapt plotting function to not add the 0,0 in if have forced the
@@ -257,10 +266,7 @@ D also save integral over (-Inf,Inf) and also over ETI and HDI.
 - for text, first do we care about allowing zero (might not always),
 
 ```{r plotttt}
-plot(res_2024, xlim= c (0, 40))
-
-plot(res_2024, xlim= c (0, 1))
-
+plot(res_2024, xlim= c (0, 20))
 ```
 
 Try changing adjust, changes wiggliness, and allow zero:
