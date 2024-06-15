@@ -198,13 +198,7 @@ expect_equal(filter(res_all_years$intervals_all,
              select(quantity, median, eti_lower, eti_upper))
 ```
 
-HERE need to include the integral calculations, maybe just in
-`create_intervals()` since want to redo interval if integral is < 0.95.
-Have done - think want to recalculate density early on if integral of it is not 1.
-Need to decided if recalculate the density, or just scale the integral by the
-total. First is properly less confusing, but may introduce errors. Maybe just do
-the latter. Think about.
-HERE. Deal with warnings, which are mine in `create_intervals(). Just do 1966
+Deal with warnings, which are mine in `create_intervals(). Just do 1966
 
 ```{r warn}
 res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
@@ -216,63 +210,48 @@ res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
 res_2024$intervals %>% a()
 
 res_2024_allow_neg <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
-                                       pull(), from = -2)
+                                         pull(),
+                                       from = -2)
 
 res_2024_allow_neg$intervals %>% a()
+# HDI goes -ve, but allowing it to.
 
 plot(res_2024_allow_neg, xlim = c(-2, 20))
-# Surpsising still doesn't cahnge the integral, though the plot looks smooth.
+
+# This should give the same, except allow_hdi_zero value. Yes it is, just
+# commenting as it gives error for that one change
+res_2024_allow_neg_allow_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                                  pull(),
+                                                  from = -2,
+                                                  allow_hdi_zero = TRUE)
+
+# expect_equal(res_2024_allow_neg$intervals,
+#              res_2024_allow_neg_allow_zero$intervals)
+
 
 # Prob don't need all this. Tidy up.
 res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
 
-spatstat.geom::integral(res_1966$density,
-                        domain = c(as.numeric(res_1966$intervals$eti_lower),
-                                   as.numeric(res_1966$intervals$eti_upper)))
 
-
-spatstat.geom::integral(res_1966$density,
-                        domain = c(as.numeric(res_1966$intervals$hdi_lower),
-                                   as.numeric(res_1966$intervals$hdi_upper)))
-
-
-res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
-
+# Might not have redone all these
 expect_equal(min(select(hake_recruitment_mcmc, "2024")),
              as.numeric(res_2024$intervals$"hdi_lower"))
 
-spatstat.geom::integral(res_2024$density,
-                        domain = c(as.numeric(res_2024$intervals$eti_lower),
-                                   as.numeric(res_2024$intervals$eti_upper)))
 
-
-spatstat.geom::integral(res_2024$density,
-                        domain = c(as.numeric(res_2024$intervals$hdi_lower),
-                                   as.numeric(res_2024$intervals$hdi_upper)))
-
-# But maybe the full integral does not equal 1. Definitely best to calculate all
-# these in one go.
-spatstat.geom::integral(res_2024$density,
-                        domain = c(0, Inf))
-# So the HDI does give 95% of the assumed distribution:
-0.8705/0.9156
-#  = 0.9507427
-# HERE could tweak it down then to make it 95% of the distribution, assuming
-# (conservatively) that values cannot be lower than the minimum value.
 ```
 
 
 DO ME FIRST HERE
 
-- First save the `allow_hdi_zero` as an output in create_intervals.
-- have been thinking about this slightly wrong. min data equals hdi lower
+D First save the `allow_hdi_zero` as an output in create_intervals.
+  have been thinking about this slightly wrong. min data equals hdi lower
   because we've restricted that, so then it's a one-sided tail for the HDI,
   which we should force to be the 5%. So if HDI starts at the min add a flag for
   this to help with plotting. Below the HDI is not a thing because we've
   restricted it, so just need to think differently for plotting.
-- also save integral over (0,Inf) and also over ETI and HDI.
+D also save integral over (-Inf,Inf) and also over ETI and HDI.
 - if integral is not 1 then could rescale it; in example above that made the HDI
-  contain 95%.
+  contain 95%. Now done in create intervals.
 - Then need to adapt plotting function to not add the 0,0 in if have forced the
   HDI to be above 0. Use that in plot to draw grey line, and to not add in 0,0.
 - for text, first do we care about allowing zero (might not always),

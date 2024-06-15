@@ -97,6 +97,9 @@ create_intervals.numeric <- function(dat,
                   ...)       # Gives values with equal spacing, so high
                              #  resolution in the tail which has sparse
                              #  data. Gets changed in next section if needed
+  dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise to ensure
+                                        # integrates to 1. TODO make simple
+                                        # standalone function for integral.
 
   if(density){
     hdi_res <- HDInterval::hdi(dens,
@@ -105,11 +108,17 @@ create_intervals.numeric <- function(dat,
                        "height")
 
     if(hdi_res["lower"] == 0 & !allow_hdi_zero){
-      # Redo dens and HDI to force lower bound to be >0, will be min(dat)
+      # Redo dens and HDI to force lower bound to be >0, will be min(dat).
+      #  If data go negative this will still use the min(dat), as from
+      #  presumably <0.
       dens <- density(dat,
                       from = min(dat),
                       n = n,
                       ...)
+
+      dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise as for
+                                        # above. TODO write up in methods, and
+                                        # the rest.
 
       hdi_res <- HDInterval::hdi(dens,
                                  credMass = credibility)
@@ -213,8 +222,9 @@ create_intervals.numeric <- function(dat,
 
   }
 
-  integral_full <- spatstat.geom::integral(dens,
-                                           domain = c(0, Inf))
+  integral_full <- spatstat.geom::integral(dens)   # Should be 1 as we
+                                        # normalised to ensure.
+
 
   integral_eti <- spatstat.geom::integral(dens,
                                           domain = c(intervals$eti_lower,
