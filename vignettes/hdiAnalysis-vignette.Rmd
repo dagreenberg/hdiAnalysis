@@ -162,8 +162,8 @@ res_all_years$intervals_all %>%
   round(3) * 1000
 ```
 
-To plot all density plots and ETIs:
-```{r hake_mcmc9, fig.height = 360}
+To plot all density plots and ETIs (might not be evaluated when editing as take a long time):
+```{r hake_mcmc9, fig.height = 360, eval = FALSE}
 plot(res_all_years,
      type = "eti",
      xlim = c(0, 40),
@@ -171,8 +171,8 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-To plot all density plots and HDis:
-```{r hake_mcmc9hdi, fig.height = 360}
+To plot all density plots and HDis (might not be evaluated when editing as take a long time):
+```{r hake_mcmc9hdi, fig.height = 360, eval = FALSE}
 plot(res_all_years,
      type = "hdi",
      xlim = c(0, 40),
@@ -180,6 +180,16 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
+And to see all the values:
+```{r hake_mcmc9values}
+# res_all_years$intervals_all %>% select(quantity, integral_full, integral_eti,
+#                                       integral_hdi) %>%
+#  print(n=60)
+knitr::kable(res_all_years$intervals_all %>% select(quantity, integral_full,
+                                                    integral_eti, integral_hdi),
+             digits = 2)   # 3 shows that HDI are 95.0 except two 95.1, but this
+                           # is easier to see.
+```
 
 This is after fixing the zero issue with using min of data, which is now the
 default used above. Saved original (before fixing zero) as `_allow_zero.html`,
@@ -209,7 +219,7 @@ expect_equal(filter(res_all_years$intervals_all,
              select(quantity, median, eti_lower, eti_upper))
 ```
 
-Deal with warnings, which are mine in `create_intervals(). Just do 1966
+Deal with warnings, which are mine in `create_intervals()`. Just do 1966
 
 ```{r warn}
 res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
@@ -243,7 +253,6 @@ res_2024_allow_neg_allow_zero <- create_intervals(select(hake_recruitment_mcmc, 
 # Prob don't need all this. Tidy up.
 res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
 
-
 # Might not have redone all these
 expect_equal(min(select(hake_recruitment_mcmc, "2024")),
              as.numeric(res_2024$intervals$"hdi_lower"))
@@ -259,7 +268,7 @@ D First save the `allow_hdi_zero` as an output in create_intervals.
   restricted it, so just need to think differently for plotting.
 D also save integral over (-Inf,Inf) and also over ETI and HDI.
 - HERE it's drawing red lower for 2024 but shouldn't.
-- if integral is not 1 then could rescale it; in example above that made the HDI
+D if integral is not 1 then could rescale it; in example above that made the HDI
   contain 95%. Now done in create intervals.
 - Then need to adapt plotting function to not add the 0,0 in if have forced the
   HDI to be above 0. Use that in plot to draw grey line, and to not add in 0,0.
@@ -392,6 +401,7 @@ but the defaults were satisfactory.
 
 ## Issue 3 - zeros TODO
 
+Have to figure out the options to use now, as the defaults changed.
 
 TODO The equivalent table for HDIs would instead be TODO adapt this to show a few
 years, highlighting the zero issue

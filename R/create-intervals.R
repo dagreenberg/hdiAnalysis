@@ -33,7 +33,8 @@ create_intervals <- function(dat, ...){
 ##' @param tolerance amount (as a proportion) that the relative difference
 ##'   between `y_hdi_lower` and `y_hdi_upper` can be, calculated as their
 ##'   absolute difference divided by their mean. If the calculation is larger
-##'   than `tolerance` then a warning is given. Only applicable when `density = TRUE`.
+##'   than `tolerance` then a warning is given. Only applicable when `density =
+##'   TRUE`. NOT USED NOW, decide if need to keep (prob (not).
 ##' @param allow_hdi_zero logical, if TRUE then allow HDI lower bound to include
 ##'   zero (assuming values are all positive); if FALSE (the default) then do
 ##'   not allow it.
@@ -215,10 +216,10 @@ create_intervals.numeric <- function(dat,
     i_hdi_upper <- which(dens$x == intervals$hdi_upper)
     y_hdi_upper <- dens$y[i_hdi_upper]
 
-    if(abs(y_hdi_lower - y_hdi_upper) / mean(c(y_hdi_lower, y_hdi_upper)) >
-       tolerance){
-      warning("y_hdi_lower and y_hdi_upper do not meet the tolerance specified; try rerunning with a higher value of n")
-    }
+    #if(abs(y_hdi_lower - y_hdi_upper) / mean(c(y_hdi_lower, y_hdi_upper)) >
+   #    tolerance){
+   #   warning("y_hdi_lower and y_hdi_upper do not meet the tolerance specified; try rerunning with a higher value of n")
+   # }
 
   }
 
