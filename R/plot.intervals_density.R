@@ -56,9 +56,11 @@ plot.intervals_density <- function(ints_dens,
                                    col_bars = "black",
                                    bars_multiplier = 1.5,
                                    lwd_border = 0.4,
-                                   x_small_ticks_add = TRUE,  # whether to add
+                                   # x_small_ticks_add = TRUE,  # whether to add
                                         # them or not
-                                   x_small_ticks_by = NULL, # use to fine tune
+                                   x_minor_ticks_by = 1, # increment for adding
+                                   # minor tick marks
+                                   y_minor_ticks_by = 0.01,
                                    ticks_tcl = -0.2,
                                    ...){
 
@@ -72,6 +74,8 @@ plot.intervals_density <- function(ints_dens,
 
   ints <- ints_dens$intervals
   dens <- ints_dens$density
+  credibility <- ints_dens$credibility
+  eti_lower_percentile <- (1 - credibility)/2 * 100   # For annotating
 
   # Reorder Just use for title, maybe also low and high, actually prob not
   if(type == "eti"){
@@ -132,7 +136,8 @@ plot.intervals_density <- function(ints_dens,
        # las = 1,
        ...)
 
-  add_minor_tickmarks()
+  add_minor_tickmarks(x_tick_by = x_minor_ticks_by,
+                      y_tick_by = y_minor_ticks_by)   # TODO make more general, esp for y-axis
 
   # TODO STILL need to think and CHECK EVERYTHING AGAIN
 
@@ -182,7 +187,7 @@ plot.intervals_density <- function(ints_dens,
   #}
 
   if(interval_arrows){
-    # 95% interval
+    # main interval (usually 90% or 95%)
     shape::Arrows(interval_low + arrowhead_gap,
                   y_arrow,
                   interval_high - arrowhead_gap,
@@ -194,7 +199,7 @@ plot.intervals_density <- function(ints_dens,
                   arr.length = arrowhead_length)
     text(mean(c(interval_low, interval_high)),
          y_arrow,
-         "95%",
+         paste0(credibility * 100, "%"),
          col = col_main_text,
          pos = 3)
     # Left-hand tail
@@ -221,12 +226,12 @@ plot.intervals_density <- function(ints_dens,
     if(type == "eti"){
       text(interval_low/2,
            y_arrow,
-           "2.5%",
+           paste0(eti_lower_percentile, "%"),
            col = col_tail,
            pos = 3)
       text(mean(c(interval_high, par("usr")[2])),
            y_arrow,
-           "2.5%",
+           paste0(eti_lower_percentile, "%"),
            col = col_tail,
            pos = 3)
     }
