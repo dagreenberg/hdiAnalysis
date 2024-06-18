@@ -5,6 +5,8 @@
 ##' each column, with `create_intervals()`.
 ##'
 ##' @param dat_mcmc
+##' @param allow_hdi_zero
+##' @param credibility
 ##' @param ... arguments to pass to `create_intervals()` and then `density()`
 ##'   TODO test changing from.
 ##' @return list first column is quantity, then rest is like
@@ -22,6 +24,7 @@
 ##' }
 create_intervals.data.frame <- function(dat_mcmc,
                                         allow_hdi_zero = FALSE,
+                                        credibility = 0.95,
                                         ...){
   res_all <- list()
   intervals_all <- tibble::tibble()
@@ -37,6 +40,7 @@ create_intervals.data.frame <- function(dat_mcmc,
 
     res <- create_intervals(values,
                             allow_hdi_zero = allow_hdi_zero,
+                            credibility = credibility,
                             ...)
 
     res_all[[i]] <- res

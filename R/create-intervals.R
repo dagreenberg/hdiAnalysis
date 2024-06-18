@@ -250,7 +250,8 @@ create_intervals.numeric <- function(dat,
                              allow_hdi_zero = allow_hdi_zero)
 
   res <- list(intervals = intervals,
-              density = dens)
+              density = dens,
+              credibility = credibility)
 
   class(res) = c("intervals_density",
                  class(res))

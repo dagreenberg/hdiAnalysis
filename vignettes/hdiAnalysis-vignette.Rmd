@@ -300,7 +300,10 @@ the distribution really wiggly. Expect it makes the integrals strange - do the
 above idea first about always calculating the integral, and the intergral over
 the HDI.
 
+## Investigate warnings regarding split intervals
 
+See we have 5 when calculating `res_all_years`. Think each one corresponds to a
+year.
 
 
 TODO dig into warnings, fix zero issue, which might then fix the plotting issue automatically
