@@ -191,72 +191,6 @@ knitr::kable(res_all_years$intervals_all %>% select(quantity, integral_full,
                            # is easier to see.
 ```
 
-This is after fixing the zero issue with using min of data, which is now the
-default used above. Saved original (before fixing zero) as `_allow_zero.html`,
-though now have the option in there to switch it.
-
-```{r checknonzero}
-res_all_years_allow_hdi_zero <- create_intervals(dplyr::select(hake_recruitment_mcmc,
-                                                               -"Virgin"),
-                                                 allow_hdi_zero = TRUE)
-
-years_zero <- filter(res_all_years_allow_hdi_zero$intervals_all,
-                     hdi_lower == 0)$quantity
-
-# Check remaining ones are the same, they were until I aded in allow_hdi_zero
-# which obviously changes by definition, so commenting out now.
-# expect_equal(filter(res_all_years$intervals_all,
-#                     !(quantity %in% years_zero)),
-#             filter(res_all_years_allow_hdi_zero$intervals_all,
-#                    !(quantity %in% years_zero)))
-
-# Check the zero years remaining calculationsa re the same
-expect_equal(filter(res_all_years$intervals_all,
-                    quantity %in% years_zero) %>%
-             select(quantity, median, eti_lower, eti_upper),
-             filter(res_all_years_allow_hdi_zero$intervals_all,
-                    quantity %in% years_zero) %>%
-             select(quantity, median, eti_lower, eti_upper))
-```
-
-Deal with warnings, which are mine in `create_intervals()`. Just do 1966
-
-```{r warn}
-res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
-
-res_2024_allow_hdi_zero$intervals %>% a()
-
-res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
-
-res_2024$intervals %>% a()
-
-res_2024_allow_neg <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
-                                         pull(),
-                                       from = -2)
-
-res_2024_allow_neg$intervals %>% a()
-# HDI goes -ve, but allowing it to.
-
-plot(res_2024_allow_neg, xlim = c(-2, 20))
-
-# This should give the same, except allow_hdi_zero value. Yes it is, just
-# commenting as it gives error for that one change
-res_2024_allow_neg_allow_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
-                                                  pull(),
-                                                  from = -2,
-                                                  allow_hdi_zero = TRUE)
-
-# expect_equal(res_2024_allow_neg$intervals,
-#              res_2024_allow_neg_allow_zero$intervals)
-
-
-# Prob don't need all this. Tidy up.
-res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
-
-# Might not have redone all these
-expect_equal(min(select(hake_recruitment_mcmc, "2024")),
-             as.numeric(res_2024$intervals$"hdi_lower"))
-```
 
 HERE
 
@@ -321,6 +255,13 @@ res_2021_no_density <- create_intervals(rec_2021,
 res_2021_no_density
 res_2021_no_density$intervals %>% a()
 ```
+Our code just uses the `HDInterval::hdi()` method, as confirmed here:
+```{r nodensitycheck}
+expect_equal(c(res_2021_no_density$intervals$hdi_lower,
+               res_2021_no_density$intervals$hdi_upper),
+             as.numeric(HDInterval::hdi(rec_2021)))
+```
+
 
 The density was calculated here but only for plotting purposes, and is the same
 as above:
@@ -353,7 +294,7 @@ The values of the HDI calculated using density and not using density are
 different:
 ```{r nodensity5}
 res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
-res_2021_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+res_2021_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper) %>% a()
 ```
 
 Also try `coda::HPDinterval()`, as recommended in `emdbook::tcredint()` from Ben
@@ -364,13 +305,12 @@ res_2021_coda
 # Compared to:
 res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
 ```
-Interval from coda is shorter. Check the integral:
-```{r codaintegral}
-spatstat.geom::integral(res_2021$density,
-                        domain = c(as.numeric(res_2021_coda[1, "lower"]),
-                                   as.numeric(res_2021_coda[1, "upper"])))
+which are also the same as ours using `HDInterval::hdi()`:
+```{r codacheck}
+expect_equal(as.numeric(res_2021_coda),
+             as.numeric(HDInterval::hdi(rec_2021)))
 ```
-Again, not quite 95%.
+
 
 ## Issue 2 - default kernel density approach did not quite work
 
@@ -406,7 +346,102 @@ but the defaults were satisfactory.
 
 Have to figure out the options to use now, as the defaults changed.
 
-TODO The equivalent table for HDIs would instead be TODO adapt this to show a few
+After incorporating Issues 1 and 2,
+
+We found that stil
+
+With no `from` specified, we can get negative lower bounds of the HDI for recruitment:
+```{r zeroissue}
+res_all_years_from_null <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                          -c("Virgin", "1975")),
+                                            from = NULL,
+                                            allow_hdi_zero = TRUE)
+
+# TODO figure out the 1975 error, to do with i_hdi_lower, think I should not
+# have the ==
+# Testing as get error
+#res_all_years_from_null <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+#                                                          "1975"),
+#                                            from = NULL,
+#                                           allow_hdi_zero = TRUE)
+
+res_all_years_from_null$intervals_all
+sum(res_all_years_from_null$intervals_all$hdi_lower < 0)
+```
+
+Then, setting `from = 0` in `density()` prevents this, yet leads to the lower
+bound of the HDI often being 0:
+
+```{r checknonzero}
+res_all_years_allow_hdi_zero <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                               -"Virgin"),
+                                                 allow_hdi_zero = TRUE)
+
+filter(res_all_years_allow_hdi_zero$intervals_all,
+       hdi_lower == 0)
+
+years_zero <- filter(res_all_years_allow_hdi_zero$intervals_all,
+                     hdi_lower == 0)$quantity
+
+# Check the zero years remaining calculationsa are the same
+expect_equal(filter(res_all_years$intervals_all,
+                    quantity %in% years_zero) %>%
+             select(quantity, median, eti_lower, eti_upper),
+             filter(res_all_years_allow_hdi_zero$intervals_all,
+                    quantity %in% years_zero) %>%
+             select(quantity, median, eti_lower, eti_upper))
+```
+
+But
+
+
+
+TODO still
+
+Deal with warnings, which are mine in `create_intervals()`. Just do 1966
+
+```{r warn}
+res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
+
+res_2024_allow_hdi_zero$intervals %>% a()
+
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
+
+res_2024$intervals %>% a()
+
+res_2024_allow_neg <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                         pull(),
+                                       from = -2)
+
+res_2024_allow_neg$intervals %>% a()
+# HDI goes -ve, but allowing it to.
+
+plot(res_2024_allow_neg, xlim = c(-2, 20))
+
+# This should give the same, except allow_hdi_zero value. Yes it is, just
+# commenting as it gives error for that one change
+res_2024_allow_neg_allow_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                                  pull(),
+                                                  from = -2,
+                                                  allow_hdi_zero = TRUE)
+
+# expect_equal(res_2024_allow_neg$intervals,
+#              res_2024_allow_neg_allow_zero$intervals)
+
+
+# Prob don't need all this. Tidy up.
+res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
+
+# Might not have redone all these
+expect_equal(min(select(hake_recruitment_mcmc, "2024")),
+             as.numeric(res_2024$intervals$"hdi_lower"))
+```
+
+
+
+This is old and may not be needed any more as defaults changed:
+
+The equivalent table for HDIs would instead be TODO adapt this to show a few
 years, highlighting the zero issue
 ```{r hakemcmc8}
 res_all_years$intervals_all %>%
@@ -435,16 +470,59 @@ res_2021_long$intervals %>% a()
 res_2021_long_no_density$intervals %>% a()
 # NOTE values change anyway, including median, so gets hard to compare with
 # original
+```
 
-plot(res_2021_long)
+Do the plot:
+```{r res2021longplot}
+plot(res_2021_long_no_density,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
 
-# Using density with long MCMC
-spatstat.geom::integral(res_2021_long$density,
-                        domain = c(as.numeric(res_2021_long$intervals$hdi_lower),
-                                   as.numeric(res_2021_long$intervals$hdi_upper)))
+### Examples from HDInterval
 
-# Not using density with long MCMC
-spatstat.geom::integral(res_2021_long_no_density$density,
-                        domain = c(as.numeric(res_2021_long_no_density$intervals$hdi_lower),
-                                   as.numeric(res_2021_long_no_density$intervals$hdi_upper)))
+Replicating the examples from the help file `?HDInterval::hdi` using our
+functions to then easily make plots:
+```{r hdinterval}
+set.seed(42)
+# for a vector:
+tst <- rgamma(1e5, 2.5, 2)
+HDInterval::hdi(tst)
+HDInterval::hdi(tst, credMass=0.8)
+
+# Use our code, and check values agree, and then plot:
+res_tst_no_dens <- create_intervals(tst, density = FALSE, credibility = 0.8)
+expect_equal(as.numeric(hdi(tst, credMass=0.8)),
+             c(res_tst_no_dens$intervals$hdi_lower,
+               res_tst_no_dens$intervals$hdi_upper))
+plot(res_tst_no_dens)
+```
+
+```{r hdinterval2}
+# For comparison, the symmetrical 80% CrI:
+quantile(tst, c(0.1,0.9))
+
+# for a density:
+dens <- density(tst)
+HDInterval::hdi(dens, credMass=0.8)
+res_tst_dens <- create_intervals(tst, n = 512, credibility = 0.8)
+res_tst_dens$intervals %>% a()
+# The values don't exactly match because we have from = 0 as the default, and it
+# is hard to then specific the default for density.
+# expect_equal(as.numeric(hdi(dens, credMass=0.8)),
+#              c(res_tst_dens$intervals$hdi_lower,
+#                res_tst_dens$intervals$hdi_upper))
+plot(res_tst_dens, xlim = c(0,4))
+```
+
+With our defaults for `n`, the uneveness is resolved:
+```{r, hdinterval4}
+res_tst_dens_default_n <- create_intervals(tst, credibility = 0.8)
+res_tst_dens_default_n$intervals %>% a()
+plot(res_tst_dens_default_n, xlim = c(0,4))
+
 ```

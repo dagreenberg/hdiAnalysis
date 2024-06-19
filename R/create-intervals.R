@@ -23,7 +23,9 @@ create_intervals <- function(dat, ...){
 ##'   the pdf at specified points.
 ##' @param credibility numeric value between 0 and 1 specifying the interval to
 ##'   be specified (0.95 for 95%, 0.90 for 90%, etc.)
-##' @param from the left-most point of the grid at which the density is to be estimated
+##' @param from the left-most point of the grid at which the density is to be
+##'   estimated; if NULL then the default in `density()` will be used, which is
+##'   'cut * bw' outside of 'min(x)' (see `?density`), and can fall below 0.
 ##' @param n the number of equally spaced points at which the density is
 ##'   to be estimated, to be passed onto `density()`. We found the `density()`
 ##'   default of 512 to give inaccurate results, so set a higher default here as
@@ -36,8 +38,7 @@ create_intervals <- function(dat, ...){
 ##'   than `tolerance` then a warning is given. Only applicable when `density =
 ##'   TRUE`. NOT USED NOW, decide if need to keep (prob (not).
 ##' @param allow_hdi_zero logical, if TRUE then allow HDI lower bound to include
-##'   zero (assuming values are all positive); if FALSE (the default) then do
-##'   not allow it.
+##'   zero or be negative; if FALSE (the default) then do not allow this.
 ##' @param ... arguments to pass onto `density()`, including `to` which is
 ##'   the right-most equivalent to `from`.
 ##' @md
@@ -92,12 +93,19 @@ create_intervals.numeric <- function(dat,
 
   stopifnot(credibility > 0 & credibility < 1)
 
-  dens <- density(dat,
-                  from = from,
-                  n = n,
-                  ...)       # Gives values with equal spacing, so high
-                             #  resolution in the tail which has sparse
-                             #  data. Gets changed in next section if needed
+  if(!is.null(from)){
+    dens <- density(dat,
+                    from = from,
+                    n = n,
+                    ...)       # Gives values with equal spacing, so high
+                               #  resolution in the tail which has sparse
+                               #  data. Gets changed in next section if needed
+  } else {
+    dens <- density(dat,
+                    n = n,
+                    ...)       # Use the default dens calculation
+  }
+
   dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise to ensure
                                         # integrates to 1. TODO make simple
                                         # standalone function for integral.
@@ -208,6 +216,7 @@ create_intervals.numeric <- function(dat,
               # the values of x. And it's not exactly the same code as above,
               # because of the asymmetry. But, probably simpler to just rerun
               # with a higher n, so do that. See notes for sketch of idea.
+
     i_hdi_lower <- which(dens$x == intervals$hdi_lower)   # should give a value,
                                                           # TODO need to test,
                                                           # and for upper
