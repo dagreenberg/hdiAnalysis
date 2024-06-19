@@ -31,7 +31,7 @@ create_intervals.data.frame <- function(dat_mcmc,
 
   for(i in 1:ncol(dat_mcmc)){
     name = names(dat_mcmc)[i]
-print(name)
+
     values <- dplyr::pull(dat_mcmc,
                           name)         # Full MCMC values for that
                                         # column, numeric vector

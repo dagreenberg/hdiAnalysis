@@ -19,8 +19,15 @@
 ##' @param interval_arrows logical whether to show arrows depicting intervals
 ##' @param y_arrow value on y-axis to show the arrows depicting intervals
 ##' @param col_bars colour of the bars showing regions A and B
-##' @param bars_multiplier numeric multiplier, so nudge the bars higher (value of
-##'   1.0 puts them exactly at the height of the right-hand end of low credible interval)
+##' @param bars_multiplier numeric multiplier, to nudge the bars higher (value of
+##'   1.0 puts them exactly at the minimum density of the ends of the credible
+##'   interval)
+##' @param show_discontinuity logical, if `TRUE` then plot the discontinuity in
+##'   the HDI that arises (only matters if `ints_dens$intervals$warning ==
+##'   TRUE`).
+##' @param discontinuity_multiplier numeric, y-axis value to plot points showing
+##'   discontinuities, multiplies the minimum density of the ends of the
+##'   credible interval.
 ##' @param ... arguments to pass onto `plot()`
 ##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
 ##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
@@ -62,6 +69,8 @@ plot.intervals_density <- function(ints_dens,
                                    # minor tick marks
                                    y_minor_ticks_by = 0.01,
                                    ticks_tcl = -0.2,
+                                   show_discontinuity = FALSE,
+                                   discontinuity_multiplier = 2,
                                    ...){
 
   if(!(type %in% c("eti", "hdi"))){
@@ -237,6 +246,30 @@ plot.intervals_density <- function(ints_dens,
     }
   }
 
+  # If HDI is discontinuous then show the regions above the critical value of
+  # y (defined as W in the Appendix) that are outside the HDI; expect they
+  # are in the tail and only small. Just plot circles to visualise
+  if(type == "hdi" & show_discontinuity & ints$warning){
+
+    # If not a true HDI
+    # then pick the min:  TODO can move this earlier as needed elsewhere also
+    y_interval_critical <-  min(y_interval_low,
+                                y_interval_high)
+
+    i_x_outside_hdi <- which(dens$x < interval_low |
+                             dens$x > interval_high)
+
+    i_y_above_critical <- which(dens$y > y_interval_critical)
+
+    i_to_plot <- intersect(i_x_outside_hdi,
+                           i_y_above_critical)
+
+    points(dens$x[i_to_plot],
+           rep(y_interval_critical * discontinuity_multiplier,
+               length(i_to_plot)))
+  }
+
+
   # Show included/exluded values for ETI
   if(type == "eti"){
     # Left-hand bar: area of excluded values but more probable than parts of upper
@@ -293,6 +326,10 @@ plot.intervals_density <- function(ints_dens,
          "b",
          col = col_bars,
          pos = 3)
+
+
+
+
 
    # need to generalise
     # TODO Marie had +1 in first bit below, think about; might be because of

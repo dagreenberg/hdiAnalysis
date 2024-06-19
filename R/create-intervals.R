@@ -74,6 +74,13 @@ create_intervals <- function(dat, ...){
 ##'   is the first `dens$x` value to push the integrated sum of the sorted
 ##'   cumulative `dens$y` values over `credibility`; see
 ##'   `HDInterval::hdi.density()`. Is `NA` if `density = FALSE`.
+##'     * warning: logical, if `TRUE` then a warning was produced during the
+##'   `HDInterval::hdi()` calculation. If no warning printed then this warning
+##'   was "The HDI is discontinuous but allowSplit = FALSE; the result is a
+##'   valid CrI but not HDI.", else the new warning "New type of warning in
+##'   create_intervals()." is printed and needs investigating. See
+##'   `plot.intervals_density()` with `show_discontinuity = TRUE` to plot the
+##'   discontinuities in the HDI.
 ##'     * allow_hdi_zero: logical of `allow_hdi_zero` used
 ##' @export
 ##' @author Andrew Edwards
@@ -111,15 +118,16 @@ create_intervals.numeric <- function(dat,
                                         # standalone function for integral.
 
   if(density){
-    hdi_res <- HDInterval::hdi(dens,
-                               credMass = credibility)
-    hdi_height <- attr(hdi_res,
+    # These get overwritten if calculations are redone in next if()
+    hdi_res_list <- with_warnings(HDInterval::hdi(dens,
+                                                  credMass = credibility))
+    hdi_height <- attr(hdi_res_list$value,
                        "height")
 
-    if(hdi_res["lower"] == 0 & !allow_hdi_zero){
+    if(hdi_res_list$value["lower"] == 0 & !allow_hdi_zero){
       # Redo dens and HDI to force lower bound to be >0, will be min(dat).
-      #  If data go negative this will still use the min(dat), as from
-      #  presumably <0. TODO think more, add to help.
+      #  If data go negative this will still use the min(dat), as `from` will be is
+      #  <0. TODO think more, add to help.
       dens <- density(dat,
                       from = min(dat),
                       n = n,
@@ -128,19 +136,30 @@ create_intervals.numeric <- function(dat,
       dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise as for
                                         # above. TODO write up in methods, and
                                         # the rest.
-
-      hdi_res <- HDInterval::hdi(dens,
-                                 credMass = credibility)
-      hdi_height <- attr(hdi_res,
+      hdi_res_list <- with_warnings(HDInterval::hdi(dens,
+                                                    credMass = credibility))
+      hdi_height <- attr(hdi_res_list$value,
                          "height")
+
     }
   } else {           # !density
-    hdi_res <- HDInterval::hdi(dat,
-                               credMass = credibility)
+    hdi_res_list <- with_warnings(HDInterval::hdi(dens,
+                                                  credMass = credibility))
     hdi_height <- NA
   }
 
+  hdi_res <- hdi_res_list$value
 
+  if(is.empty(hdi_res_list$warnings)){
+    hdi_res_warning <- FALSE
+  } else {
+    hdi_res_warning <- TRUE
+
+    if(hdi_res_list$warnings !=
+       "The HDI is discontinuous but allowSplit = FALSE;\n    the result is a valid CrI but not HDI."){
+      warning("New type of warning in create_intervals().")
+    }
+  }
 
   eti_lower_quantile <- (1 - credibility)/2
 
@@ -256,6 +275,7 @@ create_intervals.numeric <- function(dat,
                              integral_full = integral_full,
                              integral_eti = integral_eti,
                              integral_hdi = integral_hdi,
+                             warning = hdi_res_warning,
                              allow_hdi_zero = allow_hdi_zero)
 
   res <- list(intervals = intervals,

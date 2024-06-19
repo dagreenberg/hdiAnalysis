@@ -209,6 +209,7 @@ D if integral is not 1 then could rescale it; in example above that made the HDI
 - for text, first do we care about allowing zero (might not always),
 
 ```{r plotttt}
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
 plot(res_2024, xlim= c (0, 20))
 ```
 
@@ -236,12 +237,63 @@ the HDI.
 
 ## Investigate warnings regarding split intervals
 
-See we have 5 when calculating `res_all_years`. Think each one corresponds to a
-year.
+The function `HDInterval::hdi()` gives a warning "The HDI is discontinuous but
+allowSplit = FALSE; the result is a valid CrI but not HDI." The `intervals`
+output from `create_intervals()` has a column `warning` that is `TRUE` if this
+occurs; for example
+```{r warning1}
+res_2024$intervals %>% a()
+```
 
+This can be investigated using the plotting function, to check that there is
+just a small region outside of the HDI that does in fact have a higher density
+than some values inside the HDI, which is due to the density approximation being
+slightly wiggly. This occurs for `res_2024` calculated above, and setting
+`show_discontinuity = TRUE` plots points showing the region in question. These
+can barely be seen in the default plot, so we then hone in on the region in
+question, seeing that, indeed, it is only a small region and not something to
+get overly concerned about.
+```{r, warning2, fig.height = 12}
+par(mfrow = c(2,1))
+plot(res_2024, show_discontinuity = TRUE)
 
-TODO dig into warnings, fix zero issue, which might then fix the plotting issue automatically
+plot(res_2024,
+     show_discontinuity = TRUE,
+     xlim = c(0, 25),
+     ylim = c(0, 0.1))
+```
 
+For the recruitments for all years, the following have the warning during the
+calculation:
+```{r warning3}
+years_with_warning <- dplyr::filter(res_all_years$intervals_all,
+                                    warning == TRUE)$quantity
+years_with_warning
+expect_equal(years_with_warning,
+             c(1975, 2023, 2024))   # Change some of the following if get an error
+```
+
+The plots for 1975 and 2023 show similar unconcerning behaviour to that for
+2024.
+```{r warning4}
+par(mfrow = c(2, 1))
+
+plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 1975)]],
+     show_discontinuity = TRUE)
+
+plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 2023)]],
+     show_discontinuity = TRUE,
+     xlim = c(0, 25),
+     ylim = c(0, 0.1))
+```
+Note that 2024 has no data to inform it and so represents the prior
+  distribution used in the assessment.
+
+So we recommend checking the plots to see that any such behaviour is
+acceptable. The "HDI is discontinuous ..." warning does not get printed, but if
+another warning occurs in the `HDInterval::hdi()` calculation then that will be
+shown, along with "New type of warning in create_intervals().", which should be
+likely be investigated.
 
 # Investigating the issues we came across
 
