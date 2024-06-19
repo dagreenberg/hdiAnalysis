@@ -143,7 +143,7 @@ create_intervals.numeric <- function(dat,
 
     }
   } else {           # !density
-    hdi_res_list <- with_warnings(HDInterval::hdi(dens,
+    hdi_res_list <- with_warnings(HDInterval::hdi(dat,
                                                   credMass = credibility))
     hdi_height <- NA
   }
