@@ -62,7 +62,7 @@ spatstat.geom::integral(res_2021$density,
                                    as.numeric(res_2021$intervals$hdi_upper)))
 ```
 So the ETI approach is only a 94% interval, so it's actually narrower
-than the true 95% ETI interval. This isbecause it has not used the density, which could
+than the true 95% ETI interval. This is because it has not used the density, which could
 be changed to make a more accurate interval. But no-one ever has so we should not
 get into. So maybe mention in Extended Methods.
 
@@ -96,7 +96,7 @@ function `plot.intervals_density()` automatically gets used on the object. See
 is reproduced with the command `figure_1()`, which can be adapted by users if
 desired for their own data.
 
-## Figure 2
+## Figure 2A
 
 The MCMC samples of hake recruitment for each year are saved in the package as
 the tibble `hake_recruitment_mcmc`, with each column corresponding to a year
@@ -191,8 +191,81 @@ knitr::kable(res_all_years$intervals_all %>% select(quantity, integral_full,
                            # is easier to see.
 ```
 
+## Figure 2B
 
-HERE
+TODO
+
+The female spawning biomass is the estimated total biomass of all females in the
+population that are mature (roughtly half of age-2 fish are considered mature).
+
+
+## Absolute female spawning biomass
+
+The above (TODO check) was for relative female spawning biomass. We now briefly look at
+absolute female spawning biomass, in units of millions of tonnes. This is also
+saved as a data object in the package (`hake_spawning_biomass_mcmc`). The values
+for 2024 and 2023 are of interest and given in a bullet in the one-page summary of the hake assessment:
+
+"The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t
+(with 95% credible interval from 853,207 to 4,828,382 t). This is an upward shift
+from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t
+(with 95% credible interval from 652,495 to 3,224,819 t)."
+
+So those credible intervals are ETIs. How would HDIs compare?
+
+```{r sb1}
+res_all_years_spawning <-
+  create_intervals(dplyr::select(hake_spawning_biomass_mcmc,
+                                 -"Virgin"))
+
+res_all_years_spawning$intervals_all %>%
+  dplyr::filter(quantity %in% c(2023, 2024)) %>%
+  dplyr::select(quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
+  a()
+```
+The ETIs agree with the above quote (except for 2023 the upper value is 1
+tonne different). The credible interval using HDIs for 2024 is then
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$hdi_lower * 1e06)`
+to
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$hdi_upper * 1e06)` t,
+which is shifted downwards from the ETI of
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$eti_lower * 1e06)`
+to
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$eti_upper * 1e06)` t.
+The reduction in uncertainty is
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$width_diff * 1e06)` t,
+which is larger than the total catch (of males and females, not just spawning
+females) in the latest year of fishing (2023), and so is certainly not trivial.
+
+The ETI and HDI plots are
+```{r,  sb2, fig.height = 12}
+par(mfrow = c(2, 1))
+plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$quantity == 2024)]],
+     xlim = c(0, 8),
+     ylim = c(0, 0.6),
+     interval_arrows = TRUE,
+     y_arrow = 0.57,
+     xlab = "Female spawning biomass in 2024 (millions of tonnes)",
+     type = "eti")
+
+plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$quantity == 2024)]],
+     xlim = c(0, 8),
+     ylim = c(0, 0.6),
+     interval_arrows = TRUE,
+     y_arrow = 0.57,
+     xlab = "Female spawning biomass in 2024 (millions of tonnes)",
+     type = "hdi")
+```
+
+
+## TODO
+
+HERE - think some of this can go.
 
 D First save the `allow_hdi_zero` as an output in create_intervals.
   have been thinking about this slightly wrong. min data equals hdi lower
@@ -426,8 +499,8 @@ expect_equal(years_with_warning,
 ```
 
 The plots for 1975 and 2023 show similar unconcerning behaviour to that for
-2024.
-```{r warning4}
+2024:
+```{r warning4, fig.height = 12}
 par(mfrow = c(2, 1))
 
 plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 1975)]],
@@ -438,8 +511,9 @@ plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 2023)]
      xlim = c(0, 25),
      ylim = c(0, 0.1))
 ```
-Note that 2024 has no data to inform it and so represents the prior
-  distribution used in the assessment.
+
+Note that the 2023 and 2024 recruitments have no data to inform them and so
+are essentially samples from the prior distribution used in the assessment.
 
 So we recommend checking the plots to see that any such behaviour is
 acceptable. The "HDI is discontinuous ..." warning does not get printed, but if
@@ -553,7 +627,7 @@ HDInterval::hdi(tst, credMass=0.8)
 
 # Use our code, and check values agree, and then plot:
 res_tst_no_dens <- create_intervals(tst, density = FALSE, credibility = 0.8)
-expect_equal(as.numeric(hdi(tst, credMass=0.8)),
+expect_equal(as.numeric(HDInterval::hdi(tst, credMass=0.8)),
              c(res_tst_no_dens$intervals$hdi_lower,
                res_tst_no_dens$intervals$hdi_upper))
 plot(res_tst_no_dens)

@@ -22,7 +22,6 @@ assess_yr <- 2024       # Year of the hake assessment; update each year
 # mcmc_save() automatically creates the hake-<assess_yr> directory here if it doesn't exist,
 #  and puts the file into it, all named with assess_yr.
 
-# Recruitment
 hake_dir <- paste0(here::here(),
                    "/data-raw/hake-",
                    assess_yr,
@@ -42,8 +41,13 @@ expect_equal(as.numeric(rownames(hake_mcmc)),
 expect_equal(hake_mcmc["R_Virgin", ],
              hake_mcmc["R_Initial", ])
 
+hake_mcmc
+
+# This is everything that is saved:
+names(hake_mcmc)
 
 
+# Recruitment
 # Define objects similar to in pacea, but with _mcmc after
 
 hake_recruitment_mcmc <- dplyr::select(hake_mcmc,
@@ -97,6 +101,34 @@ usethis::use_data(hake_relative_biomass_mcmc,
                   overwrite = TRUE)
 
 
+# Female spawning biomass
+
+# These are identical
+expect_equal(hake_mcmc["B_Virgin", ],
+             hake_mcmc["B_Initial", ])
+
+hake_spawning_biomass_mcmc <- dplyr::select(hake_mcmc,
+                                            "B_Virgin",
+                                            "B_1966":"B_2024")
+hake_spawning_biomass_mcmc
+
+names(hake_spawning_biomass_mcmc) <- gsub(pattern = "B_",
+                                          replacement = "",
+                                          x = names(hake_spawning_biomass_mcmc))
+
+hake_spawning_biomass_mcmc <- as_tibble(hake_spawning_biomass_mcmc/1e6)
+ # Convert from tonnes to millions of tonnes to have reasonable numbers
+
+quantile(hake_spawning_biomass_mcmc$`2024`, c(0.025, 0.50, 0.975))
+  # These match 5th bullet of one-page summary (except 97.5% is off by 1 tonne).
+
+quantile(hake_spawning_biomass_mcmc$`2023`, c(0.025, 0.50, 0.975))
+  # These match 5th bullet of one-page summary that gives 2023 spawning biomass
+
+usethis::use_data(hake_spawning_biomass_mcmc,
+                  overwrite = TRUE)
+
+---
 
 
 # Trying to get experimental MCMC chains from server, as being used for Kelli's
