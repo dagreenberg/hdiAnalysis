@@ -14,6 +14,10 @@
 load_all()
 library(dplyr)
 
+source(paste0(here::here(),
+              "/R-orig/create-hake-forecast-mcmc.R"))
+
+
 assess_yr <- 2024       # Year of the hake assessment; update each year
 
 # Relative spawning biomass:
