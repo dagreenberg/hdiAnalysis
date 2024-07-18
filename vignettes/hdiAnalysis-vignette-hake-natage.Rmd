@@ -1,0 +1,208 @@
+---
+title: "Analysis for Pacific Hake Numbers at Age"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analysis for Pacific Hake Numbers at Age}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("hdiAnalysis-vignette-hake-natage.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+Copying the current `hdiAnalysis-vignette-herring-sog.Rmd` (which cut out the
+explanatory stuff) to look at numbers of
+age-1 and age-2 fish for hake. TODO maybe move to report, rather than vignette,
+then include what we endup reporoting as vignette (as then we can just save age1
+or age2 full MCMC, saving all over all years is too much).
+
+## Figure 1 equivalent
+
+```{r setup}
+load_all()      # TODO change to library(hdiAnalysis) when done
+library(dplyr)
+library(spatstat.geom)   # Needed for checking some integrals
+library(coda)            # Needed to test alternative code
+
+redo_results <- FALSE   # If FALSE then load in previous values and results, since takes a
+                        # while to do the calculations.
+```
+
+May want to functionalise a little like `create_hake_forecast_mcmc()`.
+
+TODO The hake numbers-at-age full MCMC results have been extracted and are saved
+and then wrangled here, not saved in the package.
+
+```{r loaddata}
+if(redo_results){
+  model_path <- paste0(here::here(),
+                       "/data-raw/hake-2024/02-version/01-base-models/01-base/")
+  natage_mcmc <- readRDS(paste0(model_path, "01-base-natage.rds"))
+  saveRDS(natage_mcmc, "natage_mcmc.rds")
+} else {
+  natage_mcmc <- readRDS("natage_mcmc.rds")
+}
+
+summary(natage_mcmc)
+dim(natage_mcmc)
+```
+
+So 59 years and 8000 samples gives 472,000 rows. Done by iteration 1, then each
+year, then iteration 2, etc. Ages are columns. And numbers of fish are in
+millions here (as for Table 17, but will convert to billions below for
+consistency in manuscript).
+
+Make a list, with components that are each a tibble for a given age, in the same
+format as `hake_recruitment_mcmc` (except no Virgin value), then we can use the same code:
+
+```{r rec}
+hake_recruitment_mcmc
+```
+
+So create the list:
+```{r natagelist}
+years <- unique(natage_mcmc$yr)
+ages <- as.numeric(names(natage_mcmc[-c(1, 2)]))
+
+if(redo_results){
+  hake_natage_mcmc_list <- list()
+
+  # Convert from millions to billions
+  natage_mcmc_billions <- natage_mcmc
+  index <- which(!names(natage_mcmc) %in% c("yr", "iter"))   # which columns are
+                                                             # numbers to rescale
+  natage_mcmc_billions[ , index]  <- natage_mcmc_billions[, index] / 1000
+
+  for(i in ages){
+    natage_this_age <- select(natage_mcmc_billions,
+                              yr,
+                              iter,
+                              as.character(all_of(i)))
+
+    natage_this_age_wide <- tidyr::pivot_wider(natage_this_age,
+                                               names_from = yr,
+                                               values_from = as.character(i))
+
+    hake_natage_mcmc_list[[paste0("age", i)]] <- select(natage_this_age_wide,
+                                                        -iter)
+  }
+  saveRDS(hake_natage_mcmc_list, "hake_natage_mcmc_list.rds")
+} else {
+  hake_natage_mcmc_list <- readRDS("hake_natage_mcmc_list.rds")
+}
+```
+
+Each element of the list is a tibble in the same format as
+`hake_recruitment_mcmc`, named as age0, age1, etc. up to age20.
+
+Now do the analysis for each age. Resulting list has an element for each age,
+which is itself a list object with the results for each year plus the summary in
+`intervals_all`, which includes the median which we can use for checking (or use
+each year's results for plotting).
+
+```{r analysis}
+if(redo_results){
+  hake_natage_res_list <- list()
+
+  for(ii in ages){
+    hake_natage_res_list[[paste0("age", ii)]] <- create_intervals(hake_natage_mcmc_list[[paste0("age", ii)]])
+  }
+  saveRDS(hake_natage_res_list, "hake_natage_res_list.rds")
+} else {
+  hake_natage_res_list <- readRDS("hake_natage_res_list.rds")
+}
+```
+
+Then check recruitment:
+```{r checkage0}
+# hake_natage_res_list[[paste0("age", i)]]
+hake_natage_res_list[["age0"]]$intervals_all %>% filter(quantity == 2021) %>% a()
+```
+
+Last result matches those for recruitment (as they should) in 2021 already in
+manuscript. Should be able to generate Figure 2a from these results, then look
+at example ages one at a time.
+
+So age-0 over time, then age-10 and age-20
+```{r age0plot}
+plot(hake_natage_res_list[["age0"]])
+plot(hake_natage_res_list[["age10"]])
+plot(hake_natage_res_list[["age20"]])
+```
+
+See the large uncertainty in age-20 at the start of uncertainty, since pretty
+uninformed by data; makes sense.
+
+Now work out the total difference in interval widths across all years, for each
+age class in turn (can't really just add all of those up as that's double
+counting). Have to exclude years that are uninformed by data, which would
+include early years for older fish, but we likely won't report those anyway so
+don't worry.
+
+```{r widthdiffage}
+total_width_diff_by_age <- tibble(age = ages,
+                                  total_width_diff = NA)
+
+for(i in ages){
+  if(i == 0){
+    sum_this_age <- hake_natage_res_list[[paste0("age", i)]]$intervals_all %>%
+      filter(!(quantity %in% c(2023, 2024))) %>%
+      pull(width_diff) %>%
+      sum()
+  }
+
+  if(i == 1){
+    sum_this_age <- hake_natage_res_list[[paste0("age", i)]]$intervals_all %>%
+      filter(!(quantity %in% c(2024))) %>%
+      pull(width_diff) %>%
+      sum()
+  }
+
+  if(i > 1){
+    sum_this_age <- sum(hake_natage_res_list[[paste0("age", i)]]$intervals_all$width_diff)
+  }
+
+  total_width_diff_by_age[total_width_diff_by_age$age == i, "total_width_diff"] <- sum_this_age
+}
+total_width_diff_by_age %>% a()
+```
+
+And to see all the values:
+```{r hakeagevalues}
+knitr::kable(total_width_diff_by_age,
+             digits = 1)
+```
+
+To plot equivalent to Figure 2A for each age class, first with each y-axis
+scaled independntly:
+```{r hakeeachage}
+for(i in ages){
+  plot(hake_natage_res_list[[paste0("age", i)]],
+       xlab = "Year",
+       ylab = paste0("Age-", i, " fish (billions)"))
+}
+```
+
+Now with each y-axis the same scale, to emphasise the diminishing numbers of
+fish as they age:
+```{r hakeeachage2}
+for(i in ages){
+  plot(hake_natage_res_list[[paste0("age", i)]],
+       xlab = "Year",
+       ylab = paste0("Age-", i, " fish (billions)"),
+       ylim = c(0, 35))
+}
+```
