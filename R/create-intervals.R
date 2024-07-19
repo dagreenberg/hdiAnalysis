@@ -150,7 +150,7 @@ create_intervals.numeric <- function(dat,
 
   hdi_res <- hdi_res_list$value
 
-  if(is.empty(hdi_res_list$warnings)){
+  if(length(hdi_res_list$warnings) == 0){
     hdi_res_warning <- FALSE
   } else {
     hdi_res_warning <- TRUE
