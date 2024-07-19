@@ -9,8 +9,14 @@ report/hake-lengths-wrangling-2.Rmd
 report/*.pdf
 report/*.eps
 
+report/herring/herring_mcmc.rds
+report/herring/herring_recruitment_mcmc.rds
+
 data/hake_recruitment_mcmc_14_long.rda
 
 *.Rproj
 /report/figure-1.pdf
 vignettes/populations.Rmd
+vignettes/hake_natage_mcmc_list.rds
+vignettes/hake_natage_res_list.rds
+vignettes/natage_mcmc.rds
