@@ -1,6 +1,8 @@
 ##' Plot a time series of intervals from multiple samples calculated from
 ##' `create_intervals()` applied to a data frame object.
 ##'
+##' TODO can maybe delete this I think. Expect it got used for default plotting functions.
+##'
 ##' Will show ETIs, HDIs, or both.
 ##'
 ##' TODO adapting from `plot_series` which I can delete once finalised.

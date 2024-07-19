@@ -11,6 +11,7 @@
   from = 0,
   n = 1e+05,
   tolerance = 0.01,
+  allow_hdi_zero = FALSE,
   ...
 )
 }
@@ -25,7 +26,9 @@ the pdf at specified points.}
 \item{credibility}{numeric value between 0 and 1 specifying the interval to
 be specified (0.95 for 95\%, 0.90 for 90\%, etc.)}
 
-\item{from}{the left-most point of the grid at which the density is to be estimated}
+\item{from}{the left-most point of the grid at which the density is to be
+estimated; if NULL then the default in \code{density()} will be used, which is
+'cut * bw' outside of 'min(x)' (see \code{?density}), and can fall below 0.}
 
 \item{n}{the number of equally spaced points at which the density is
 to be estimated, to be passed onto \code{density()}. We found the \code{density()}
@@ -37,10 +40,13 @@ resolution of the density kernel but not the wiggliness.}
 \item{tolerance}{amount (as a proportion) that the relative difference
 between \code{y_hdi_lower} and \code{y_hdi_upper} can be, calculated as their
 absolute difference divided by their mean. If the calculation is larger
-than \code{tolerance} then a warning is given. Only applicable when \code{density = TRUE}.}
+than \code{tolerance} then a warning is given. Only applicable when \code{density = TRUE}. NOT USED NOW, decide if need to keep (prob (not).}
+
+\item{allow_hdi_zero}{logical, if TRUE then allow HDI lower bound to include
+zero or be negative; if FALSE (the default) then do not allow this.}
 
 \item{...}{arguments to pass onto \code{density()}, including \code{to} which is
-the right-most equivalent to \code{from}}
+the right-most equivalent to \code{from}.}
 }
 \value{
 list object of class \code{intervals_density} (such that we can plot it
@@ -77,6 +83,14 @@ corresponding to either \code{y_hdi_lower} or \code{y_hdi_upper} (depending on w
 is the first \code{dens$x} value to push the integrated sum of the sorted
 cumulative \code{dens$y} values over \code{credibility}; see
 \code{HDInterval::hdi.density()}. Is \code{NA} if \code{density = FALSE}.
+\item warning: logical, if \code{TRUE} then a warning was produced during the
+\code{HDInterval::hdi()} calculation. If no warning printed then this warning
+was "The HDI is discontinuous but allowSplit = FALSE; the result is a
+valid CrI but not HDI.", else the new warning "New type of warning in
+create_intervals()." is printed and needs investigating. See
+\code{plot.intervals_density()} with \code{show_discontinuity = TRUE} to plot the
+discontinuities in the HDI.
+\item allow_hdi_zero: logical of \code{allow_hdi_zero} used
 }
 }
 }

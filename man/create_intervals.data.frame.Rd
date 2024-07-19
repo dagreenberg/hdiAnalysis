@@ -4,7 +4,7 @@
 \alias{create_intervals.data.frame}
 \title{Calculate ETIs and HDIs for a data frame of quantities.}
 \usage{
-\method{create_intervals}{data.frame}(dat_mcmc, ...)
+\method{create_intervals}{data.frame}(dat_mcmc, allow_hdi_zero = FALSE, credibility = 0.95, ...)
 }
 \arguments{
 \item{...}{arguments to pass to \code{create_intervals()} and then \code{density()}
