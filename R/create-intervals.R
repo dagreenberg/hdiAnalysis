@@ -112,10 +112,16 @@ create_intervals.numeric <- function(dat,
                     n = n,
                     ...)       # Use the default dens calculation
   }
-
+# browser()
   dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise to ensure
                                         # integrates to 1. TODO make simple
-                                        # standalone function for integral.
+                                        # standalone function for integral. And
+  # think more if this is okay to do.
+  # OR may have to just extend the range of density, by making 'to' bigger than
+  # the default. Or just increase cut quite a bit (will just take slightly
+  # longer to run); do a browser() to check the integral above. Was 1.000003
+  # ish, so not the problem in this case. i.e. it's not missing some off the
+  # ends. But try cut idea.
 
   if(density){
     # These get overwritten if calculations are redone in next if()
