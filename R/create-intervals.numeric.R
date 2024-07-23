@@ -97,9 +97,8 @@ create_intervals.numeric <- function(dat,
                     ...)       # Use the default dens calculation
   }
 # browser()
-  dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise to ensure
-                                        # integrates to 1. TODO make simple
-                                        # standalone function for integral. And
+  dens$y <- dens$y / integrate_simpsons(dens)  # normalise to ensure
+                                       # integrates to 1. TODO:
   # think more if this is okay to do.
   # OR may have to just extend the range of density, by making 'to' bigger than
   # the default. Or just increase cut quite a bit (will just take slightly
@@ -123,7 +122,7 @@ create_intervals.numeric <- function(dat,
                       n = n,
                       ...)
 
-      dens$y <- dens$y / spatstat.geom::integral(dens)  # normalise as for
+      dens$y <- dens$y / integrate_simpsons(dens)  # normalise as for
                                         # above. TODO write up in methods, and
                                         # the rest.
       hdi_res_list <- with_warnings(HDInterval::hdi(dens,
@@ -255,17 +254,17 @@ create_intervals.numeric <- function(dat,
 
   }
 
-  integral_full <- spatstat.geom::integral(dens)   # Should be 1 as we
+  integral_full <- integrate_simpsons(dens)   # Should be 1 as we
                                         # normalised to ensure.
 
 
-  integral_eti <- spatstat.geom::integral(dens,
-                                          domain = c(intervals$eti_lower,
-                                                     intervals$eti_upper))
+  integral_eti <- integrate_simpsons(dens,
+                                     domain = c(intervals$eti_lower,
+                                                intervals$eti_upper))
 
-  integral_hdi <- spatstat.geom::integral(dens,
-                                          domain = c(intervals$hdi_lower,
-                                                     intervals$hdi_upper))
+  integral_hdi <- integrate_simpsons(dens,
+                                     domain = c(intervals$hdi_lower,
+                                                intervals$hdi_upper))
   intervals <- dplyr::mutate(intervals,
                              i_eti_lower = i_eti_lower,
                              y_eti_lower = y_eti_lower,
