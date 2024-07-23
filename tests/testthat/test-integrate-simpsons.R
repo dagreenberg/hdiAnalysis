@@ -16,7 +16,7 @@ test_that("integrate_simpsons() gives sensible results", {
 
   expect_equal(res_2, 1, tolerance = 1e-05)
 
-  # Lognormal distribution based on saved simulation
+  # Lognormal distribution parameterised based on saved simulation
   res_3 <- integrate_simpsons(density(rlnorm(num_samples,
                                              meanlog = sim$mean_log,
                                              sdlog = sim$sd_log),
