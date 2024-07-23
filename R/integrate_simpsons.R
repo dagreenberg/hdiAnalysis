@@ -17,12 +17,13 @@
 ##'   corresponding `$y` for the density estimates.
 ##' @param tol numeric tolerance for checking that `dens$x` are equally spaced;
 ##'   increase if get an error
-##' @return
+##' @return the value of the integral
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##'
+##' integrate_simpsons(density(rnorm(8000), n = 1e05))  # n as used in default
+##'   for create_intervals()
 ##' }
 integrate_simpsons <- function(dens,
                                tol = 1e-08){
@@ -53,7 +54,7 @@ integrate_simpsons <- function(dens,
   stopifnot(n %% 2 == 0)   # n will be even
 
   h <- (max(x) - min(x))/ n
-browser()
+
   # Wikipedia formula is, with integral being J:
   # J ~= h/3 * (f(x_0) + 4 * sum_{i=1}^{n/2} f(x_{2i - 1}) +
   #       2 * sum_{i=1}^{n/2-1} f(x_{2i}) + f(x_n) )
@@ -97,13 +98,6 @@ browser()
 
   J <- h/3 * ( y[1] + 4 * sum(y[even_indices]) + 2 * sum(y[odd_indices]) +
        y[n+1]) + int_final_interval
+
   return(J)
 }
-
-
-  # could be wrong, can prob remove
-  #    = h/3 * (f(x_0) + 4 * sum_{i=1}^{n/2} f(x_{2i - 1}) +
-  #       2 * sum_{i=1}^{n/2-1} f(x_{2i}) + f(x_n) )
-
-  # ## could gbe wrJ ~= h/3 * (y[1] + 4 * sum_{j=2}^{(n+1)/2} f(x_{2j - 1}) +
-  #       2 * sum_{j=2}^{(n+1)/2-1} f(x_{2j}) + f(x_{n+1}) )
