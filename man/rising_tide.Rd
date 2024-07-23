@@ -2,14 +2,17 @@
 % Please edit documentation in R/rising-tide.R
 \name{rising_tide}
 \alias{rising_tide}
-\title{Plot
-\if{html}{\out{<desc>}}}
+\title{Plot}
 \usage{
 rising_tide()
 }
 \description{
-Plot
-\if{html}{\out{<desc>}}
+Not done yet.
+}
+\examples{
+\dontrun{
+
+}
 }
 \author{
 Andrew Edwards
