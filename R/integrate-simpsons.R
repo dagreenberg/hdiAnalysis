@@ -1,4 +1,4 @@
-##' Integration of a kernel density estimate using Simpson's rule of integration
+##' Integration of a one-dimensional kernel density estimate using Simpson's rule of integration
 ##'
 ##' Based on algorithm in Table 18.4 on p961 of Kreyszig (1993) Advanced
 ##' Engineering Mathematics (Seventh Edition). Also the [Composition Simpson's
@@ -15,6 +15,8 @@
 ##'
 ##' @param dens kernel density estimate, that has `$x` as the x values with
 ##'   corresponding `$y` for the density estimates.
+##' @param domain numeric vector of two values giving the domain over which to
+##'   calculate the integral
 ##' @param tol numeric tolerance for checking that `dens$x` are equally spaced;
 ##'   increase if get an error
 ##' @return the value of the integral
@@ -26,27 +28,45 @@
 ##'   for create_intervals()
 ##' }
 integrate_simpsons <- function(dens,
+                               domain,
                                tol = 1e-08){
   stopifnot(class(dens) == "density")
 
   diff_x <- diff(dens$x)
   stopifnot("Check that dens$x is equally spaced; increase `tol` if needed" =
               diff(range(diff_x)) <= tol)
+browser()
+  if(missing(domain)){
+    # Integrate over full domain
+    x_domain <- dens$x
+    y_domain <- dens$x
+  } else {
+    stopifnot(length(domain) == 2)
+
+    x_indices_in_domain <- which(dens$x >= domain[1] & dens$x <= domain[2])
+    x_domain <- dens$x[x_indices_in_domain]
+    y_domain <- dens$y[x_indices_in_domain]
+    # TODO browser and do some manual checking here
+  }
+
+# TODO Add a WARNING if domain not close to exact points - actually will be for
+  # our purposes since using density and domain will be some density-based value
+  # probably. Actually may just need a check.
 
   # If an even number of points then use trapezoid rule for final one, and then
   # remove it for Simpson's rule calculation
-  num_orig_points <- length(dens$x)
-  if(num_orig_points %% 2 == 0){
-    final_interval_y_values <- dens$y[(num_orig_points - 1):num_orig_points]
+  num_domain_points <- length(x_domain)
+  if(num_domain_points %% 2 == 0){
+    final_interval_y_values <- y_domain[(num_domain_points - 1):num_domain_points]
     int_final_interval <- mean(final_interval_y_values) * diff(final_interval_y_values)
 
     # Remove final values
-    x <- dens$x[-num_orig_points]
-    y <- dens$y[-num_orig_points]
+    x <- x_domain[-num_domain_points]
+    y <- y_domain[-num_domain_points]
   } else {
     int_final_interval <- 0
-    x <- dens$x
-    y <- dens$y
+    x <- x_domain
+    y <- y_domain
   }
 
   n <- length(x) - 1       # Number of sub-intervals. i=0 in formulae
