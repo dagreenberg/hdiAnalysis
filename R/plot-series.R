@@ -1,7 +1,10 @@
 ##' Plot a time series of intervals from multiple samples calculated from
 ##' `create_intervals()` applied to a data frame object.
 ##'
-##' TODO can maybe delete this I think. Expect it got used for default plotting functions.
+##' TODO can maybe delete this I think. Expect it got used for default plotting
+##' functions. Is is hdi-analysis.Rmd, so think about if that needs rerunning
+##' again; may just want to keep the pdf for historical reasons, as other
+##' vignettes now show new calculations..
 ##'
 ##' Will show ETIs, HDIs, or both.
 ##'
@@ -29,7 +32,6 @@
 ##' @param add_line_at_1_col colour for line at 1
 ##' @param add_line_at_1_lty line type of line at 1
 ##' @param ... further options passed onto `plot.default()`
-##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
 ##' @export

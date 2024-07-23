@@ -30,7 +30,6 @@
 ##' @param add_line_at_1_col colour for line at 1
 ##' @param add_line_at_1_lty line type of line at 1
 ##' @param ... further options passed onto `plot.default()`
-##' @inherit plot.pacea_index
 ##' @return plot of the time series as median with bars showing uncertainty (if
 ##'   `low` and `high` are columns of `obj) to the current device; returns nothing.
 ##' @export

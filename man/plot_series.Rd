@@ -60,7 +60,10 @@ plot of the time series as median with bars showing uncertainty (if
 \code{low} and \code{high} are columns of `obj) to the current device; returns nothing.
 }
 \description{
-TODO can maybe delete this I think. Expect it got used for default plotting functions.
+TODO can maybe delete this I think. Expect it got used for default plotting
+functions. Is is hdi-analysis.Rmd, so think about if that needs rerunning
+again; may just want to keep the pdf for historical reasons, as other
+vignettes now show new calculations..
 }
 \details{
 Will show ETIs, HDIs, or both.
