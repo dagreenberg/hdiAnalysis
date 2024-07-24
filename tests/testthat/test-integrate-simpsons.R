@@ -14,7 +14,7 @@ test_that("integrate_simpsons() gives sensible results", {
   res_2 <- integrate_simpsons(density(rlnorm(num_samples),
                                       n = n_for_density))
 
-  expect_equal(res_2, 1, tolerance = 1e-04)   # worked locally with 1e-05 but
+  expect_equal(res_2, 1, tolerance = 1e-05)   # worked locally with 1e-05 but
                                         # not on GHA
 
   # Lognormal distribution parameterised based on saved simulation
