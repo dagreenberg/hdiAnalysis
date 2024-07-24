@@ -16,7 +16,9 @@
 ##' @param dens kernel density estimate, that has `$x` as the x values with
 ##'   corresponding `$y` for the density estimates.
 ##' @param domain numeric vector of two values giving the domain over which to
-##'   calculate the integral
+##'   calculate the integral, must be within `range(dens$x)`, i.e.
+##'   `min(dens$x) <= domain[1] & max(dens$x) >= domain[2]`. Since we cannot
+##'   integrate outside of the domain of the kernel density estimate.
 ##' @param tol numeric tolerance for checking that `dens$x` are equally spaced;
 ##'   increase if get an error
 ##' @return the value of the integral
@@ -33,27 +35,60 @@ integrate_simpsons <- function(dens,
                                domain,
                                tol = 1e-08){
   stopifnot(class(dens) == "density")
+  stopifnot(min(dens$y) >= 0)
 
   diff_x <- diff(dens$x)
+
+
   stopifnot("Check that dens$x is equally spaced; increase `tol` if needed" =
               diff(range(diff_x)) <= tol)
+
+  if(!missing(domain)){
+    stopifnot(length(domain) == 2)
+    stopifnot("Need to set domain to be within range(dens$x); equality is okay." = min(dens$x) <= domain[1] & max(dens$x) >= domain[2])
+  }
 
   if(missing(domain)){
     # Integrate over full domain
     x_domain <- dens$x
     y_domain <- dens$y
+    int_extra_left <- 0
+    int_extra_right <- 0
   } else {
-    stopifnot(length(domain) == 2)
-
     x_indices_in_domain <- which(dens$x >= domain[1] & dens$x <= domain[2])
     x_domain <- dens$x[x_indices_in_domain]
     y_domain <- dens$y[x_indices_in_domain]
-    # TODO browser and do some manual checking here
-  }
+    x_domain_length <- length(x_domain)
 
-# TODO Add a WARNING if domain not close to exact points - actually will be for
-  # our purposes since using density and domain will be some density-based value
-  # probably. Actually may just need a check.
+    # Do traezoid rule to calculate the area between domain[1] and x_domain[1],
+    # and x_domain[length(x_domain)] and domain[2]. For when domain is not
+    # exactly on dens$x values. Then add these onto final interval. Set to 0
+    # above when domain is empty.
+    # We don't know the y-values corresponding to the x-values domain[1] and
+    # domain[2], so need to interpolate them with intermediate_y().
+
+# TODO case when min(x_indices_in_domain) = 1, and similar
+    y_at_domain_1 <- intermediate_y(domain[1],
+                                    dens$x[min(x_indices_in_domain) - 1],
+                                    x_domain[1], # = dens$x[min(x_indices_in_domain)]
+                                    dens$y[min(x_indices_in_domain) - 1],
+                                    y_domain[1])  # = dens$y[min(x_indices_in_domain)]
+
+    int_extra_left <- mean(c(y_at_domain_1, y_domain[1])) *
+      (x_domain[1] - domain[1])
+
+
+    y_at_domain_2 <- intermediate_y(domain[2],
+                                    x_domain[x_domain_length],
+                                    dens$x[max(x_indices_in_domain) + 1],
+                                    y_domain[x_domain_length],
+                                    dens$y[max(x_indices_in_domain) + 1])
+
+    int_extra_right <- mean(c(y_domain[x_domain_length], y_at_domain_2)) *
+      (domain[2] - x_domain[x_domain_length])
+
+browser()
+  }
 
   # If an even number of points (so an odd number of intervals, but Simpson's
   # rule needs even number of intervals) then use trapezoid rule for final one, and then
@@ -123,7 +158,9 @@ integrate_simpsons <- function(dens,
   J <- h/3 * ( y[1] + 4 * sum(y[even_indices]) +
                2 * sum(y[odd_indices]) +
                y[n+1]) +
-         int_final_interval
+    int_final_interval +
+    int_extra_left +
+    int_extra_right
 
   return(J)
 }
