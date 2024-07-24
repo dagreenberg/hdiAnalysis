@@ -11,17 +11,22 @@
 ##' calculations since the points will be a round number), then we use the
 ##' trapezoid rule for the final point, which is likely close to zero anyway
 ##' because the density kernel should be reaching far enough away from the bulk
-##' of the density.
+##' of the density. Function also allows specify of a domain in x over which to
+##' integrate; the values of domain do not have to be exact values at which the
+##' density kernel is estimated.
 ##'
 ##' @param dens kernel density estimate, that has `$x` as the x values with
 ##'   corresponding `$y` for the density estimates.
 ##' @param domain numeric vector of two values giving the domain over which to
 ##'   calculate the integral, must be within `range(dens$x)`, i.e.
-##'   `min(dens$x) <= domain[1] & max(dens$x) >= domain[2]`. Since we cannot
-##'   integrate outside of the domain of the kernel density estimate.
+##'   `min(dens$x) <= domain[1] & max(dens$x) >= domain[2]` since we cannot
+##'   integrate outside of the domain of the kernel density estimate. If
+##'   the values of `domain` are not exact values of `dens$x` then a a simple
+##'   trapezoid rule (and interpolation) approximation is used to add the extra
+##'   area on the left and/or right ends of domain.
 ##' @param tol numeric tolerance for checking that `dens$x` are equally spaced;
-##'   increase if get an error
-##' @return the value of the integral
+##'   increase if get an error.
+##' @return numeric value of the integral
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
@@ -30,6 +35,7 @@
 ##'   for create_intervals()
 ##' dens <- density(sim$values, n = 1e05)
 ##' integrate_simpsons(dens)
+##' integrate_simpsons(dens, domain = c(40, 70))
 ##' }
 integrate_simpsons <- function(dens,
                                domain,

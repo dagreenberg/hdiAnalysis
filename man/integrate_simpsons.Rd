@@ -2,19 +2,27 @@
 % Please edit documentation in R/integrate-simpsons.R
 \name{integrate_simpsons}
 \alias{integrate_simpsons}
-\title{Integration of a kernel density estimate using Simpson's rule of integration}
+\title{Integration of a one-dimensional kernel density estimate using Simpson's rule of integration}
 \usage{
-integrate_simpsons(dens, tol = 1e-08)
+integrate_simpsons(dens, domain, tol = 1e-08)
 }
 \arguments{
 \item{dens}{kernel density estimate, that has \verb{$x} as the x values with
 corresponding \verb{$y} for the density estimates.}
 
+\item{domain}{numeric vector of two values giving the domain over which to
+calculate the integral, must be within \code{range(dens$x)}, i.e.
+\code{min(dens$x) <= domain[1] & max(dens$x) >= domain[2]} since we cannot
+integrate outside of the domain of the kernel density estimate. If
+the values of \code{domain} are not exact values of \code{dens$x} then a a simple
+trapezoid rule (and interpolation) approximation is used to add the extra
+area on the left and/or right ends of domain.}
+
 \item{tol}{numeric tolerance for checking that \code{dens$x} are equally spaced;
-increase if get an error}
+increase if get an error.}
 }
 \value{
-the value of the integral
+numeric value of the integral
 }
 \description{
 Based on algorithm in Table 18.4 on p961 of Kreyszig (1993) Advanced
@@ -27,12 +35,17 @@ odd number (so even number of points, which is likely the case for density
 calculations since the points will be a round number), then we use the
 trapezoid rule for the final point, which is likely close to zero anyway
 because the density kernel should be reaching far enough away from the bulk
-of the density.
+of the density. Function also allows specify of a domain in x over which to
+integrate; the values of domain do not have to be exact values at which the
+density kernel is estimated.
 }
 \examples{
 \dontrun{
 integrate_simpsons(density(rnorm(8000), n = 1e05))  # n as used in default
   for create_intervals()
+dens <- density(sim$values, n = 1e05)
+integrate_simpsons(dens)
+integrate_simpsons(dens, domain = c(40, 70))
 }
 }
 \author{
