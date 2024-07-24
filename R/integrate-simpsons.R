@@ -26,6 +26,8 @@
 ##' \dontrun{
 ##' integrate_simpsons(density(rnorm(8000), n = 1e05))  # n as used in default
 ##'   for create_intervals()
+##' dens <- density(sim$values)
+##' integrate_simpsons(dens)
 ##' }
 integrate_simpsons <- function(dens,
                                domain,
@@ -39,7 +41,7 @@ browser()
   if(missing(domain)){
     # Integrate over full domain
     x_domain <- dens$x
-    y_domain <- dens$x
+    y_domain <- dens$y
   } else {
     stopifnot(length(domain) == 2)
 
@@ -57,8 +59,9 @@ browser()
   # remove it for Simpson's rule calculation
   num_domain_points <- length(x_domain)
   if(num_domain_points %% 2 == 0){
+    final_interval_x_values <- x_domain[(num_domain_points - 1):num_domain_points]
     final_interval_y_values <- y_domain[(num_domain_points - 1):num_domain_points]
-    int_final_interval <- mean(final_interval_y_values) * diff(final_interval_y_values)
+    int_final_interval <- mean(final_interval_y_values) * diff(final_interval_x_values)
 
     # Remove final values
     x <- x_domain[-num_domain_points]
