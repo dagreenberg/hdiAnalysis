@@ -26,7 +26,7 @@
 ##' \dontrun{
 ##' integrate_simpsons(density(rnorm(8000), n = 1e05))  # n as used in default
 ##'   for create_intervals()
-##' dens <- density(sim$values)
+##' dens <- density(sim$values, n = 1e05)
 ##' integrate_simpsons(dens)
 ##' }
 integrate_simpsons <- function(dens,
@@ -37,7 +37,7 @@ integrate_simpsons <- function(dens,
   diff_x <- diff(dens$x)
   stopifnot("Check that dens$x is equally spaced; increase `tol` if needed" =
               diff(range(diff_x)) <= tol)
-browser()
+
   if(missing(domain)){
     # Integrate over full domain
     x_domain <- dens$x
@@ -55,7 +55,8 @@ browser()
   # our purposes since using density and domain will be some density-based value
   # probably. Actually may just need a check.
 
-  # If an even number of points then use trapezoid rule for final one, and then
+  # If an even number of points (so an odd number of intervals, but Simpson's
+  # rule needs even number of intervals) then use trapezoid rule for final one, and then
   # remove it for Simpson's rule calculation
   num_domain_points <- length(x_domain)
   if(num_domain_points %% 2 == 0){
@@ -63,7 +64,7 @@ browser()
     final_interval_y_values <- y_domain[(num_domain_points - 1):num_domain_points]
     int_final_interval <- mean(final_interval_y_values) * diff(final_interval_x_values)
 
-    # Remove final values
+    # Remove final value
     x <- x_domain[-num_domain_points]
     y <- y_domain[-num_domain_points]
   } else {
@@ -119,8 +120,10 @@ browser()
   # f(x_n)
   # y[n+1]
 
-  J <- h/3 * ( y[1] + 4 * sum(y[even_indices]) + 2 * sum(y[odd_indices]) +
-       y[n+1]) + int_final_interval
+  J <- h/3 * ( y[1] + 4 * sum(y[even_indices]) +
+               2 * sum(y[odd_indices]) +
+               y[n+1]) +
+         int_final_interval
 
   return(J)
 }
