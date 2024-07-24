@@ -96,7 +96,6 @@ integrate_simpsons <- function(dens,
       int_extra_right <- mean(c(y_domain[x_domain_length], y_at_domain_2)) *
         (domain[2] - x_domain[x_domain_length])
     }
-browser()
   }
 
   # If an even number of points (so an odd number of intervals, but Simpson's
