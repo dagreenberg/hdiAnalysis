@@ -39,7 +39,6 @@ integrate_simpsons <- function(dens,
 
   diff_x <- diff(dens$x)
 
-
   stopifnot("Check that dens$x is equally spaced; increase `tol` if needed" =
               diff(range(diff_x)) <= tol)
 
@@ -67,26 +66,36 @@ integrate_simpsons <- function(dens,
     # We don't know the y-values corresponding to the x-values domain[1] and
     # domain[2], so need to interpolate them with intermediate_y().
 
-# TODO case when min(x_indices_in_domain) = 1, and similar
-    y_at_domain_1 <- intermediate_y(domain[1],
-                                    dens$x[min(x_indices_in_domain) - 1],
-                                    x_domain[1], # = dens$x[min(x_indices_in_domain)]
-                                    dens$y[min(x_indices_in_domain) - 1],
-                                    y_domain[1])  # = dens$y[min(x_indices_in_domain)]
+    if(min(x_indices_in_domain) == 1){      # Then domain[1] == dens$x[1] since
+                                            # already checked that don't have
+                                            # dens$x[1] > domain[1]
+      int_extra_left <- 0
+    } else {
 
-    int_extra_left <- mean(c(y_at_domain_1, y_domain[1])) *
-      (x_domain[1] - domain[1])
+      y_at_domain_1 <- intermediate_y(domain[1],
+                                      dens$x[min(x_indices_in_domain) - 1],
+                                      x_domain[1], # = dens$x[min(x_indices_in_domain)]
+                                      dens$y[min(x_indices_in_domain) - 1],
+                                      y_domain[1])  # = dens$y[min(x_indices_in_domain)]
 
+      int_extra_left <- mean(c(y_at_domain_1, y_domain[1])) *
+        (x_domain[1] - domain[1])
+    }
 
-    y_at_domain_2 <- intermediate_y(domain[2],
-                                    x_domain[x_domain_length],
-                                    dens$x[max(x_indices_in_domain) + 1],
-                                    y_domain[x_domain_length],
-                                    dens$y[max(x_indices_in_domain) + 1])
+    if(max(x_indices_in_domain) == length(dens$x)){
+      # Then domain[2] == dens$x[length(dens$x)] since
+      # already checked that don't have dens$x[length(dens$x)] < domain[2]
+      int_extra_right <- 0
+    } else {
+      y_at_domain_2 <- intermediate_y(domain[2],
+                                      x_domain[x_domain_length],
+                                      dens$x[max(x_indices_in_domain) + 1],
+                                      y_domain[x_domain_length],
+                                      dens$y[max(x_indices_in_domain) + 1])
 
-    int_extra_right <- mean(c(y_domain[x_domain_length], y_at_domain_2)) *
-      (domain[2] - x_domain[x_domain_length])
-
+      int_extra_right <- mean(c(y_domain[x_domain_length], y_at_domain_2)) *
+        (domain[2] - x_domain[x_domain_length])
+    }
 browser()
   }
 
