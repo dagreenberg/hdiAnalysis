@@ -52,7 +52,13 @@ n_for_density <- formals(create_intervals.numeric)$n
 ints_simulations <- data.frame(sim_num = 0,   # 0 for theoretical, then easy to plot
                           full = plnorm(Inf, mean_log, sd_log),
                           int_to_mean = plnorm(exp(mean_log), mean_log, sd_log),
-                          int_to_100 = plnorm(100, mean_log, sd_log))   # 100 is a bit arbitrary
+                          int_to_100 = plnorm(100, mean_log, sd_log),   # 100 is a bit arbitrary
+                          # Doing normalised kernels below, the theoretical
+                          # values are the same here though:
+                          full_norm = plnorm(Inf, mean_log, sd_log),
+                          int_to_mean_norm = plnorm(exp(mean_log), mean_log, sd_log),
+                          int_to_100_norm = plnorm(100, mean_log, sd_log))
+
                           # Change below if this changes.
 
 for(i in 1:num_sims){
@@ -62,7 +68,7 @@ for(i in 1:num_sims){
                      sd_log)
 
   this_dens <- density(this_sim,
-                       n = n_for_density)
+                              n = n_for_density)
 
   this_int_full <- integrate_simpsons(this_dens)
 
@@ -74,6 +80,20 @@ for(i in 1:num_sims){
                                          c(min(this_dens$x),
                                            100))
 
+  # Then normalise the density and do the calculations, see if they are closer
+  # to theoretical
+  this_dens_norm <- this_dens
+  this_dens_norm$y <- this_dens_norm$y/this_int_full
+
+  this_int_full_norm <- integrate_simpsons(this_dens_norm)
+
+  this_int_to_mean_norm <- integrate_simpsons(this_dens_norm,
+                                              c(min(this_dens_norm$x),
+                                                exp(mean_log)))
+  # Just to 100 (kind of arbitrarily)
+  this_int_to_100_norm <- integrate_simpsons(this_dens_norm,
+                                             c(min(this_dens_norm$x),
+                                               100))
 
 #  simulations[[i]] <- list("values" = this_sim,
 #                           "ints_sim" = this_int_sim)
@@ -82,7 +102,11 @@ for(i in 1:num_sims){
                             c(i,
                               this_int_full,
                               this_int_to_mean,
-                              this_int_to_100))
+                              this_int_to_100,
+                              this_int_full_norm,
+                              this_int_to_mean_norm,
+                              this_int_to_100_norm))
+
   if(i == 1){
     plot(this_dens,
          main = "Kernel density estimate for first iteration")
@@ -92,9 +116,10 @@ for(i in 1:num_sims){
 ints_simulations <- tibble::as_tibble(ints_simulations)
 ints_simulations
 
-sum(ints_simulations$full < pull(ints_simulations[1, "full"]))
-sum(ints_simulations$int_to_mean < pull(ints_simulations[1, "int_to_mean"]))
-sum(ints_simulations$int_to_100 < pull(ints_simulations[1, "int_to_100"]))
+# These are in the plots
+# sum(ints_simulations$full < pull(ints_simulations[1, "full"]))
+# sum(ints_simulations$int_to_mean < pull(ints_simulations[1, "int_to_mean"]))
+# sum(ints_simulations$int_to_100 < pull(ints_simulations[1, "int_to_100"]))
 ```
 
 Now to plot the values, ordering the results in each plot:
@@ -136,3 +161,46 @@ abline(v = filter(ints_simulations, sim_num == 0) %>%
        col = "red")
 
 ```
+
+For the normalised density kernels, plot the values in the same way:
+```{r plotintsnorm}
+# Full integral
+plot(sort(ints_simulations$full_norm),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Full integral",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for full integral is ",
+                   sum(ints_simulations$full_norm < pull(ints_simulations[1, "full_norm"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(full_norm),
+       col = "red")
+
+# Integral to mean (which is the mode, so not overly surprising okay if not perfect)
+plot(sort(ints_simulations$int_to_mean_norm),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Integral to mean",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for integral to mean is ",
+                   sum(ints_simulations$int_to_mean_norm < pull(ints_simulations[1, "int_to_mean_norm"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(int_to_mean_norm),
+       col = "red")
+
+# Integral to 100 (slighlty arbitrary)
+plot(sort(ints_simulations$int_to_100_norm),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Integral to 100",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for integral to 100 is ",
+                   sum(ints_simulations$int_to_100_norm < pull(ints_simulations[1, "int_to_100_norm"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(int_to_100_norm),
+       col = "red")
+```
+
+Looks like the miniscule rescaling of the kernel densities (see the first plot,
+the integrals are only just above 1) makes little difference, as not rescaling
+much. So don't bother with it.
