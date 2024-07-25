@@ -1,0 +1,138 @@
+---
+title: "Simpson's simulation vignette"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simpson's simulation vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("simpsons-simulation.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+Doing some simulations to check some things regarding Simpson's Rule code. May
+not be needed in final version, or move to report.
+
+```{r setup}
+load_all()      # TODO change to library(hdiAnalysis) when done
+library(dplyr)
+```
+
+Simulated values are saved in the `sim` list object, so just use those.
+
+```{r ints}
+mean_log <- sim$mean_log
+sd_log <- sim$sd_log
+n <- length(sim$values)
+mean_log
+sd_log
+n
+```
+
+Do repeated simulations with the same parameters for a lognormal, then
+maybe need to do for multiple different parameters.
+
+```{r simulations}
+num_sims <- 1000
+simulations <- list()
+n_for_density <- formals(create_intervals.numeric)$n
+ints_simulations <- data.frame(sim_num = 0,   # 0 for theoretical, then easy to plot
+                          full = plnorm(Inf, mean_log, sd_log),
+                          int_to_mean = plnorm(exp(mean_log), mean_log, sd_log),
+                          int_to_100 = plnorm(100, mean_log, sd_log))   # 100 is a bit arbitrary
+                          # Change below if this changes.
+
+for(i in 1:num_sims){
+  set.seed(i)
+  this_sim <- rlnorm(n,
+                     mean_log,
+                     sd_log)
+
+  this_dens <- density(this_sim,
+                       n = n_for_density)
+
+  this_int_full <- integrate_simpsons(this_dens)
+
+  this_int_to_mean <- integrate_simpsons(this_dens,
+                                         c(min(this_dens$x),
+                                           exp(mean_log)))
+  # Just to 100 (kind of arbitrarily)
+  this_int_to_100 <- integrate_simpsons(this_dens,
+                                         c(min(this_dens$x),
+                                           100))
+
+
+#  simulations[[i]] <- list("values" = this_sim,
+#                           "ints_sim" = this_int_sim)
+
+  ints_simulations <- rbind(ints_simulations,
+                            c(i,
+                              this_int_full,
+                              this_int_to_mean,
+                              this_int_to_100))
+  if(i == 1){
+    plot(this_dens,
+         main = "Kernel density estimate for first iteration")
+  }
+
+}
+ints_simulations <- tibble::as_tibble(ints_simulations)
+ints_simulations
+
+sum(ints_simulations$full < pull(ints_simulations[1, "full"]))
+sum(ints_simulations$int_to_mean < pull(ints_simulations[1, "int_to_mean"]))
+sum(ints_simulations$int_to_100 < pull(ints_simulations[1, "int_to_100"]))
+```
+
+Now to plot the values, ordering the results in each plot:
+```{r plotints}
+# Full integral
+plot(sort(ints_simulations$full),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Full integral",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for full integral is ",
+                   sum(ints_simulations$full < pull(ints_simulations[1, "full"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(full),
+       col = "red")
+
+# Integral to mean (which is the mode, so not overly surprising okay if not perfect)
+plot(sort(ints_simulations$int_to_mean),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Integral to mean",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for integral to mean is ",
+                   sum(ints_simulations$int_to_mean < pull(ints_simulations[1, "int_to_mean"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(int_to_mean),
+       col = "red")
+
+# Integral to 100 (slighlty arbitrary)
+plot(sort(ints_simulations$int_to_100),
+     ints_simulations$sim_num,    # Not actually since sorted
+     xlab = "Integral to 100",
+     ylab = "Sorted simulations",
+     main = paste0("Proportion less than theoretical for integral to 100 is ",
+                   sum(ints_simulations$int_to_100 < pull(ints_simulations[1, "int_to_100"]))/num_sims))
+
+abline(v = filter(ints_simulations, sim_num == 0) %>%
+         pull(int_to_100),
+       col = "red")
+
+```
