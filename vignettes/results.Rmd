@@ -1,0 +1,682 @@
+---
+title: "Results"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette for hdiAnalysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("results.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+Copying `hdiAnalysis-vignette.Rmd` to redo here with `density = FALSE`, to
+get numbers and plots for manuscript.
+
+TODO If stick with `density = FALSE` then change `create_intervals()` default to
+that, and remove the specific options here, and redo any other required
+vignettes (likely just save them and their pdf's for reference; might not need
+them all anyway).
+
+We present what works, to be used as a template for other analyses, and TODO
+[might not need] then
+change some code settings to show what did not work for our investigations.
+
+## Figure 1
+
+```{r setup}
+load_all()      # TODO change to library(hdiAnalysis) when done
+library(dplyr)
+library(coda)            # Needed to test alternative code
+```
+
+The hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
+values are saved as data objects in the package, with `rec_2021` being the
+vector of 8,000 MCMC values used for our Fig. 1.
+
+```{r rec1}
+summary(rec_2021)
+length(rec_2021)
+res_2021 <- create_intervals(rec_2021,
+                             density = FALSE)
+res_2021
+res_2021$intervals %>% a()
+```
+
+Check the integral with our `integrate_simpsons()` function to evaluate an integral on
+a density object (our function gives very similar results to the
+`spatstat.geom::integral()` one that we originally used, but that messed up the testing):
+```{r rec2}
+integrate_simpsons(res_2021$density)
+integrate_simpsons(res_2021$density,
+                        domain = c(as.numeric(res_2021$intervals$eti_lower),
+                                   as.numeric(res_2021$intervals$eti_upper)))
+
+integrate_simpsons(res_2021$density,
+                        domain = c(as.numeric(res_2021$intervals$hdi_lower),
+                                   as.numeric(res_2021$intervals$hdi_upper)))
+```
+So the ETI approach is only a 94% interval, so it's actually narrower
+than the true 95% ETI interval. This is because it has not used the density, which could
+be changed to make a more accurate interval. But no-one ever has so we should not
+get into. So maybe mention in Extended Methods.
+
+HDI is bang on, which is a good confirmation. TODO do that with other options
+that didn't work.
+
+Plotting the resulting density function and intervals is simply done using our
+custom plotting functions, with options for automatically adding intervals and lines. The ETI is:
+```{r plot}
+plot(res_2021,
+     type = "eti",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
+and the HDI is
+```{r plot2}
+plot(res_2021,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
+The `res_2021` object has our class `intervals_density`, and our custom plotting
+function `plot.intervals_density()` automatically gets used on the object. See
+`?plot.intervals_density()` for details and full options. Our complete Figure 1
+is reproduced with the command `figure_1()`, which can be adapted by users if
+desired for their own data.
+
+## Figure 2A
+
+The MCMC samples of hake recruitment for each year are saved in the package as
+the tibble `hake_recruitment_mcmc`, with each column corresponding to a year
+(with the first column representing the Virgin situation) and each of the 8,000
+rows representing an MCMC sample:
+```{r hake_mcmc}
+hake_recruitment_mcmc
+```
+
+To create ETIs and HDIs for estimates of recruitment for each year, simply use
+`create_intervals()` which, because `hake_recruitment_mcmc` has class
+`data.frame`, uses our function `create_intervals.data.frame()` to automatically
+calculate intervals for each column (year in this case, and we will exclude the
+Virgin sample) of samples.
+```{r hake_mcmc2}
+res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                -"Virgin"),
+                                  density = FALSE)
+```
+This gives a list object, with `res_all` being a list for which each element corresponds to a year and
+gives the same results as above for a single year (and also with the `$name`
+element corresponding the column of the input, a year in this example). So the
+2021 results from above are:
+```{r hake_mcmc3}
+res_all_years$res_all[[56]]
+```
+
+For convenience, the intervals for all years are saved in a single tibble:
+```{r hake_mcmc4}
+res_all_years$intervals_all
+```
+
+To see the main values of interest, namely the ETIs and HDIs and the difference
+between their widths:
+```{r hake_mcmc5}
+dplyr::select(res_all_years$intervals_all,
+              quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
+  a()
+```
+
+The sum of the differences over all years between the width of the ETI and width
+of the HDI, but excluding 2023 and 2024 as these are not informed by data, is
+```{r hake_mcmc6}
+res_all_years$intervals_all %>%
+  dplyr::filter(!quantity %in% c(2023, 2024)) %>%
+  dplyr::pull(width_diff) %>%
+  sum()
+```
+which is the source of the ``>25 billion fish`` statement reported in the main text.
+
+To plot Fig. 2A, we have a custom plotting function
+`plot.intervals_density_list()`, that gets called because `res_all_years` is
+defined to have class `intervals_density_list`, so we can just use:
+```{r hake_mcmc7}
+plot(res_all_years)
+```
+
+The ETIs match those shown in Table 24 of the 2024 hake assessment (values
+manually checked, code not run here)
+```{r hake_mcmc8, eval = FALSE}
+res_all_years$intervals_all %>%
+  dplyr::select(eti_lower, eti_upper) %>%
+  a() %>%
+  round(3) * 1000
+```
+
+To plot all density plots and ETIs (might not be evaluated when editing as take a long time):
+```{r hake_mcmc9, fig.height = 360, eval = FALSE}
+plot(res_all_years,
+     type = "eti",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(60, 1))  # 59 default
+```
+
+To plot all density plots and HDis (might not be evaluated when editing as take a long time):
+```{r hake_mcmc9hdi, fig.height = 360, eval = FALSE}
+plot(res_all_years,
+     type = "hdi",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(60, 1))  # 59 default
+```
+
+And to see all the values:
+```{r hake_mcmc9values}
+# res_all_years$intervals_all %>% select(quantity, integral_full, integral_eti,
+#                                       integral_hdi) %>%
+#  print(n=60)
+knitr::kable(res_all_years$intervals_all %>% select(quantity, integral_full,
+                                                    integral_eti, integral_hdi),
+             digits = 2)   # 3 shows that HDI are 95.0 except two 95.1, but this
+                           # is easier to see.
+```
+
+## Figure 2B
+
+TODO
+
+The female spawning biomass is the estimated total biomass of all females in the
+population that are mature (roughtly half of age-2 fish are considered mature).
+
+
+## Absolute female spawning biomass
+
+The above (TODO check) was for relative female spawning biomass. We now briefly look at
+absolute female spawning biomass, in units of millions of tonnes. This is also
+saved as a data object in the package (`hake_spawning_biomass_mcmc`). The values
+for 2024 and 2023 are of interest and given in a bullet in the one-page summary of the hake assessment:
+
+"The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t
+(with 95% credible interval from 853,207 to 4,828,382 t). This is an upward shift
+from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t
+(with 95% credible interval from 652,495 to 3,224,819 t)."
+
+So those credible intervals are ETIs. How would HDIs compare?
+
+```{r sb1}
+res_all_years_spawning <-
+  create_intervals(dplyr::select(hake_spawning_biomass_mcmc,
+                                 -"Virgin"),
+                   density = FALSE)
+
+res_all_years_spawning$intervals_all %>%
+  dplyr::filter(quantity %in% c(2023, 2024)) %>%
+  dplyr::select(quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
+  a()
+```
+The ETIs agree with the above quote (except for 2023 the upper value is 1
+tonne different). The credible interval using HDIs for 2024 is then
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$hdi_lower * 1e06)`
+to
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$hdi_upper * 1e06)` t,
+which is shifted downwards from the ETI of
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$eti_lower * 1e06)`
+to
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$eti_upper * 1e06)` t.
+The reduction in uncertainty is
+`r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
+                                                       2024)$width_diff * 1e06)` t,
+which is larger than the total catch (of males and females, not just spawning
+females) in the latest year of fishing (2023), and so is certainly not trivial.
+
+The ETI and HDI plots are
+```{r,  sb2, fig.height = 12}
+par(mfrow = c(2, 1))
+plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$quantity == 2024)]],
+     xlim = c(0, 8),
+     ylim = c(0, 0.6),
+     interval_arrows = TRUE,
+     y_arrow = 0.57,
+     xlab = "Female spawning biomass in 2024 (millions of tonnes)",
+     type = "eti")
+
+plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$quantity == 2024)]],
+     xlim = c(0, 8),
+     ylim = c(0, 0.6),
+     interval_arrows = TRUE,
+     y_arrow = 0.57,
+     xlab = "Female spawning biomass in 2024 (millions of tonnes)",
+     type = "hdi")
+```
+
+
+## TODO
+
+HERE - think some of this can go.
+
+D First save the `allow_hdi_zero` as an output in create_intervals.
+  have been thinking about this slightly wrong. min data equals hdi lower
+  because we've restricted that, so then it's a one-sided tail for the HDI,
+  which we should force to be the 5%. So if HDI starts at the min add a flag for
+  this to help with plotting. Below the HDI is not a thing because we've
+  restricted it, so just need to think differently for plotting.
+D also save integral over (-Inf,Inf) and also over ETI and HDI.
+- HERE it's drawing red lower for 2024 but shouldn't.
+D if integral is not 1 then could rescale it; in example above that made the HDI
+  contain 95%. Now done in create intervals.
+- Then need to adapt plotting function to not add the 0,0 in if have forced the
+  HDI to be above 0. Use that in plot to draw grey line, and to not add in 0,0.
+- for text, first do we care about allowing zero (might not always),
+
+```{r plotttt}
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(),
+                             density = FALSE)
+plot(res_2024, xlim= c (0, 20))
+```
+
+Try changing adjust, changes wiggliness, and allow zero:
+```{r adjust}
+res_2024_allow_hdi_zero_adjust_0.1 <-
+  create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), adjust =
+                                                                       0.1,
+                   allow_hdi_zero = TRUE,
+                   density = FALSE)   # NOT SURE HOW THAT INTERACTS WITH
+                                      # allow_hdi_zero TODO
+plot(res_2024_allow_hdi_zero_adjust_0.1, xlim = c(0, 1))
+
+# Try 0.01:
+res_2024_allow_hdi_zero_adjust_0.01 <-
+  create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), adjust =
+                                                                       0.01,
+                   allow_hdi_zero = TRUE,
+                   density = FALSE)  # See previous TODO
+plot(res_2024_allow_hdi_zero_adjust_0.01, xlim = c(0, 1))
+plot(res_2024_allow_hdi_zero_adjust_0.01, xlim = c(0, 40))
+
+```
+Tweaking adjust (to 0.1 and the above 0.01) does not seem help, and just makes
+the distribution really wiggly. Expect it makes the integrals strange - do the
+above idea first about always calculating the integral, and the intergral over
+the HDI.
+
+
+# Investigating the issues we came across
+
+## Issue 1 -- trying the default HDInterval options that is not based on density kernel
+
+Explain (see Extended Methods).
+
+TODO maybe redo with `density = TRUE`, since default above now matches this one below.
+```{r nodensity}
+res_2021_no_density <- create_intervals(rec_2021,
+                                        density = FALSE)
+res_2021_no_density
+res_2021_no_density$intervals %>% a()
+```
+Our code just uses the `HDInterval::hdi()` method, as confirmed here:
+```{r nodensitycheck}
+expect_equal(c(res_2021_no_density$intervals$hdi_lower,
+               res_2021_no_density$intervals$hdi_upper),
+             as.numeric(HDInterval::hdi(rec_2021)))
+```
+
+
+The density was calculated here but only for plotting purposes, and is the same
+as above:
+```{r nodensity1a}
+expect_equal(res_2021_no_density$dens, res_2021$dens)
+```
+
+Also there is no `height` value because that was not used when calculating the
+HDI.
+
+The equivalent plot to our Fig. 1B for the calculated HDI is
+```{r no_densityplot}
+plot(res_2021_no_density,
+     xlim = c(0,40),
+     xlab = "Recruitment (billions of age-0 fish)")
+```
+But, as can be seen, the heights of the two endpoints of the HDI are not the
+same, with the right-hand one being lower.
+
+Furthermore, the integral over the
+HDI is only 94.5%, not the theoretical 95%:
+```{r nodensity4}
+integrate_simpsons(res_2021_no_density$density,
+                        domain = c(as.numeric(res_2021_no_density$intervals$hdi_lower),
+                                   as.numeric(res_2021_no_density$intervals$hdi_upper)))
+```
+This is what led us to investigate the other options.
+
+The values of the HDI calculated using density and not using density are
+different:
+```{r nodensity5}
+res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+res_2021_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper) %>% a()
+```
+
+Also try `coda::HPDinterval()`, as recommended in `emdbook::tcredint()` from Ben
+Bolker's book.
+```{r coda}
+res_2021_coda <- coda::HPDinterval(coda::as.mcmc(rec_2021))
+res_2021_coda
+# Compared to:
+res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+```
+which are also the same as ours using `HDInterval::hdi()`:
+```{r codacheck}
+expect_equal(as.numeric(res_2021_coda),
+             as.numeric(HDInterval::hdi(rec_2021)))
+```
+
+## Issue 2 - default kernel density approach did not quite work
+
+The default of 512 equally spaced points (`n`) at which to compute the kernal density
+estimate in the `density()` function, did not yield satisfactory
+HDIs. Setting the number of points to 512 here shows this, giving a warning
+(from our `create_intervals()` function  that the densities at the HDI lower and
+upper values are not within a tolerance of 1% of each other, and the difference
+can be seen in the plot:
+```{r n512}
+res_2021_n_512 <- create_intervals(rec_2021,
+                                   n = 512,
+                                   density = FALSE)    # TODO this should not be
+                                        # relevant now
+plot(res_2021_n_512,
+     xlim = c(0, 40))
+```
+
+We found that increasing `n` to 100,000 gave satisfactory results. Note that
+increasing `n` does not increase the wiggliness of the kernel density estimate,
+just the number of points at which it is calculated.
+
+However, the integral of the density across this HDI with 512 points was the
+correct 95%:
+```{r n512integral}
+integrate_simpsons(res_2021_n_512$density,
+                        domain = c(as.numeric(res_2021_n_512$intervals$hdi_lower),
+                                   as.numeric(res_2021_n_512$intervals$hdi_upper)))
+```
+
+We also experimented with other `density()` settings, such as `adjust` and `bw`,
+but the defaults were satisfactory.
+
+## Issue 3 - zeros TODO
+
+Have to figure out the options to use now, as the defaults changed.
+
+After incorporating Issues 1 and 2,
+
+We found that stil
+
+With no `from` specified, we can get negative lower bounds of the HDI for recruitment:
+```{r zeroissue}
+res_all_years_from_null <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                          -c("Virgin", "1975")),
+                                            from = NULL,
+                                            allow_hdi_zero = TRUE,
+                                            density = FALSE)   # TODO check
+
+# TODO figure out the 1975 error, to do with i_hdi_lower, think I should not
+# have the ==
+# Testing as get error
+#res_all_years_from_null <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+#                                                          "1975"),
+#                                            from = NULL,
+#                                           allow_hdi_zero = TRUE)
+
+res_all_years_from_null$intervals_all
+sum(res_all_years_from_null$intervals_all$hdi_lower < 0)
+```
+
+Then, setting `from = 0` in `density()` prevents this, yet leads to the lower
+bound of the HDI often being 0:
+
+```{r checknonzero}
+res_all_years_allow_hdi_zero <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                               -"Virgin"),
+                                                 allow_hdi_zero = TRUE,
+                                                 density = FALSE)  # TODO check
+
+filter(res_all_years_allow_hdi_zero$intervals_all,
+       hdi_lower == 0)
+
+years_zero <- filter(res_all_years_allow_hdi_zero$intervals_all,
+                     hdi_lower == 0)$quantity
+
+# Check the zero years remaining calculationsa are the same
+expect_equal(filter(res_all_years$intervals_all,
+                    quantity %in% years_zero) %>%
+             select(quantity, median, eti_lower, eti_upper),
+             filter(res_all_years_allow_hdi_zero$intervals_all,
+                    quantity %in% years_zero) %>%
+             select(quantity, median, eti_lower, eti_upper))
+```
+
+But
+
+
+## Investigate warnings regarding split intervals
+
+The function `HDInterval::hdi()` gives a warning "The HDI is discontinuous but
+allowSplit = FALSE; the result is a valid CrI but not HDI." The `intervals`
+output from `create_intervals()` has a column `warning` that is `TRUE` if this
+occurs; for example
+```{r warning1}
+res_2024$intervals %>% a()
+```
+
+This can be investigated using the plotting function, to check that there is
+just a small region outside of the HDI that does in fact have a higher density
+than some values inside the HDI, which is due to the density approximation being
+slightly wiggly. This occurs for `res_2024` calculated above, and setting
+`show_discontinuity = TRUE` plots points showing the region in question. These
+can barely be seen in the default plot, so we then hone in on the region in
+question, seeing that, indeed, it is only a small region and not something to
+get overly concerned about.
+```{r, warning2, fig.height = 12}
+par(mfrow = c(2,1))
+plot(res_2024, show_discontinuity = TRUE)
+
+plot(res_2024,
+     show_discontinuity = TRUE,
+     xlim = c(0, 25),
+     ylim = c(0, 0.1))
+```
+
+For the recruitments for all years, the following have the warning during the
+calculation:
+```{r warning3}
+years_with_warning <- dplyr::filter(res_all_years$intervals_all,
+                                    warning == TRUE)$quantity
+years_with_warning
+# expect_equal(years_with_warning,
+#             c(1975, 2023, 2024))   # Change some of the following if get an error
+```
+
+The plots for 1975 and 2023 show similar unconcerning behaviour to that for
+2024:
+```{r warning4, fig.height = 12}
+par(mfrow = c(2, 1))
+
+plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 1975)]],
+     show_discontinuity = TRUE)
+
+plot(res_all_years$res_all[[which(res_all_years$intervals_all$quantity == 2023)]],
+     show_discontinuity = TRUE,
+     xlim = c(0, 25),
+     ylim = c(0, 0.1))
+```
+
+Note that the 2023 and 2024 recruitments have no data to inform them and so
+are essentially samples from the prior distribution used in the assessment.
+
+So we recommend checking the plots to see that any such behaviour is
+acceptable. The "HDI is discontinuous ..." warning does not get printed, but if
+another warning occurs in the `HDInterval::hdi()` calculation then that will be
+shown, along with "New type of warning in create_intervals().", which should be
+likely be investigated.
+
+
+
+
+TODO still
+
+Deal with warnings, which are mine in `create_intervals()`. Just do 1966
+
+NOT SURE IF THIS IS NEEDED, maybe as another example of warnings. Maybe plot
+anything from earlier that had a warning. TODO
+
+NOT changed `density = FALSE` yet.
+
+```{r warn}
+res_2024_allow_hdi_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(), allow_hdi_zero = TRUE)
+
+res_2024_allow_hdi_zero$intervals %>% a()
+
+res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull())
+
+res_2024$intervals %>% a()
+
+res_2024_allow_neg <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                         pull(),
+                                       from = -2)
+
+res_2024_allow_neg$intervals %>% a()
+# HDI goes -ve, but allowing it to.
+
+plot(res_2024_allow_neg, xlim = c(-2, 20))
+
+# This should give the same, except allow_hdi_zero value. Yes it is, just
+# commenting as it gives error for that one change
+res_2024_allow_neg_allow_zero <- create_intervals(select(hake_recruitment_mcmc, "2024") %>%
+                                                  pull(),
+                                                  from = -2,
+                                                  allow_hdi_zero = TRUE)
+
+# expect_equal(res_2024_allow_neg$intervals,
+#              res_2024_allow_neg_allow_zero$intervals)
+
+
+# Prob don't need all this. Tidy up.
+res_1966 <- create_intervals(select(hake_recruitment_mcmc, "1966") %>% pull())
+
+# Might not have redone all these
+expect_equal(min(select(hake_recruitment_mcmc, "2024")),
+             as.numeric(res_2024$intervals$"hdi_lower"))
+```
+
+
+
+This is old and may not be needed any more as defaults changed:
+
+The equivalent table for HDIs would instead be TODO adapt this to show a few
+years, highlighting the zero issue
+```{r hakemcmc8}
+res_all_years$intervals_all %>%
+  dplyr::select(hdi_lower, hdi_upper) %>%
+  a() %>%
+  round(3) * 1000
+```
+
+
+## Quick long chain, but easiest to just re-run vignette with long chain results used instead
+
+TODO decided what to do with this, prob keep but just short
+Somewhere, check the longer chain, not sure if including in package (could do if
+needed, or just save these calculations somewhere else and state we did them -
+would really be redoing the vignette with longer chain. Do quick calcs here
+while writing appendix
+```{r longchain}
+rec_2021_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
+                             "2021")
+
+res_2021_long <- create_intervals(rec_2021_long,
+                                  density = TRUE)
+
+res_2021_long_no_density <- create_intervals(rec_2021_long,
+                                             density = FALSE)
+
+res_2021_long$intervals %>% a()
+res_2021_long_no_density$intervals %>% a()
+# NOTE values change anyway, including median, so gets hard to compare with
+# original
+```
+
+Do the plot:
+```{r res2021longplot}
+plot(res_2021_long_no_density,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+```
+
+### Examples from HDInterval
+
+Replicating the examples from the help file `?HDInterval::hdi` using our
+functions to then easily make plots:
+```{r hdinterval}
+set.seed(42)
+# for a vector:
+tst <- rgamma(1e5, 2.5, 2)
+HDInterval::hdi(tst)
+HDInterval::hdi(tst, credMass=0.8)
+
+# Use our code, and check values agree, and then plot:
+res_tst_no_dens <- create_intervals(tst, density = FALSE, credibility = 0.8)
+expect_equal(as.numeric(HDInterval::hdi(tst, credMass=0.8)),
+             c(res_tst_no_dens$intervals$hdi_lower,
+               res_tst_no_dens$intervals$hdi_upper))
+plot(res_tst_no_dens)
+```
+
+```{r hdinterval2}
+# For comparison, the symmetrical 80% CrI:
+quantile(tst, c(0.1,0.9))
+
+# for a density:
+dens <- density(tst)
+HDInterval::hdi(dens, credMass=0.8)
+res_tst_dens <- create_intervals(tst, n = 512, credibility = 0.8)  # TODO think
+res_tst_dens$intervals %>% a()
+# The values don't exactly match because we have from = 0 as the default, and it
+# is hard to then specific the default for density.
+# expect_equal(as.numeric(hdi(dens, credMass=0.8)),
+#              c(res_tst_dens$intervals$hdi_lower,
+#                res_tst_dens$intervals$hdi_upper))
+plot(res_tst_dens, xlim = c(0,4))
+```
+
+With our defaults for `n`, the uneveness is resolved:
+```{r, hdinterval4}
+res_tst_dens_default_n <- create_intervals(tst, credibility = 0.8) # TODO think
+res_tst_dens_default_n$intervals %>% a()
+plot(res_tst_dens_default_n, xlim = c(0,4))
+
+```
