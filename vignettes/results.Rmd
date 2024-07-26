@@ -207,6 +207,109 @@ TODO
 The female spawning biomass is the estimated total biomass of all females in the
 population that are mature (roughtly half of age-2 fish are considered mature).
 
+Relative spawning biomass calculations (adapted from `report/hdi-analysis.Rmd`,
+as hadn't actually included in any vignettes yet).
+
+### Relative spawning biomass
+
+Using 2024 base case model relative biomass MCMC results, saved in package.
+
+```{r relbiomass}
+current_relative_biomass_mcmc <- pull(hake_relative_biomass_mcmc,
+                                      as.character(2024))    # Full 8000 MCMC samples for that year
+current_relative_biomass_mcmc_sort <- sort(current_relative_biomass_mcmc)
+
+head(current_relative_biomass_mcmc_sort)
+tail(current_relative_biomass_mcmc_sort)
+
+res_relative_biomass <- create_intervals(current_relative_biomass_mcmc_sort,
+                                     n = 1e5)
+res_relative_biomass$intervals %>% a()
+plot(res_relative_biomass,
+#             dens_intervals = res_relative_biomass,
+             x_lim = c(0, 4),
+             x_lab = "Relative spawning biomass in 2024")
+```
+
+## Now do all years for relative spawning biomass
+
+Do for all years with new function:
+TODO - if going to stick with this forecast, just add it to the data object:
+
+TODO need to redo this based on recruitment for all years (abvoe), this is
+adapted from much older code
+```{r allyears}
+hake_relative_with_forecast <- cbind(hake_relative_biomass_mcmc,
+                                       hake_relative_biomass_mcmc_forecast)
+relative_biomass_res <- create_intervals(hake_relative_with_forecast)  # n=1e5 is hardwired
+relative_biomass_res$intervals_all   # Also returns densities, so could
+                                     # plot each year if wanted
+relative_biomass_res$intervals_all %>% tail()
+# Check with Table b, these all match (obviously no 2025+):
+relative_biomass_res$intervals_all %>%
+  select(quantity, eti_lower, median, eti_upper) %>%
+  filter(quantity >= 2015) %>%
+  mutate(`2.5` = eti_lower * 100,
+         median = median * 100,
+         `97.5` = eti_upper * 100) %>%
+  a() %>%
+  print.data.frame(digits = 4)
+```
+
+And a plot, which includes the forecasts:
+```{r biomassseries}
+
+relative_biomass_res$intervals_all %>% tail()
+
+plot(relative_biomass_res,
+     y_max = 2.6,
+     xlim = c(2010, 2027),
+     add_line_at_0.4 = TRUE)
+HERE  - may need to tweak that.
+what's below with this. First reproduce existing plot, then redo for density = FALSE. But doing density = FALSE below and used that, doing that just to llok at numbers before going home.
+#     type = "hdi")
+#     xlim = c(0, 40),
+#     xlab = "Recruitment (billions of fish)",
+#     mfrow = c(60, 1))  # 59 default
+
+# OLD, as used in first main draft, used limits etc. as template, before standardised functions. Can't find where I used new plot function on biomass
+plot_series(relative_biomass_res$intervals_all,
+            y_max = 2.6,
+            xlim = c(2010, 2027),
+            add_line_at_0.4 = TRUE,
+            inc = 0.05,
+            leg_loc = "topleft",
+            ylab = "Relative spawning biomass")
+```
+
+For which years is the lower equal-tailed interval above 0.4 but the lower HDI
+interval falls below 0.4?
+```{r whichyears}
+filter(relative_biomass_res$intervals_all,
+       eti_lower > 0.4,
+       hdi_lower < 0.4)
+```
+
+
+```{r sbdensityfalse}
+relative_biomass_all_years <- create_intervals(hake_relative_with_forecast,
+                                               density = FALSE)
+relative_biomass_all_years$intervals_all %>% tail()
+
+filter(relative_biomass_all_years$intervals_all,
+       eti_lower > 0.4,
+       hdi_lower < 0.4)
+
+plot(relative_biomass_all_years,
+     y_max = 2.6,
+     xlim = c(2010, 2027),
+     add_line_at_0.4 = TRUE)
+
+
+```
+
+
+
 
 ## Absolute female spawning biomass
 
