@@ -31,7 +31,6 @@ change some code settings to show what did not work for our investigations.
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
 library(dplyr)
-library(spatstat.geom)   # Needed for checking some integrals
 library(coda)            # Needed to test alternative code
 ```
 
@@ -49,25 +48,23 @@ res_2021
 res_2021$intervals %>% a()
 ```
 
-Check the integral, needs the `spatstat.geom` package to evaluate an integral on
+Check the integral, using our `integrate_simpson()` function to evaluate an integral on
 a density object:
 ```{r rec2}
-spatstat.geom::integral(res_2021$density)
-spatstat.geom::integral(res_2021$density,
-                        domain = c(as.numeric(res_2021$intervals$eti_lower),
-                                   as.numeric(res_2021$intervals$eti_upper)))
+integrate_simpsons(res_2021$density)
+integrate_simpsons(res_2021$density,
+                   domain = c(as.numeric(res_2021$intervals$eti_lower),
+                              as.numeric(res_2021$intervals$eti_upper)))
 
-spatstat.geom::integral(res_2021$density,
-                        domain = c(as.numeric(res_2021$intervals$hdi_lower),
-                                   as.numeric(res_2021$intervals$hdi_upper)))
+integrate_simpsons(res_2021$density,
+                   domain = c(as.numeric(res_2021$intervals$hdi_lower),
+                              as.numeric(res_2021$intervals$hdi_upper)))
 ```
-So the ETI approach is only a 94% interval, so it's actually narrower
-than the true 95% ETI interval. This is because it has not used the density, which could
-be changed to make a more accurate interval. But no-one ever has so we should not
-get into. So maybe mention in Extended Methods.
 
-HDI is bang on, which is a good confirmation. TODO do that with other options
-that didn't work.
+So the ETI approach is only a 94% interval, so it's actually narrower
+than the true 95% ETI interval.
+
+HDI is bang on, which is a good confirmation.
 
 Plotting the resulting density function and intervals is simply done using our
 custom plotting functions, with options for automatically adding intervals and lines. The ETI is:
@@ -350,9 +347,9 @@ same, with the right-hand one being lower.
 Furthermore, the integral over the
 HDI is only 94.5%, not the theoretical 95%:
 ```{r nodensity4}
-spatstat.geom::integral(res_2021_no_density$density,
-                        domain = c(as.numeric(res_2021_no_density$intervals$hdi_lower),
-                                   as.numeric(res_2021_no_density$intervals$hdi_upper)))
+integrate_simpsons(res_2021_no_density$density,
+                   domain = c(as.numeric(res_2021_no_density$intervals$hdi_lower),
+                              as.numeric(res_2021_no_density$intervals$hdi_upper)))
 ```
 This is what led us to investigate the other options.
 
@@ -399,9 +396,9 @@ just the number of points at which it is calculated.
 However, the integral of the density across this HDI with 512 points was the
 correct 95%:
 ```{r n512integral}
-spatstat.geom::integral(res_2021_n_512$density,
-                        domain = c(as.numeric(res_2021_n_512$intervals$hdi_lower),
-                                   as.numeric(res_2021_n_512$intervals$hdi_upper)))
+integrate_simpsons(res_2021_n_512$density,
+                   domain = c(as.numeric(res_2021_n_512$intervals$hdi_lower),
+                              as.numeric(res_2021_n_512$intervals$hdi_upper)))
 ```
 
 We also experimented with other `density()` settings, such as `adjust` and `bw`,
