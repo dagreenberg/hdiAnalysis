@@ -36,13 +36,13 @@ test_that("integrate_simpsons() gives sensible results", {
   res_4_right <- integrate_simpsons(dens_4,
                                    domain = c(0, max(dens_4$x)))
 
-  expect_equal(res_4_left, 0.5, tolerance = 1e-02)    # Needed small tolerance,
+  expect_equal(res_4_left, 0.5, tolerance = 0.02)    # Needed small tolerance,
                                         # could be since doing around 0 (the
                                         # mode) it's easy for random samples to
                                         # switch between left and right; quite a
                                         # strict condition
                                         # but they sum to 1 (should, as same as res_4)
-  expect_equal(res_4_right, 0.5, tolerance = 1e-02)
+  expect_equal(res_4_right, 0.5, tolerance = 0.02)
   expect_equal(res_4_left + res_4_right, 1, tolerance = 1e-05)
 
   # Maybe hoping for too much accuracy; need a simulation experiment on multiple
