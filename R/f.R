@@ -6,7 +6,7 @@
 #' last one is a zero.
 #'
 #' @param x The number
-#' @param digits The number of decimal points to use
+#' @param digits The number of decimal places to show
 #' @author Chris Grandin
 #' @return A Character string. A formatted version of the number `x`.
 #' @export

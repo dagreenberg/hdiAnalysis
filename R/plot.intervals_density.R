@@ -272,8 +272,17 @@ plot.intervals_density <- function(ints_dens,
 
   # Show included/exluded values for ETI
   if(type == "eti"){
+    # TODO does this work if left-skewed?? Don't think it does. Need to adapt
+    #  (figure out when testing).
+    # TODO also rewrite as a and b to match figure, though need to think about
+    #  left-skewed again. See summary_table() also as writing that new and may
+    #  make it simpler than this.
+
     # Left-hand bar: area of excluded values but more probable than parts of upper
-    # tail. Right side of bar:
+    # tail. Right side of bar: [is it left?, something not right here, think
+    # just the comments though]   TODO first: or interval_high should just be
+    # interval_low, may have got lucky. This makes the interval a bit bigger
+    # than it should be, given defn - adapt this with summary_table() code
     i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
 
     shape::Arrows(

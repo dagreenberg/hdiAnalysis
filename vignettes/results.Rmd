@@ -3,7 +3,7 @@ title: "Results"
 author: "Andrew Edwards"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette for hdiAnalysis}
+  %\VignetteIndexEntry{Results}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
@@ -26,6 +26,13 @@ knitr::opts_chunk$set(
 Copying `hdiAnalysis-vignette.Rmd` to redo here with `density = FALSE`, to
 get numbers and plots for manuscript.
 
+This vignette reproduces the main results in the manuscript, and can easily be
+adapted for users to apply to their own data or model outputs.
+
+TODO Do lots here, then make a short (just reproducing results and numbers, and
+as a template for others) and long version maybe. And change names to `my_data`
+or something so people can easily adapt for their own data.
+
 TODO If stick with `density = FALSE` then change `create_intervals()` default to
 that, and remove the specific options here, and redo any other required
 vignettes (likely just save them and their pdf's for reference; might not need
@@ -35,7 +42,9 @@ We present what works, to be used as a template for other analyses, and TODO
 [might not need] then
 change some code settings to show what did not work for our investigations.
 
-## Figure 1
+
+
+## Set up and look at data
 
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
@@ -43,39 +52,31 @@ library(dplyr)
 library(coda)            # Needed to test alternative code
 ```
 
-The hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
+The 'data' are the hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
 values are saved as data objects in the package, with `rec_2021` being the
 vector of 8,000 MCMC values used for our Fig. 1.
 
-```{r rec1}
+```{r vector}
 summary(rec_2021)
 length(rec_2021)
+```
+
+So to analyse a single vector of values users can just apply the following code
+to create an equivalent to our Figure 1 and obtain equivalent numerical values.
+
+TODO go through and standardise things to make them easily adaptable.
+
+```{r vectorres}
 res_2021 <- create_intervals(rec_2021,
                              density = FALSE)
 res_2021
 res_2021$intervals %>% a()
 ```
 
-Check the integral with our `integrate_simpsons()` function to evaluate an integral on
-a density object (our function gives very similar results to the
-`spatstat.geom::integral()` one that we originally used, but that messed up the testing):
-```{r rec2}
-integrate_simpsons(res_2021$density)
-integrate_simpsons(res_2021$density,
-                        domain = c(as.numeric(res_2021$intervals$eti_lower),
-                                   as.numeric(res_2021$intervals$eti_upper)))
+TODO explain those
 
-integrate_simpsons(res_2021$density,
-                        domain = c(as.numeric(res_2021$intervals$hdi_lower),
-                                   as.numeric(res_2021$intervals$hdi_upper)))
-```
-So the ETI approach is only a 94% interval, so it's actually narrower
-than the true 95% ETI interval. This is because it has not used the density, which could
-be changed to make a more accurate interval. But no-one ever has so we should not
-get into. So maybe mention in Extended Methods.
 
-HDI is bang on, which is a good confirmation. TODO do that with other options
-that didn't work.
+## Figure 1
 
 Plotting the resulting density function and intervals is simply done using our
 custom plotting functions, with options for automatically adding intervals and lines. The ETI is:
@@ -103,6 +104,18 @@ function `plot.intervals_density()` automatically gets used on the object. See
 `?plot.intervals_density()` for details and full options. Our complete Figure 1
 is reproduced with the command `figure_1()`, which can be adapted by users if
 desired for their own data.
+
+The main values of interest are simplified in our customised `summary_table()` function:
+```{r tab, results = "asis"}
+summary_table(res_2021)
+```
+
+
+
+```{r exit}
+knitr::knit_exit()
+```
+
 
 ## Figure 2A
 
@@ -262,24 +275,20 @@ And a plot, which includes the forecasts:
 relative_biomass_res$intervals_all %>% tail()
 
 plot(relative_biomass_res,
-     y_max = 2.6,
+     y_max = 2.5,
      xlim = c(2010, 2027),
-     add_line_at_0.4 = TRUE)
-HERE  - may need to tweak that.
-what's below with this. First reproduce existing plot, then redo for density = FALSE. But doing density = FALSE below and used that, doing that just to llok at numbers before going home.
+     add_line_at_0.4 = TRUE,
+     inc = 0.05,
+     leg_loc = "topleft",
+     xlab = "Year",
+     ylab = "Relative spawning biomass")
+
+# this is for plotting all distributions, may add back in. Maybe a different
+#     vignette. TODO
 #     type = "hdi")
 #     xlim = c(0, 40),
 #     xlab = "Recruitment (billions of fish)",
 #     mfrow = c(60, 1))  # 59 default
-
-# OLD, as used in first main draft, used limits etc. as template, before standardised functions. Can't find where I used new plot function on biomass
-plot_series(relative_biomass_res$intervals_all,
-            y_max = 2.6,
-            xlim = c(2010, 2027),
-            add_line_at_0.4 = TRUE,
-            inc = 0.05,
-            leg_loc = "topleft",
-            ylab = "Relative spawning biomass")
 ```
 
 For which years is the lower equal-tailed interval above 0.4 but the lower HDI
@@ -782,4 +791,17 @@ res_tst_dens_default_n <- create_intervals(tst, credibility = 0.8) # TODO think
 res_tst_dens_default_n$intervals %>% a()
 plot(res_tst_dens_default_n, xlim = c(0,4))
 
+```
+
+TODO Keep for table example (for me to then use R Markdown), but then can delete).
+```{r tableres}
+knitr::kable(res_2021$intervals %>% select(median,
+                                           eti_lower,
+                                           eti_upper,
+                                           hdi_lower,
+                                           hdi_upper,
+                                           width_eti,
+                                           width_hdi,
+                                           width_diff),
+             digits = 2)   # 3 shows that HDI are 95.0 except two 95.1, but this
 ```
