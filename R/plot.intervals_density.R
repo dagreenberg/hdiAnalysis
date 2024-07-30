@@ -278,16 +278,9 @@ plot.intervals_density <- function(ints_dens,
     #  left-skewed again. See summary_table() also as writing that new and may
     #  make it simpler than this.
 
-    # Left-hand bar: area of excluded values but more probable than parts of upper
-    # tail. Right side of bar: [is it left?, something not right here, think
-    # just the comments though]   TODO first: or interval_high should just be
-    # interval_low, may have got lucky. This makes the interval a bit bigger
-    # than it should be, given defn - adapt this with summary_table() code
-    i_right_side <- max(which(dens$y < y_interval_high & dens$x <= interval_high))
-
     shape::Arrows(
              #      dens$x[dens$x > dens$x[i_right_side] & dens$x <= interval_low], interval_low, interval_low, dens$x[i_right_side])
-             dens$x[i_right_side],
+             ints$a_lower,
              y_interval_low * bars_multiplier,
              interval_low,
              y_interval_low * bars_multiplier,
@@ -298,7 +291,7 @@ plot.intervals_density <- function(ints_dens,
              arr.adj = 1,
              arr.length = arrowhead_length/2)
 
-    text(mean(c(dens$x[i_right_side],
+    text(mean(c(ints$a_lower,
                 interval_low)),
          y_interval_low * bars_multiplier,
          "a",
@@ -313,14 +306,10 @@ plot.intervals_density <- function(ints_dens,
 
     # Right-hand bar: area of included values but as probable as some of lower
     # tail. Left side of bar:
-    i_left_side <- max(which(dens$y > y_interval_low))
 
-
-    shape::Arrows(dens$x[i_left_side + 1],
+    shape::Arrows(ints$b_lower,
                   y_interval_low * bars_multiplier,
                   interval_high,
-                  #max(dens$x[dens$x > dens$x[i_left_side] & dens$x <=
-                  #           interval_high]),  # TODO is that not just interval_high?
                   y_interval_low * bars_multiplier,
                   lwd = 2,
                   code = 3,
@@ -329,16 +318,12 @@ plot.intervals_density <- function(ints_dens,
                   arr.adj = 1,
                   arr.length = arrowhead_length/2)
 
-    text(mean(c(dens$x[i_left_side + 1],
+    text(mean(c(ints$b_lower,
                 interval_high)),
          y_interval_low * bars_multiplier,
          "b",
          col = col_bars,
          pos = 3)
-
-
-
-
 
    # need to generalise
     # TODO Marie had +1 in first bit below, think about; might be because of
