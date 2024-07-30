@@ -254,6 +254,20 @@ create_intervals.numeric <- function(dat,
 
   }
 
+  # TODO think about left-skewed
+  #  i_for_interval_a_low <- max(which(dens$y < int$eti_upper & dens$x <= int$eti_lower))
+  i_for_interval_a_low <- min(which(dens$y > y_eti_upper &
+                                    dens$x < intervals$eti_lower))   # TODO think about if
+                                        # empty, test on symmetric
+  a_lower <- dens$x[i_for_interval_a_low]
+         # int$eti_lower)    # TODO adapt based on above thought
+
+  i_for_interval_b_low <- min(which(dens$y < y_eti_lower &
+                                    dens$x > intervals$eti_lower))   # TODO think about if
+                                        # empty, test on symmetric
+  b_lower <- dens$x[i_for_interval_b_low]
+                  # int$eti_upper)    # TODO adapt based on above thought
+
   integral_full <- integrate_simpsons(dens)   # Should be 1 as we
                                         # normalised to ensure.
 
@@ -266,6 +280,8 @@ create_intervals.numeric <- function(dat,
                                      domain = c(intervals$hdi_lower,
                                                 intervals$hdi_upper))
   intervals <- dplyr::mutate(intervals,
+                             a_lower = a_lower,
+                             b_lower = b_lower,
                              i_eti_lower = i_eti_lower,
                              y_eti_lower = y_eti_lower,
                              i_eti_upper = i_eti_upper,
