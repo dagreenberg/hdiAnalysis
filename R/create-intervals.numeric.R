@@ -27,7 +27,9 @@
 ##'   the right-most equivalent to `from`.
 ##' @md
 ##' @return list object of class `intervals_density` (such that we can plot it
-##'   with `plot.intervals_density()`, with objects:
+##'   with `plot.intervals_density()`, with objects:   TODO add new ones, plus
+##'   density object. Link
+##'   help files together.
 ##'   * intervals: one-row tibble with columns:
 ##'     * median: median of the data
 ##'     * eti_lower: lower end of the ETI

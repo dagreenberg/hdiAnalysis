@@ -22,61 +22,69 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 ```
---
-Copying `hdiAnalysis-vignette.Rmd` to redo here with `density = FALSE`, to
-get numbers and plots for manuscript.
 
 TODO If stick with `density = FALSE` then change `create_intervals()` default to
 that, and remove the specific options here, and redo any other required
 vignettes (likely just save them and their pdf's for reference; might not need
 them all anyway).
---
 
 This vignette reproduces the main results in the manuscript, and can easily be
 used as a template for users to apply to their own data or model outputs. The longer
 `results-long` vignette gives more details of outputs and further examples of
 plotting features.
 
-## Set up and look at a single vector of data
-
+Set up:
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
 library(dplyr)
 library(coda)            # Needed to test alternative code TODO maybe not needed
 ```
 
-Our 'data' are the hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
-values are saved as data objects in the package, with `rec_2021` being the
-vector of 8,000 MCMC values used for our Fig. 1. To run this code on your own
-data you just need to have your values in a vector, and replace `rec_2021` with
-something more appropriate.
+
+## Analyse a single vector of values
+
+Our first 'data' set is the hake Markov chain Monte Carlo (MCMC) recruitment
+values for 2021, which is saved as a data object in the package as
+`rec_2021`. It is a simple vector of the 8,000 MCMC values, and we will use it
+to create Figure 1 and associated numbers. To run this code on your own
+data you just need to have your values in a vector, and replace `rec_2021` with the
+name of your vector.
 
 ```{r vector}
-summary(rec_2021)
-length(rec_2021)
+vec <- rec_2021
+summary(vec)
+length(vec)
 ```
 
-So to analyse a single vector of values users can just apply the following code
-to create an equivalent to our Figure 1 and obtain equivalent numerical
-values. We call the results here `res_vec` for results on a vector, so that the
-subsequent code will not need changing by users.
+We use the `create_intervals` function to do the main calculations. We call the
+results here `res_vec` for results on a vector, so that the subsequent code will not need changing by users for their own analyses:
 
 ```{r vectorres}
-res_2021 <- create_intervals(rec_2021,
-                             density = FALSE)
-res_2021
-res_2021$intervals %>% a()
+res_vec <- create_intervals(vec,
+                            density = FALSE)
+res_vec
 ```
+As seen above, `res_vec` is a list, with first element `$intervals` containing
+results such as the median, lower and upper bounds for the equal-tailed interval
+(ETI) and for the highest density interval (HDI) , widths of the
+ETI and HDI, and more. See `?create_intervals` for full details of what is returned. TODO
+check that. We will show a table of the key values after plotting the
+figures.
 
-TODO explain those
+The second element of `res_vec` is `$density` (seen above), which is a
+kernel density estimate of the distribution represented by the samples in
+`vec`. It is useful for plotting and calculating approximate intervals.
 
+The HDI is calculated using the `HDInterval::hdi()` function, and we explore other
+choices in the `results-long` vignette. TODO
 
-## Figure 1
+## Plot the distribution showing the ETI and HDI -- Figure 1
 
 Plotting the resulting density function and intervals is simply done using our
-custom plotting functions, with options for automatically adding intervals and lines. The ETI is:
+custom plotting functions, with options for automatically adding intervals and
+lines. The ETI plot (Figure 1A) is:
 ```{r plot}
-plot(res_2021,
+plot(res_vec,
      type = "eti",
      xlim = c(0, 40),
      ylim = c(0, 0.11),
@@ -84,9 +92,9 @@ plot(res_2021,
      xlab = "Recruitment (billions of age-0 fish)",
      arrowhead_gap = 0.1)
 ```
-and the HDI is
+and the HDI plot (Figure 1B) is
 ```{r plot2}
-plot(res_2021,
+plot(res_vec,
      type = "hdi",
      xlim = c(0, 40),
      ylim = c(0, 0.11),
@@ -94,16 +102,29 @@ plot(res_2021,
      xlab = "Recruitment (billions of age-0 fish)",
      arrowhead_gap = 0.1)
 ```
-The `res_2021` object has our class `intervals_density`, and our custom plotting
-function `plot.intervals_density()` automatically gets used on the object. See
-`?plot.intervals_density()` for details and full options. Our complete Figure 1
+The `plot()` command automatically uses our custom plotting function
+`plot.intervals_density()`, because the `res_vec` object has our class
+`intervals_density`. See `?plot.intervals_density()` for details and full
+options. Our complete Figure 1
 is reproduced with the command `figure_1()`, which can be adapted by users if
-desired for their own data.
+desired for their own data, or just adapt the above code as necessary
+(e.g., change the limits and labels).
 
 The main values of interest are simplified in our customised `summary_table()` function:
 ```{r tab, results = "asis"}
-summary_table(res_2021)
+summary_table(res_vec)
 ```
+
+The full results are
+```{r fullres}
+res_vec$intervals %>% a()       # a() is our shorthand function for as.data.frame()
+```
+for which definitions are given in the help file `?create_intervals`.
+
+```{r exit2}
+knitr::knit_exit()
+```
+
 
 ## MCMC samples for multiple years -- Figure 2A
 
@@ -430,23 +451,23 @@ Explain (see Extended Methods).
 
 TODO maybe redo with `density = TRUE`, since default above now matches this one below.
 ```{r nodensity}
-res_2021_no_density <- create_intervals(rec_2021,
+res_vec_no_density <- create_intervals(vec,
                                         density = FALSE)
-res_2021_no_density
-res_2021_no_density$intervals %>% a()
+res_vec_no_density
+res_vec_no_density$intervals %>% a()
 ```
 Our code just uses the `HDInterval::hdi()` method, as confirmed here:
 ```{r nodensitycheck}
-expect_equal(c(res_2021_no_density$intervals$hdi_lower,
-               res_2021_no_density$intervals$hdi_upper),
-             as.numeric(HDInterval::hdi(rec_2021)))
+expect_equal(c(res_vec_no_density$intervals$hdi_lower,
+               res_vec_no_density$intervals$hdi_upper),
+             as.numeric(HDInterval::hdi(vec)))
 ```
 
 
 The density was calculated here but only for plotting purposes, and is the same
 as above:
 ```{r nodensity1a}
-expect_equal(res_2021_no_density$dens, res_2021$dens)
+expect_equal(res_vec_no_density$dens, res_vec$dens)
 ```
 
 Also there is no `height` value because that was not used when calculating the
@@ -454,7 +475,7 @@ HDI.
 
 The equivalent plot to our Fig. 1B for the calculated HDI is
 ```{r no_densityplot}
-plot(res_2021_no_density,
+plot(res_vec_no_density,
      xlim = c(0,40),
      xlab = "Recruitment (billions of age-0 fish)")
 ```
@@ -464,31 +485,31 @@ same, with the right-hand one being lower.
 Furthermore, the integral over the
 HDI is only 94.5%, not the theoretical 95%:
 ```{r nodensity4}
-integrate_simpsons(res_2021_no_density$density,
-                        domain = c(as.numeric(res_2021_no_density$intervals$hdi_lower),
-                                   as.numeric(res_2021_no_density$intervals$hdi_upper)))
+integrate_simpsons(res_vec_no_density$density,
+                        domain = c(as.numeric(res_vec_no_density$intervals$hdi_lower),
+                                   as.numeric(res_vec_no_density$intervals$hdi_upper)))
 ```
 This is what led us to investigate the other options.
 
 The values of the HDI calculated using density and not using density are
 different:
 ```{r nodensity5}
-res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
-res_2021_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper) %>% a()
+res_vec$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+res_vec_no_density$intervals %>% dplyr::select(hdi_lower, hdi_upper) %>% a()
 ```
 
 Also try `coda::HPDinterval()`, as recommended in `emdbook::tcredint()` from Ben
 Bolker's book.
 ```{r coda}
-res_2021_coda <- coda::HPDinterval(coda::as.mcmc(rec_2021))
-res_2021_coda
+res_vec_coda <- coda::HPDinterval(coda::as.mcmc(vec))
+res_vec_coda
 # Compared to:
-res_2021$intervals %>% dplyr::select(hdi_lower, hdi_upper)
+res_vec$intervals %>% dplyr::select(hdi_lower, hdi_upper)
 ```
 which are also the same as ours using `HDInterval::hdi()`:
 ```{r codacheck}
-expect_equal(as.numeric(res_2021_coda),
-             as.numeric(HDInterval::hdi(rec_2021)))
+expect_equal(as.numeric(res_vec_coda),
+             as.numeric(HDInterval::hdi(vec)))
 ```
 
 ## Issue 2 - default kernel density approach did not quite work
@@ -500,11 +521,11 @@ HDIs. Setting the number of points to 512 here shows this, giving a warning
 upper values are not within a tolerance of 1% of each other, and the difference
 can be seen in the plot:
 ```{r n512}
-res_2021_n_512 <- create_intervals(rec_2021,
+res_vec_n_512 <- create_intervals(vec,
                                    n = 512,
                                    density = FALSE)    # TODO this should not be
                                         # relevant now
-plot(res_2021_n_512,
+plot(res_vec_n_512,
      xlim = c(0, 40))
 ```
 
@@ -515,9 +536,9 @@ just the number of points at which it is calculated.
 However, the integral of the density across this HDI with 512 points was the
 correct 95%:
 ```{r n512integral}
-integrate_simpsons(res_2021_n_512$density,
-                        domain = c(as.numeric(res_2021_n_512$intervals$hdi_lower),
-                                   as.numeric(res_2021_n_512$intervals$hdi_upper)))
+integrate_simpsons(res_vec_n_512$density,
+                        domain = c(as.numeric(res_vec_n_512$intervals$hdi_lower),
+                                   as.numeric(res_vec_n_512$intervals$hdi_upper)))
 ```
 
 We also experimented with other `density()` settings, such as `adjust` and `bw`,
@@ -710,24 +731,24 @@ needed, or just save these calculations somewhere else and state we did them -
 would really be redoing the vignette with longer chain. Do quick calcs here
 while writing appendix
 ```{r longchain}
-rec_2021_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
+vec_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
                              "2021")
 
-res_2021_long <- create_intervals(rec_2021_long,
+res_vec_long <- create_intervals(vec_long,
                                   density = TRUE)
 
-res_2021_long_no_density <- create_intervals(rec_2021_long,
+res_vec_long_no_density <- create_intervals(vec_long,
                                              density = FALSE)
 
-res_2021_long$intervals %>% a()
-res_2021_long_no_density$intervals %>% a()
+res_vec_long$intervals %>% a()
+res_vec_long_no_density$intervals %>% a()
 # NOTE values change anyway, including median, so gets hard to compare with
 # original
 ```
 
 Do the plot:
 ```{r res2021longplot}
-plot(res_2021_long_no_density,
+plot(res_vec_long_no_density,
      type = "hdi",
      xlim = c(0, 40),
      ylim = c(0, 0.11),
@@ -782,7 +803,7 @@ plot(res_tst_dens_default_n, xlim = c(0,4))
 
 TODO Keep for table example (for me to then use R Markdown), but then can delete).
 ```{r tableres}
-knitr::kable(res_2021$intervals %>% select(median,
+knitr::kable(res_vec$intervals %>% select(median,
                                            eti_lower,
                                            eti_upper,
                                            hdi_lower,
