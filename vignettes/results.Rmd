@@ -22,39 +22,34 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 ```
-
+--
 Copying `hdiAnalysis-vignette.Rmd` to redo here with `density = FALSE`, to
 get numbers and plots for manuscript.
-
-This vignette reproduces the main results in the manuscript, and can easily be
-adapted for users to apply to their own data or model outputs.
-
-TODO Do lots here, then make a short (just reproducing results and numbers, and
-as a template for others) and long version maybe. And change names to `my_data`
-or something so people can easily adapt for their own data.
 
 TODO If stick with `density = FALSE` then change `create_intervals()` default to
 that, and remove the specific options here, and redo any other required
 vignettes (likely just save them and their pdf's for reference; might not need
 them all anyway).
+--
 
-We present what works, to be used as a template for other analyses, and TODO
-[might not need] then
-change some code settings to show what did not work for our investigations.
+This vignette reproduces the main results in the manuscript, and can easily be
+used as a template for users to apply to their own data or model outputs. The longer
+`results-long` vignette gives more details of outputs and further examples of
+plotting features.
 
-
-
-## Set up and look at data
+## Set up and look at a single vector of data
 
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
 library(dplyr)
-library(coda)            # Needed to test alternative code
+library(coda)            # Needed to test alternative code TODO maybe not needed
 ```
 
-The 'data' are the hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
+Our 'data' are the hake Markov chain Monte Carlo (MCMC) recruitment and relative biomass
 values are saved as data objects in the package, with `rec_2021` being the
-vector of 8,000 MCMC values used for our Fig. 1.
+vector of 8,000 MCMC values used for our Fig. 1. To run this code on your own
+data you just need to have your values in a vector, and replace `rec_2021` with
+something more appropriate.
 
 ```{r vector}
 summary(rec_2021)
@@ -62,9 +57,9 @@ length(rec_2021)
 ```
 
 So to analyse a single vector of values users can just apply the following code
-to create an equivalent to our Figure 1 and obtain equivalent numerical values.
-
-TODO go through and standardise things to make them easily adaptable.
+to create an equivalent to our Figure 1 and obtain equivalent numerical
+values. We call the results here `res_vec` for results on a vector, so that the
+subsequent code will not need changing by users.
 
 ```{r vectorres}
 res_2021 <- create_intervals(rec_2021,
@@ -110,18 +105,11 @@ The main values of interest are simplified in our customised `summary_table()` f
 summary_table(res_2021)
 ```
 
-
-
-```{r exit}
-knitr::knit_exit()
-```
-
-
-## Figure 2A
+## MCMC samples for multiple years -- Figure 2A
 
 The MCMC samples of hake recruitment for each year are saved in the package as
 the tibble `hake_recruitment_mcmc`, with each column corresponding to a year
-(with the first column representing the Virgin situation) and each of the 8,000
+(with the first column representing the Virgin unfished equilibrium biomass) and each of the 8,000
 rows representing an MCMC sample:
 ```{r hake_mcmc}
 hake_recruitment_mcmc
@@ -149,13 +137,15 @@ For convenience, the intervals for all years are saved in a single tibble:
 ```{r hake_mcmc4}
 res_all_years$intervals_all
 ```
+The first column is called `quantity` for generalisability so the code can be
+applied to different types of data; in this example it represents the years
 
 To see the main values of interest, namely the ETIs and HDIs and the difference
 between their widths:
 ```{r hake_mcmc5}
 dplyr::select(res_all_years$intervals_all,
               quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
-  a()
+  knitr::kable(digits = 2)
 ```
 
 The sum of the differences over all years between the width of the ETI and width
@@ -166,9 +156,9 @@ res_all_years$intervals_all %>%
   dplyr::pull(width_diff) %>%
   sum()
 ```
-which is the source of the ``>25 billion fish`` statement reported in the main text.
+which is the source of the ``>30 billion fish`` statement reported in the main text.
 
-To plot Fig. 2A, we have a custom plotting function
+To plot the time series shown in Fig. 2A, we have a custom plotting function
 `plot.intervals_density_list()`, that gets called because `res_all_years` is
 defined to have class `intervals_density_list`, so we can just use:
 ```{r hake_mcmc7}
@@ -176,13 +166,19 @@ plot(res_all_years)
 ```
 
 The ETIs match those shown in Table 24 of the 2024 hake assessment (values
-manually checked, code not run here)
-```{r hake_mcmc8, eval = FALSE}
+manually checked, code not output here).
+```{r hake_mcmc8, eval = FALSE, echo = FALSE}
 res_all_years$intervals_all %>%
   dplyr::select(eti_lower, eti_upper) %>%
   a() %>%
   round(3) * 1000
 ```
+
+```{r exit}
+knitr::knit_exit()
+```
+
+TODO move to long version.
 
 To plot all density plots and ETIs (might not be evaluated when editing as take a long time):
 ```{r hake_mcmc9, fig.height = 360, eval = FALSE}
@@ -193,6 +189,8 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
+TODO move to long version.
+
 To plot all density plots and HDis (might not be evaluated when editing as take a long time):
 ```{r hake_mcmc9hdi, fig.height = 360, eval = FALSE}
 plot(res_all_years,
@@ -202,23 +200,12 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-And to see all the values:
-```{r hake_mcmc9values}
-# res_all_years$intervals_all %>% select(quantity, integral_full, integral_eti,
-#                                       integral_hdi) %>%
-#  print(n=60)
-knitr::kable(res_all_years$intervals_all %>% select(quantity, integral_full,
-                                                    integral_eti, integral_hdi),
-             digits = 2)   # 3 shows that HDI are 95.0 except two 95.1, but this
-                           # is easier to see.
-```
-
 ## Figure 2B
 
 TODO
 
 The female spawning biomass is the estimated total biomass of all females in the
-population that are mature (roughtly half of age-2 fish are considered mature).
+population that are mature (roughtly half of age-2 females are considered mature).
 
 Relative spawning biomass calculations (adapted from `report/hdi-analysis.Rmd`,
 as hadn't actually included in any vignettes yet).

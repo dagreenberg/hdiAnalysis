@@ -179,8 +179,9 @@ plot.intervals_density <- function(ints_dens,
 
   # Add horizontal line for HDI
   if(type == "hdi" & hdi_horizontal){
-    abline(h = min(y_interval_low,
-                   y_interval_high),  # If not a true HDI then pick the min
+    abline(h = min(c(y_interval_low,
+                     y_interval_high)),  # If not a true HDI then use the min
+                                         # TODO think more, and test with left-skewed
            col = col_hdi_horizontal,
            lwd = 1)
   }
