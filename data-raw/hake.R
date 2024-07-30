@@ -2,15 +2,15 @@
 
 # hake-2024/hake_mcmc.rds contains a large tibble, with each row being an MCMC
 # sample, and columns representing various things we might want to look
-# at. Extracting some of the useful ones here to save as data objects. Will then
-# come back to this to save more.
+# at. Extracting some of the useful ones here to save as data objects.
 
-# Change assess_yr each year, the rest is automated.
+# `mcmc_save()` could be used for the base model results as the full MCMC
+# results were saved in the .rds for the base model. But this is not the case for the
+# forecasts, which are done partway down.
 
-# hake_recruitment will become the latest assessment results, and
-#  hake_recruitment_2023 retains the 2023 assessment results, this is then ongoing for
-#  each year. So hake_recruitment_<assess_yr> = hake_recruitment.
-#  See ?hake for details.
+
+# Change assess_yr each year if needed, the rest is automated, though save older
+# versions like in pacea.
 
 load_all()
 library(dplyr)
@@ -83,7 +83,7 @@ hake_relative_biomass_mcmc <- dplyr::select(hake_mcmc,
                                             # There is no
                                             # Bratio_unfished, presumably since
                                             # should all be 1
-hake_relative_biomass_mcmc
+hake_relative_biomass_mcmc                  # NOte we will add forecasts on later
 
 names(hake_relative_biomass_mcmc) <- gsub(pattern = "Bratio_",
                                           replacement = "",
@@ -97,9 +97,66 @@ quantile(hake_relative_biomass_mcmc$`2027`, c(0.05, 0.50, 0.95))   # These don't
 hake_relative_biomass_mcmc <- dplyr::select(hake_relative_biomass_mcmc,
                                             -c("2025", "2026", "2027"))
 
+# Now add in the forecasts.
+# Full MCMC results are not already saved in an .rds for the
+#  hake assessment build, so I had to extract
+#  the relevant folders from the server. Just doing future catches of 350,000,
+# which is close to the average of the last 10 years, as shown in
+#  Fig j of the assessment. Doing this somewhat manually, based on
+# `hake::load_forecasts()`.
+
+source(paste0(here::here(),
+              "/R-orig/create-hake-forecast-mcmc.R"))
+
+# Relative spawning biomass, the function create_hake_forecast_mcmc() has a
+# default catch alternative of "06-350000", corresponding the 350,000 t per year.
+rel_2025 <- create_hake_forecast_mcmc(forecast_year_dir = 2025)
+rel_2027 <- create_hake_forecast_mcmc(forecast_year_dir = 2027)
+# expect_equal(rel_2025, rel_2027)   # As expected, fails because it's a new
+#  MCMC simulation (though historic values match)
+
+quants_2025 <- apply(rel_2025,
+                     2,
+                     quantile,
+                     probs = c(0.05, 0.5, 0.95),
+                     na.rm = TRUE)
+
+# Using forecast-year-2025, this matches Table g for 2024, 2025, 2026, but not
+# 2027. Note the use of 5th and 95th percentiles in Table g.
+
+## t(quants_2025) %>% round(digits = 2)
+##        5%  50%  95%
+## 2024 0.51 0.99 2.01
+## 2025 0.49 1.01 2.13
+## 2026 0.42 0.96 2.17
+## 2027 0.32 0.73 1.83
+
+# However, this next one matches Table g, so use this as covers all years.
+quants_2027 <- apply(rel_2027,
+                     2,
+                     quantile,
+                     probs = c(0.05, 0.5, 0.95),
+                     na.rm = TRUE)
+
+## t(quants_2027) %>% round(digits = 2)
+##        5%  50%  95%
+## 2024 0.51 0.99 2.01
+## 2025 0.49 1.01 2.13
+## 2026 0.42 0.96 2.17
+## 2027 0.35 0.88 2.20
+
+expect_equal(rel_2027$`2024`,
+             hake_relative_biomass_mcmc$`2024`)   # So no need to resave 2024
+
+hake_relative_biomass_mcmc_forecast <- dplyr::select(rel_2027,
+                                                     -c("2024"))
+
+hake_relative_biomass_mcmc <- cbind(hake_relative_biomass_mcmc,
+                                    hake_relative_biomass_mcmc_forecast) %>%
+  tibble::as_tibble()
+
 usethis::use_data(hake_relative_biomass_mcmc,
                   overwrite = TRUE)
-
 
 # Female spawning biomass
 
@@ -116,8 +173,8 @@ names(hake_spawning_biomass_mcmc) <- gsub(pattern = "B_",
                                           replacement = "",
                                           x = names(hake_spawning_biomass_mcmc))
 
+# Convert from tonnes to millions of tonnes to have reasonable numbers:
 hake_spawning_biomass_mcmc <- as_tibble(hake_spawning_biomass_mcmc/1e6)
- # Convert from tonnes to millions of tonnes to have reasonable numbers
 
 quantile(hake_spawning_biomass_mcmc$`2024`, c(0.025, 0.50, 0.975))
   # These match 5th bullet of one-page summary (except 97.5% is off by 1 tonne).
@@ -127,9 +184,6 @@ quantile(hake_spawning_biomass_mcmc$`2023`, c(0.025, 0.50, 0.975))
 
 usethis::use_data(hake_spawning_biomass_mcmc,
                   overwrite = TRUE)
-
----
-
 
 # Trying to get experimental MCMC chains from server, as being used for Kelli's
 # manuscript. Use exp for suffix for now.

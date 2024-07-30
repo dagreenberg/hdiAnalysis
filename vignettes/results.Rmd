@@ -121,22 +121,21 @@ res_vec$intervals %>% a()       # a() is our shorthand function for as.data.fram
 ```
 for which definitions are given in the help file `?create_intervals`.
 
-```{r exit2}
-knitr::knit_exit()
-```
 
+## MCMC samples for multiple years -- recruitment for Figure 2A
 
-## MCMC samples for multiple years -- Figure 2A
+We now present calculations for multiple data sets, in our case multiple years
+of MCMC samples of hake recruitment.
 
-The MCMC samples of hake recruitment for each year are saved in the package as
-the tibble `hake_recruitment_mcmc`, with each column corresponding to a year
-(with the first column representing the Virgin unfished equilibrium biomass) and each of the 8,000
-rows representing an MCMC sample:
+The values are saved in the package as the tibble `hake_recruitment_mcmc`, with each
+column corresponding to a year
+(with the first column representing the Virgin unfished equilibrium biomass) and
+each of the 8,000 rows representing an MCMC sample:
 ```{r hake_mcmc}
 hake_recruitment_mcmc
 ```
 
-To create ETIs and HDIs for estimates of recruitment for each year, simply use
+To create ETIs and HDIs for estimates of recruitment for each year, we can simply use
 `create_intervals()` which, because `hake_recruitment_mcmc` has class
 `data.frame`, uses our function `create_intervals.data.frame()` to automatically
 calculate intervals for each column (year in this case, and we will exclude the
@@ -146,8 +145,9 @@ res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
                                                 -"Virgin"),
                                   density = FALSE)
 ```
-This gives a list object, with `res_all` being a list for which each element corresponds to a year and
-gives the same results as above for a single year (and also with the `$name`
+This gives a list object, with element `res_all[[i]]` corresponding to row `i`
+of the data. Each `res_all[[i]]` element is itself a list, giving the same
+results as above for a single vector (and also with the `$name`
 element corresponding the column of the input, a year in this example). So the
 2021 results from above are:
 ```{r hake_mcmc3}
@@ -164,9 +164,7 @@ applied to different types of data; in this example it represents the years
 To see the main values of interest, namely the ETIs and HDIs and the difference
 between their widths:
 ```{r hake_mcmc5}
-dplyr::select(res_all_years$intervals_all,
-              quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
-  knitr::kable(digits = 2)
+summary_table(res_all_years)
 ```
 
 The sum of the differences over all years between the width of the ETI and width
@@ -183,11 +181,13 @@ To plot the time series shown in Fig. 2A, we have a custom plotting function
 `plot.intervals_density_list()`, that gets called because `res_all_years` is
 defined to have class `intervals_density_list`, so we can just use:
 ```{r hake_mcmc7}
-plot(res_all_years)
+plot(res_all_years,
+     xlab = "Year",
+     ylab = "Recruitment (billions of fish)")
 ```
 
-The ETIs match those shown in Table 24 of the 2024 hake assessment (values
-manually checked, code not output here).
+<!-- The ETIs match those shown in Table 24 of the 2024 hake assessment (values
+manually checked, code is below but not run or printed in vignette): -->
 ```{r hake_mcmc8, eval = FALSE, echo = FALSE}
 res_all_years$intervals_all %>%
   dplyr::select(eti_lower, eti_upper) %>%
@@ -195,11 +195,8 @@ res_all_years$intervals_all %>%
   round(3) * 1000
 ```
 
-```{r exit}
-knitr::knit_exit()
-```
 
-TODO move to long version.
+TODO move to long version:
 
 To plot all density plots and ETIs (might not be evaluated when editing as take a long time):
 ```{r hake_mcmc9, fig.height = 360, eval = FALSE}
@@ -210,7 +207,7 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-TODO move to long version.
+TODO move to long version:
 
 To plot all density plots and HDis (might not be evaluated when editing as take a long time):
 ```{r hake_mcmc9hdi, fig.height = 360, eval = FALSE}
@@ -221,156 +218,161 @@ plot(res_all_years,
      mfrow = c(60, 1))  # 59 default
 ```
 
-## Figure 2B
+## MCMC samples for multiple years -- relative spawning biomass for Figure 2B
 
-TODO
+We now use the same approach for the relative spawning biomass calculations
+shown in Figure 2B.
 
 The female spawning biomass is the estimated total biomass of all females in the
-population that are mature (roughtly half of age-2 females are considered mature).
+population that are mature (for context, roughly half of age-2 females are considered
+mature). The relative spawning biomass is the females spawning biomass divided
+by that for the unfished equilibrium state (the calculation is already done for
+each MCMC sample and then the ratios saved).
 
-Relative spawning biomass calculations (adapted from `report/hdi-analysis.Rmd`,
-as hadn't actually included in any vignettes yet).
+The values are saved in the package
+as a tibble `hake_relative_biomass_mcmc` with years as column headings, and also
+includes forecasts made assuming constant catches in 2024, 2025,
+and 2026 of 350,000 t, which is close to the average coastwide catch from 2014-2023.
+Values correspond to the relative spawning biomass at the start of the
+corresponding year (before any fishing).
 
-### Relative spawning biomass
-
-Using 2024 base case model relative biomass MCMC results, saved in package.
-
-```{r relbiomass}
-current_relative_biomass_mcmc <- pull(hake_relative_biomass_mcmc,
-                                      as.character(2024))    # Full 8000 MCMC samples for that year
-current_relative_biomass_mcmc_sort <- sort(current_relative_biomass_mcmc)
-
-head(current_relative_biomass_mcmc_sort)
-tail(current_relative_biomass_mcmc_sort)
-
-res_relative_biomass <- create_intervals(current_relative_biomass_mcmc_sort,
-                                     n = 1e5)
-res_relative_biomass$intervals %>% a()
-plot(res_relative_biomass,
-#             dens_intervals = res_relative_biomass,
-             x_lim = c(0, 4),
-             x_lab = "Relative spawning biomass in 2024")
-```
-
-## Now do all years for relative spawning biomass
-
-Do for all years with new function:
-TODO - if going to stick with this forecast, just add it to the data object:
-
-TODO need to redo this based on recruitment for all years (abvoe), this is
-adapted from much older code
+We can use similar code to above (since the values are in a tibble):
 ```{r allyears}
-hake_relative_with_forecast <- cbind(hake_relative_biomass_mcmc,
-                                       hake_relative_biomass_mcmc_forecast)
-relative_biomass_res <- create_intervals(hake_relative_with_forecast)  # n=1e5 is hardwired
-relative_biomass_res$intervals_all   # Also returns densities, so could
-                                     # plot each year if wanted
-relative_biomass_res$intervals_all %>% tail()
-# Check with Table b, these all match (obviously no 2025+):
-relative_biomass_res$intervals_all %>%
-  select(quantity, eti_lower, median, eti_upper) %>%
-  filter(quantity >= 2015) %>%
-  mutate(`2.5` = eti_lower * 100,
-         median = median * 100,
-         `97.5` = eti_upper * 100) %>%
-  a() %>%
-  print.data.frame(digits = 4)
+res_all_years_2 <- create_intervals(hake_relative_biomass_mcmc,
+                                    density = FALSE)
+res_all_years_2$intervals_all
+
+res_all_years_2$intervals_all %>% tail()
 ```
 
-And a plot, which includes the forecasts:
+<!-- To confirm that the ETIs match those in Table b of the 2024 hake assessment -->
+<!-- (which does not have 2025 onwards); keeping the code for reference -->
+
+```{r allyearsmatch, echo = FALSE, eval = FALSE}
+res_all_years_2$intervals_all %>%
+  filter(quantity >= 2015) %>%
+  mutate(`Year` = quantity,
+         `Rel. SB 2.5th percentile` = eti_lower * 100,
+         `Rel. SB median` = median * 100,
+         `Rel. SB 97.5th percentile` = eti_upper * 100) %>%
+  select(`Year`:`Rel. SB 97.5th percentile`) %>%
+  filter(`Year` <= 2024) %>%
+  knitr::kable(digits = 1)
+```
+
+To create Figure 2B, which includes the forecasts:
 ```{r biomassseries}
-
-relative_biomass_res$intervals_all %>% tail()
-
-plot(relative_biomass_res,
-     y_max = 2.5,
+plot(res_all_years_2,
      xlim = c(2010, 2027),
+     ylim = c(0, 2.6),
      add_line_at_0.4 = TRUE,
      inc = 0.05,
      leg_loc = "topleft",
      xlab = "Year",
      ylab = "Relative spawning biomass")
-
-# this is for plotting all distributions, may add back in. Maybe a different
-#     vignette. TODO
-#     type = "hdi")
-#     xlim = c(0, 40),
-#     xlab = "Recruitment (billions of fish)",
-#     mfrow = c(60, 1))  # 59 default
 ```
 
-For which years is the lower equal-tailed interval above 0.4 but the lower HDI
-interval falls below 0.4?
+Whether the relative spawning biomass is above or below the management reference point
+of 0.4 is key in forming stakeholders' perception of the health of the hake stock.As seen in the figure, for some years the ETI does not dip below 0.4 but
+the HDI does. Thus, the perception of stock status can depend upon the
+definition of credible intervals (ETI versus HDI). The specific years across the
+whole time series for which this happens are:
+
 ```{r whichyears}
-filter(relative_biomass_res$intervals_all,
-       eti_lower > 0.4,
-       hdi_lower < 0.4)
+dplyr::filter(res_all_years_2$intervals_all,
+              eti_lower > 0.4,
+              hdi_lower < 0.4)
 ```
 
-
-```{r sbdensityfalse}
-relative_biomass_all_years <- create_intervals(hake_relative_with_forecast,
-                                               density = FALSE)
-relative_biomass_all_years$intervals_all %>% tail()
-
-filter(relative_biomass_all_years$intervals_all,
-       eti_lower > 0.4,
-       hdi_lower < 0.4)
-
-plot(relative_biomass_all_years,
-     y_max = 2.6,
-     xlim = c(2010, 2027),
-     add_line_at_0.4 = TRUE)
-
-
+Also, on the plot the years 2016 and 2020 look like they are also exhibiting this
+behaviour, but in fact the HDI is very slightly above 0.4:
+```{r whichyearsclose}
+dplyr::filter(res_all_years_2$intervals_all,
+              quantity %in% c(2016, 2020))
 ```
 
+To see all the values of interest:
+```{r summarytab2}
+summary_table(res_all_years_2)
+```
 
+To plot results for a single year, for example 2024, extract the results
+from the list and use our plotting function, and tailor the figure as necessary
+by setting the arguments (see `?plot.intervals_density`):
+```{r plotoneyear, fig.height = 12}
+index_for_2024 <- which(res_all_years_2$intervals_all$quantity == 2024)
+par(mfrow = c(2,1))
+plot(res_all_years_2[["res_all"]][[index_for_2024]],
+     type = "eti",
+     xlim = c(0, 3.5),
+     ylim = c(0, 1.1),
+     interval_arrows = TRUE,
+     xlab = "Relative spawning biomass in 2024",
+     y_arrow = 1.07,
+     arrowhead_gap = 0.01,
+     x_minor_ticks_by = 0.25,
+     y_minor_ticks_by = 0.05)
+
+plot(res_all_years_2[["res_all"]][[index_for_2024]],
+     type = "hdi",
+     xlim = c(0, 3.5),
+     ylim = c(0, 1.1),
+     interval_arrows = TRUE,
+     xlab = "Relative spawning biomass in 2024",
+     y_arrow = 1.07,
+     arrowhead_gap = 0.01,
+     x_minor_ticks_by = 0.25,
+     y_minor_ticks_by = 0.05)
+```
 
 
 ## Absolute female spawning biomass
 
-The above (TODO check) was for relative female spawning biomass. We now briefly look at
+The above was for relative female spawning biomass. We now briefly look at
 absolute female spawning biomass, in units of millions of tonnes. This is also
-saved as a data object in the package (`hake_spawning_biomass_mcmc`). The values
-for 2024 and 2023 are of interest and given in a bullet in the one-page summary of the hake assessment:
+saved as a data object in the package (`hake_spawning_biomass_mcmc`). We focus
+on the values
+for 2023 and 2024 which are given in a bullet in the one-page summary of the hake assessment:
 
 "The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t
 (with 95% credible interval from 853,207 to 4,828,382 t). This is an upward shift
 from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t
 (with 95% credible interval from 652,495 to 3,224,819 t)."
 
-So those credible intervals are ETIs. How would HDIs compare?
-
+So those credible intervals are ETIs. How would HDIs compare? The results are
+(in millions of tonnes):
 ```{r sb1}
 res_all_years_spawning <-
   create_intervals(dplyr::select(hake_spawning_biomass_mcmc,
-                                 -"Virgin"),
+                                 `2023`,
+                                 `2024`),
                    density = FALSE)
-
-res_all_years_spawning$intervals_all %>%
-  dplyr::filter(quantity %in% c(2023, 2024)) %>%
-  dplyr::select(quantity, eti_lower, eti_upper, hdi_lower, hdi_upper, width_diff) %>%
-  a()
+summary_table(res_all_years_spawning)
 ```
-The ETIs agree with the above quote (except for 2023 the upper value is 1
-tonne different). The credible interval using HDIs for 2024 is then
+The above quote, using HDIs instead of ETIs, becomes:
+
+"The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t
+(with 95% credible interval from
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
-                                                       2024)$hdi_lower * 1e06)`
-to
+                                                       2024)$hdi_lower * 1e06)` to
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
-                                                       2024)$hdi_upper * 1e06)` t,
-which is shifted downwards from the ETI of
+                                                       2024)$hdi_upper * 1e06)` t).
+This is an upward shift
+from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t
+(with 95% credible interval from
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
-                                                       2024)$eti_lower * 1e06)`
-to
+                                                       2023)$hdi_lower * 1e06)` to
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
-                                                       2024)$eti_upper * 1e06)` t.
+                                                       2023)$hdi_upper * 1e06)` t)."
+
 The reduction in uncertainty is
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
-                                                       2024)$width_diff * 1e06)` t,
-which is larger than the total catch (of males and females, not just spawning
-females) in the latest year of fishing (2023), and so is certainly not trivial.
+                                                       2024)$width_diff * 1e06)` t.
+This is larger than the total 2023 catch of males and females, whereas spawning
+biomass only considers spawning females, and so is certainly not trivial. Again,
+intervals are shifted downwards, implying the stock biomass is lower than implied
+when using the original ETIs.
+
 
 The ETI and HDI plots are
 ```{r,  sb2, fig.height = 12}
@@ -390,6 +392,10 @@ plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$
      y_arrow = 0.57,
      xlab = "Female spawning biomass in 2024 (millions of tonnes)",
      type = "hdi")
+```
+
+```{r exit2}
+knitr::knit_exit()
 ```
 
 

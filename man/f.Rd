@@ -9,7 +9,7 @@ f(x, digits = 0)
 \arguments{
 \item{x}{The number}
 
-\item{digits}{The number of decimal points to use}
+\item{digits}{The number of decimal places to show}
 }
 \value{
 A Character string. A formatted version of the number \code{x}.

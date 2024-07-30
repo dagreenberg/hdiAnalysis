@@ -50,7 +50,9 @@ the right-most equivalent to \code{from}.}
 }
 \value{
 list object of class \code{intervals_density} (such that we can plot it
-with \code{plot.intervals_density()}, with objects:
+with \code{plot.intervals_density()}, with objects:   TODO add new ones, plus
+density object. Link
+help files together.
 \itemize{
 \item intervals: one-row tibble with columns:
 \itemize{
