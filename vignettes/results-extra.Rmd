@@ -44,8 +44,7 @@ results as in `results.Rmd` (see that for more details) and plot the full
 distributions with ETI and HDI for each year.
 ```{r hake_mcmc2}
 res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
-                                                -"Virgin"),
-                                  density = FALSE)
+                                                -"Virgin"))
 ```
 
 The default plot (which uses `plot.intervals_density_list()`) is that shown in Figure 2A:
@@ -87,8 +86,8 @@ in the package) but results are presented below.
 vec_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
                         "2021")
 
-res_vec_long <- create_intervals(vec_long,
-                                  density = FALSE)
+res_vec_long <- create_intervals(vec_long)
+
 summary_table(res_vec_long)
 
 plot(res_vec_long,

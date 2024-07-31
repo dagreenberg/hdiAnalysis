@@ -23,11 +23,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-TODO If stick with `density = FALSE` then change `create_intervals()` default to
-that, and remove the specific options here, and redo any other required
-vignettes (likely just save them and their pdf's for reference; might not need
-them all anyway).
-
 This vignette reproduces the main results in the manuscript, and can easily be
 used as a template for users to apply to their own data or model outputs. The longer
 `results-extra` vignette gives more details of outputs and further examples of
@@ -58,8 +53,7 @@ We use the `create_intervals` function to do the main calculations. We call the
 results here `res_vec` for results on a vector, so that the subsequent code will not need changing by users for their own analyses:
 
 ```{r vectorres}
-res_vec <- create_intervals(vec,
-                            density = FALSE)
+res_vec <- create_intervals(vec)
 res_vec
 ```
 As seen above, `res_vec` is a list, with first element `$intervals` containing
@@ -140,8 +134,7 @@ calculate intervals for each column (year in this case, and we will exclude the
 Virgin sample) of samples.
 ```{r hake_mcmc2}
 res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
-                                                -"Virgin"),
-                                  density = FALSE)
+                                                -"Virgin"))
 ```
 This gives a list object, with element `res_all[[i]]` corresponding to row `i`
 of the data. Each `res_all[[i]]` element is itself a list, giving the same
@@ -213,8 +206,8 @@ corresponding year (before any fishing).
 
 We can use similar code to above (since the values are in a tibble):
 ```{r allyears}
-res_all_years_2 <- create_intervals(hake_relative_biomass_mcmc,
-                                    density = FALSE)
+res_all_years_2 <- create_intervals(hake_relative_biomass_mcmc)
+
 res_all_years_2$intervals_all
 
 res_all_years_2$intervals_all %>% tail()
@@ -320,8 +313,8 @@ So those credible intervals are ETIs. How would HDIs compare? The results are
 res_all_years_spawning <-
   create_intervals(dplyr::select(hake_spawning_biomass_mcmc,
                                  `2023`,
-                                 `2024`),
-                   density = FALSE)
+                                 `2024`))
+
 summary_table(res_all_years_spawning)
 ```
 The above quote, using HDIs instead of ETIs, becomes:

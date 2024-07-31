@@ -1,6 +1,7 @@
 # create_intervals(). Quick test just to keep GHA happy for now.
 test_that("create_intervals results on hake 2021 recruitment do not change; only checks one value for now to get working", {
-  res_2021_test <- create_intervals(rec_2021)
+  res_2021_test <- create_intervals(rec_2021,
+                                    density = TRUE)
 
   #vec_results <- c(10.1873, 4.085088, 29.49938,  2.702156,  25.55708, 25.4143, 22.85492,
   #  2.559376, 21 ,0.03289304, 123, 0.003572334, 1, 16, 0.008976952, 108,

@@ -1,10 +1,10 @@
 ##' For a vector of numeric values, calculate the ETI and HDI
 ##'
 ##' @param dat numeric vector of values, such as MCMC samples for a quantity
-##' @param density if TRUE (the default) then use the density approach for the HDI
+##' @param density if TRUE then use the density approach for the HDI
 ##'   calculation, rather than the `hdi()` default of just the sample values. If
-##'   FALSE then the density kernel is only used to estimate the y values of
-##'   the pdf at specified points.
+##'   FALSE (the default) then the density kernel is only used to estimate the y
+##'   values of the pdf at specified points.
 ##' @param credibility numeric value between 0 and 1 specifying the interval to
 ##'   be specified (0.95 for 95%, 0.90 for 90%, etc.)
 ##' @param from the left-most point of the grid at which the density is to be
@@ -75,7 +75,7 @@
 ##' create_intervals(rec_2021)   # rec_2021 is the MCMC samples for hake recruitment in 2021
 ##' }
 create_intervals.numeric <- function(dat,
-                             density = TRUE,
+                             density = FALSE,
                              credibility = 0.95,
                              from = 0,
                              n = 1e05,
