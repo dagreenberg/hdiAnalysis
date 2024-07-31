@@ -1,12 +1,14 @@
-##' Plot Figure 1 for a specific size.
-##'  <desc>
+##' Plot Figure 1 for a specific dimension.
 ##'
+##' Useful for the manuscript, maybe less so for other users, though could be
+##'   useful as a template. Generally running in
+##'   the vignettes folder then copying over to the write up repository.
 ##' @return
 ##' @export
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##'
+##' figure_1()
 ##' }
 figure_1 <- function(file = "figure-1.pdf",
                      height = 4,
@@ -34,10 +36,11 @@ figure_1 <- function(file = "figure-1.pdf",
        interval_arrows = TRUE,
        xlab = xlab,
        arrowhead_gap = 0.1,
+       x_minor_ticks_by = 2,
        ...)
 
   mtext("A. Equal-tailed interval", side = 3, adj = 0, cex = 0.7,
-        line = 0.3) # TODO Add to function, cex is indpt of par(cex)
+        line = 0.3)
 
   plot(res_2021,
        type = "hdi",
@@ -46,10 +49,11 @@ figure_1 <- function(file = "figure-1.pdf",
        interval_arrows = TRUE,
        xlab = xlab,
        arrowhead_gap = 0.1,
+       x_minor_ticks_by = 2,
        ...)
 
   mtext("B. Highest density interval", side = 3, adj = 0, cex = 0.7,
-        line = 0.3) # TODO Add to function
+        line = 0.3)
 
   dev.off()
 }
