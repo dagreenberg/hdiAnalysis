@@ -17,6 +17,16 @@
 ##'
 ##' @param obj a `pacea_recruitment` object, which is a time series. Function
 ##'   will run on other objects (not give an error) but is not tested on those.
+##' @param type
+##' @param eti_bar_col
+##' @param hdi_bar_col
+##' @param add_line_at_0.4 logical whether to add a line at 0.4, specifically
+##'   for Figure 2B, also adds the 'Now' and 'Projections' text
+##' @param add_line_at_0.4_col colour for 0.4 line
+##' @param add_line_at_0.4_lty linetype for 0.4 line
+##' @param ylim
+##' @param leg_loc
+##' @param join_intervals
 ##' @param value the column to plot if no uncertainties, or what to plot as dots
 ##'   if showing uncertainties (likely always `median`)
 ##' @param style `no_uncertainty` for plain time series without uncertainty,

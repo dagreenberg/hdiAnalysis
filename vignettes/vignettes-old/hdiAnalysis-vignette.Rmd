@@ -23,6 +23,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+THIS was before the switch to doing `density = FALSE`, and was used as template
+for more concise `results.Rmd` vignette. Keeping for now as have not used the
+Issues code etc. towards the end, and there may be something useful here. But
+probably not needed for manuscript.
+
 We present what works, to be used as a template for other analyses, and then
 change some code settings to show what did not work for our investigations.
 

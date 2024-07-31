@@ -19,6 +19,7 @@ summary_table.intervals_density_list <- function(int_dens_list,
   int_all <- int_dens_list$intervals_all
 
   dplyr::mutate(int_all,
+                "Median" = median,
                 "ETI lower" = eti_lower,
                 "ETI upper" = eti_upper,
                 "HDI lower" = hdi_lower,
@@ -29,6 +30,6 @@ summary_table.intervals_density_list <- function(int_dens_list,
                 "Range b lower" = b_lower,
                 "Range b upper" = eti_upper) %>%
     dplyr::select(quantity,
-                  "ETI lower":"Range b upper") %>%
+                  "Median":"Range b upper") %>%
     knitr::kable(digits = 2)
 }

@@ -40,7 +40,6 @@ library(dplyr)
 library(coda)            # Needed to test alternative code TODO maybe not needed
 ```
 
-
 ## Analyse a single vector of values
 
 Our first 'data' set is the hake Markov chain Monte Carlo (MCMC) recruitment
@@ -273,8 +272,9 @@ plot(res_all_years_2,
 ```
 
 Whether the relative spawning biomass is above or below the management reference point
-of 0.4 is key in forming stakeholders' perception of the health of the hake stock.As seen in the figure, for some years the ETI does not dip below 0.4 but
-the HDI does. Thus, the perception of stock status can depend upon the
+of 0.4 is key in forming stakeholders' perception of the health of the hake
+stock. As seen in the figure, in 2024 and 2025 the ETI does not dip below 0.4 but
+the HDI does. Thus, the perception of current and future stock status can depend upon the
 definition of credible intervals (ETI versus HDI). The specific years across the
 whole time series for which this happens are:
 
@@ -332,7 +332,7 @@ The above was for relative female spawning biomass. We now briefly look at
 absolute female spawning biomass, in units of millions of tonnes. This is also
 saved as a data object in the package (`hake_spawning_biomass_mcmc`). We focus
 on the values
-for 2023 and 2024 which are given in a bullet in the one-page summary of the hake assessment:
+for 2023 and 2024 which are given prominence in a bullet in the one-page summary of the hake assessment:
 
 "The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t
 (with 95% credible interval from 853,207 to 4,828,382 t). This is an upward shift
@@ -365,14 +365,14 @@ from this assessment’s estimate for the 2023 female spawning biomass of 1,335,
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
                                                        2023)$hdi_upper * 1e06)` t)."
 
-The reduction in uncertainty is
+The reduction in uncertainty for 2024 from switching from the ETI to the HDI is
 `r f(dplyr::filter(res_all_years_spawning$intervals_all, quantity ==
                                                        2024)$width_diff * 1e06)` t.
-This is larger than the total 2023 catch of males and females, whereas spawning
-biomass only considers spawning females, and so is certainly not trivial. Again,
-intervals are shifted downwards, implying the stock biomass is lower than implied
+This is larger than the average catch from 2014-2023 of 338,606 t, of which less
+than half would be considered as spawning biomass (mature females; catch is
+males plus females). Thus, the reduction in uncertainty is certainly not trivial.
+Again, intervals are shifted downwards, implying the stock biomass is lower than implied
 when using the original ETIs.
-
 
 The ETI and HDI plots are
 ```{r,  sb2, fig.height = 12}
@@ -394,28 +394,45 @@ plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$
      type = "hdi")
 ```
 
+
+```{r longchain, echo = FALSE, eval = FALSE}
+# Analysis for a longer chain of 32,000 MCMC samples (that took a while to run),
+# but since data object is huge, not including it.
+# in package.
+vec_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
+                        "2021")
+
+res_vec_long <- create_intervals(vec_long,
+                                  density = FALSE)
+summary_table(res_vec_long)
+# Results are similar to shorter chain (don't expect to be exactly the same
+# anyway due to randomness between chains):
+# | Quantity| Value | Interval width |
+# | :-------| -----:| -----:|
+# | Median  | 10.20 | -- |
+# | ETI     | 4.05 -- 29.53 | 25.49 |
+# | HDI     | 2.89 -- 25.23 | 22.34 |
+# | Range a | 2.27 -- 4.05 | 1.78 |
+# | Range b | 16.02 -- 29.53 | 13.52 |
+
+plot(res_vec_long,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+# Density kernel is a bit smoother
+```
+
+
+
 ```{r exit2}
 knitr::knit_exit()
 ```
 
 
 ## TODO
-
-HERE - think some of this can go.
-
-D First save the `allow_hdi_zero` as an output in create_intervals.
-  have been thinking about this slightly wrong. min data equals hdi lower
-  because we've restricted that, so then it's a one-sided tail for the HDI,
-  which we should force to be the 5%. So if HDI starts at the min add a flag for
-  this to help with plotting. Below the HDI is not a thing because we've
-  restricted it, so just need to think differently for plotting.
-D also save integral over (-Inf,Inf) and also over ETI and HDI.
-- HERE it's drawing red lower for 2024 but shouldn't.
-D if integral is not 1 then could rescale it; in example above that made the HDI
-  contain 95%. Now done in create intervals.
-- Then need to adapt plotting function to not add the 0,0 in if have forced the
-  HDI to be above 0. Use that in plot to draw grey line, and to not add in 0,0.
-- for text, first do we care about allowing zero (might not always),
 
 ```{r plotttt}
 res_2024 <- create_intervals(select(hake_recruitment_mcmc, "2024") %>% pull(),
@@ -671,11 +688,6 @@ likely be investigated.
 
 TODO still
 
-Deal with warnings, which are mine in `create_intervals()`. Just do 1966
-
-NOT SURE IF THIS IS NEEDED, maybe as another example of warnings. Maybe plot
-anything from earlier that had a warning. TODO
-
 NOT changed `density = FALSE` yet.
 
 ```{r warn}
@@ -728,41 +740,6 @@ res_all_years$intervals_all %>%
   round(3) * 1000
 ```
 
-
-## Quick long chain, but easiest to just re-run vignette with long chain results used instead
-
-TODO decided what to do with this, prob keep but just short
-Somewhere, check the longer chain, not sure if including in package (could do if
-needed, or just save these calculations somewhere else and state we did them -
-would really be redoing the vignette with longer chain. Do quick calcs here
-while writing appendix
-```{r longchain}
-vec_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
-                             "2021")
-
-res_vec_long <- create_intervals(vec_long,
-                                  density = TRUE)
-
-res_vec_long_no_density <- create_intervals(vec_long,
-                                             density = FALSE)
-
-res_vec_long$intervals %>% a()
-res_vec_long_no_density$intervals %>% a()
-# NOTE values change anyway, including median, so gets hard to compare with
-# original
-```
-
-Do the plot:
-```{r res2021longplot}
-plot(res_vec_long_no_density,
-     type = "hdi",
-     xlim = c(0, 40),
-     ylim = c(0, 0.11),
-     interval_arrows = TRUE,
-     xlab = "Recruitment (billions of age-0 fish)",
-     arrowhead_gap = 0.1)
-```
-
 ### Examples from HDInterval
 
 Replicating the examples from the help file `?HDInterval::hdi` using our
@@ -805,17 +782,4 @@ res_tst_dens_default_n <- create_intervals(tst, credibility = 0.8) # TODO think
 res_tst_dens_default_n$intervals %>% a()
 plot(res_tst_dens_default_n, xlim = c(0,4))
 
-```
-
-TODO Keep for table example (for me to then use R Markdown), but then can delete).
-```{r tableres}
-knitr::kable(res_vec$intervals %>% select(median,
-                                           eti_lower,
-                                           eti_upper,
-                                           hdi_lower,
-                                           hdi_upper,
-                                           width_eti,
-                                           width_hdi,
-                                           width_diff),
-             digits = 2)   # 3 shows that HDI are 95.0 except two 95.1, but this
 ```
