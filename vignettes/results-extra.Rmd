@@ -1,0 +1,115 @@
+---
+title: "Extra results and examples of code functionality"
+author: "Andrew Edwards"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extra results and examples of code functionality}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
+---
+
+<!-- To build either run
+rmarkdown::render("results-extra.Rmd")
+ or click the knit button in RStudio -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 6
+)
+```
+
+This vignette follows on from the `results.Rmd` vignette, including:
+
+- plotting of all density functions when multiple years of data are analysed
+(specifically all years of recruitment shown in Figure 2A).
+- calculation on a longer MCMC chain that used for the hake assessment.
+- exporation of additional options for calculating HDIs, based on the kernel
+density estimate of the MCMC sample.
+
+Set up:
+```{r setup}
+load_all()      # TODO change to library(hdiAnalysis) when done
+library(dplyr)
+```
+
+## MCMC samples for multiple years -- recruitment for Figure 2A, plotting all the distributions
+
+For the multiple years of MCMC samples of hake recruitment, we calculate the
+results as in `results.Rmd` (see that for more details) and plot the full
+distributions with ETI and HDI for each year.
+```{r hake_mcmc2}
+res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
+                                                -"Virgin"),
+                                  density = FALSE)
+```
+
+The default plot (which uses `plot.intervals_density_list()`) is that shown in Figure 2A:
+```{r hake_mcmc7}
+plot(res_all_years,
+     xlab = "Year",
+     ylab = "Recruitment (billions of fish)")
+```
+
+To plot all density plots and ETIs for each year (equivalent to Figure 1A), the `type` argument is used
+(and we have changed the `fig.height` for the chunk, and specified `mfrow` as an
+argument, and fixed `xlim` so that it is the same for each plot). The year is
+automatically shown in each figure.
+```{r hake_mcmc9, fig.height = 80}
+plot(res_all_years,
+     type = "eti",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(30, 2))  # 59 default
+```
+
+For the equvalent figures for HDIs, just change the `type` argument:
+```{r hake_mcmc9hdi, fig.height = 80}
+plot(res_all_years,
+     type = "hdi",
+     xlim = c(0, 40),
+     xlab = "Recruitment (billions of fish)",
+     mfrow = c(30, 2))  # 59 default
+```
+
+## Longer chain of 32,000 MCMC samples for hake recruitment in 2021
+
+We also analysed an experimental longer chain of 32,000 MCMC samples (that took
+several days to run), and results are similar to the standard chain of 8,000
+samples. Code is not run here (since the data object is large and so not included
+in the package) but results are presented below.
+
+```{r longchain, echo = FALSE, eval = FALSE}
+vec_long <- dplyr::pull(hake_recruitment_mcmc_14_long,
+                        "2021")
+
+res_vec_long <- create_intervals(vec_long,
+                                  density = FALSE)
+summary_table(res_vec_long)
+
+plot(res_vec_long,
+     type = "hdi",
+     xlim = c(0, 40),
+     ylim = c(0, 0.11),
+     interval_arrows = TRUE,
+     xlab = "Recruitment (billions of age-0 fish)",
+     arrowhead_gap = 0.1)
+# Density kernel is a bit smoother
+```
+
+| Quantity| Value | Interval width |
+| :-------| -----:| -----:|
+| Median  | 10.20 | -- |
+| ETI     | 4.05 -- 29.53 | 25.49 |
+| HDI     | 2.89 -- 25.23 | 22.34 |
+| Range a | 2.27 -- 4.05 | 1.78 |
+| Range b | 16.02 -- 29.53 | 13.52 |
+
+The slight differences between the HDI for the two chains are small
+compared to the difference to the ETI (for either chain). The ETIs change
+slightly between changes due to randomness between them, and the median even
+changes very slightly.
