@@ -10,7 +10,7 @@ date: "Last rendered on `r format(Sys.time(), '%d %B, %Y')`"
 ---
 
 <!-- To build either run
-rmarkdown::render("hdiAnalysis-vignette-hake-natage.Rmd")
+rmarkdown::render("hake-natage.Rmd")
  or click the knit button in RStudio -->
 
 
@@ -23,28 +23,28 @@ knitr::opts_chunk$set(
 )
 ```
 
-Copying the current `hdiAnalysis-vignette-herring-sog.Rmd` (which cut out the
-explanatory stuff) to look at numbers of
-age-1 and age-2 fish for hake. TODO maybe move to report, rather than vignette,
-then include what we endup reporoting as vignette (as then we can just save age1
-or age2 full MCMC, saving all over all years is too much).
+This analyses Pacific Hake assessment estimates of numbers-at-age, to produce
+the age-1 result quoted in the manuscript, that the total reduction in uncertainty
+over the time series when using HDIs instead of ETIs is >23 billion fish. This
+report calculates values for all age classes.
 
-## Figure 1 equivalent
+Raw MCMC values are not included in
+the package (but are available on request) since the file is 65 Mb, as
+it contains 8,000 MCMC samples for each age 0 to 20 for 59 years. Thus, this
+report will not run for users, but the code is all here and the rendered .html
+is saved on GitHub.
+
+
 
 ```{r setup}
 load_all()      # TODO change to library(hdiAnalysis) when done
 library(dplyr)
-library(spatstat.geom)   # Needed for checking some integrals
-library(coda)            # Needed to test alternative code
 
 redo_results <- FALSE   # If FALSE then load in previous values and results, since takes a
                         # while to do the calculations.
 ```
 
-May want to functionalise a little like `create_hake_forecast_mcmc()`.
-
-TODO The hake numbers-at-age full MCMC results have been extracted and are saved
-and then wrangled here, not saved in the package.
+## Get the MCMC values and wrangle into the required format
 
 ```{r loaddata}
 if(redo_results){
@@ -108,6 +108,8 @@ if(redo_results){
 Each element of the list is a tibble in the same format as
 `hake_recruitment_mcmc`, named as age0, age1, etc. up to age20.
 
+## Do the analysis for each age in turn
+
 Now do the analysis for each age. Resulting list has an element for each age,
 which is itself a list object with the results for each year plus the summary in
 `intervals_all`, which includes the median which we can use for checking (or use
@@ -126,31 +128,37 @@ if(redo_results){
 }
 ```
 
-Then check recruitment:
+Then check recruitment values agree with those calculated in Results vignette:
 ```{r checkage0}
 # hake_natage_res_list[[paste0("age", i)]]
 hake_natage_res_list[["age0"]]$intervals_all %>% filter(quantity == 2021) %>% a()
 ```
 
 Last result matches those for recruitment (as they should) in 2021 already in
-manuscript. Should be able to generate Figure 2a from these results, then look
-at example ages one at a time.
+manuscript.
 
-So age-0 over time, then age-10 and age-20
+## Figure 2a equivalent for all ages
+
+Can generate an equivalent to Figure 2a from these results, doing age-0 (to
+confirm it matches Figure 2a), then age-10 as an example, and then we will show them all
+after looking at the results:
 ```{r age0plot}
-plot(hake_natage_res_list[["age0"]])
-plot(hake_natage_res_list[["age10"]])
-plot(hake_natage_res_list[["age20"]])
+plot(hake_natage_res_list[["age0"]],
+     xlab = "Year",
+     ylab = "Age-0 fish (billions)")
+
+plot(hake_natage_res_list[["age10"]],
+     xlab = "Year",
+     ylab = "Age-10 fish (billions)")
 ```
 
-See the large uncertainty in age-20 at the start of uncertainty, since pretty
-uninformed by data; makes sense.
-
 Now work out the total difference in interval widths across all years, for each
-age class in turn (can't really just add all of those up as that's double
-counting). Have to exclude years that are uninformed by data, which would
-include early years for older fish, but we likely won't report those anyway so
-don't worry.
+age class in turn. Have to exclude years that are uninformed by data, namely the
+final two years for age-0 and the final year for age-1. Should
+probably exclude some of the early years for the older fish, since they are
+informed by limited data (if they are so old when the data starts, there won't
+be many years of future age data about them), but not reporting results in the manuscript and so only do
+that if needed.
 
 ```{r widthdiffage}
 total_width_diff_by_age <- tibble(age = ages,
@@ -177,17 +185,21 @@ for(i in ages){
 
   total_width_diff_by_age[total_width_diff_by_age$age == i, "total_width_diff"] <- sum_this_age
 }
-total_width_diff_by_age %>% a()
+# total_width_diff_by_age %>% a()
 ```
 
-And to see all the values:
+To see all the total differences for each age class:
 ```{r hakeagevalues}
 knitr::kable(total_width_diff_by_age,
              digits = 1)
 ```
 
-To plot equivalent to Figure 2A for each age class, first with each y-axis
-scaled independntly:
+The age-0 value matches the recruitment one quoted in the text, and the table
+provides the age-1 value. These differences remain substantial for many age
+classes, diminishing in size as intuitively expected.
+
+To plot the equivalent to Figure 2A for each age class, first with each y-axis
+scaled independently:
 ```{r hakeeachage}
 for(i in ages){
   plot(hake_natage_res_list[[paste0("age", i)]],
