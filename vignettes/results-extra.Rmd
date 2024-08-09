@@ -111,7 +111,7 @@ plot(res_vec_long,
 The slight differences between the HDI for this chain and the one used in the
 main results are small
 compared to the difference to the ETI (for either chain). The ETIs change
-slightly between changes due to randomness between them, and the median even
+slightly between chains due to randomness between them, and the median even
 changes very slightly.
 
 Also, the density values at the endpoints of the HDI are still not equal (they
@@ -126,3 +126,9 @@ These are similar to the results for the original chain, suggesting long MCMC
 chains will not result in the densities at the HDI endpoints being exactly
 equal. This is likely due to the true bumpy shape of the posterior and the
 approximations from the kernel density estimate required to estimate the densities.
+
+## Computing the HDI on the kernel density estimate
+
+Given the minor issue in Fig 1B that the densities at the endpoints of the HDI
+are not exactly equal, but they should be in theory, we also tried other
+approaches to computing the HDI.
