@@ -108,7 +108,21 @@ plot(res_vec_long,
 | Range a | 2.27 -- 4.05 | 1.78 |
 | Range b | 16.02 -- 29.53 | 13.52 |
 
-The slight differences between the HDI for the two chains are small
+The slight differences between the HDI for this chain and the one used in the
+main results are small
 compared to the difference to the ETI (for either chain). The ETIs change
 slightly between changes due to randomness between them, and the median even
 changes very slightly.
+
+Also, the density values at the endpoints of the HDI are still not equal (they
+should be theoretically):
+```{r longchain2, eval = FALSE}
+> res_vec_long$interval$y_hdi_lower
+[1] 0.01026998
+> res_vec_long$interval$y_hdi_upper
+[1] 0.007201427
+```
+These are similar to the results for the original chain, suggesting long MCMC
+chains will not result in the densities at the HDI endpoints being exactly
+equal. This is likely due to the true bumpy shape of the posterior and the
+approximations from the kernel density estimate required to estimate the densities.
