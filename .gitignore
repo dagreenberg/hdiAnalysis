@@ -20,3 +20,5 @@ vignettes/populations.Rmd
 report/hake_natage_mcmc_list.rds
 report/hake_natage_res_list.rds
 report/natage_mcmc.rds
+
+vignettes/vignettes-old/
