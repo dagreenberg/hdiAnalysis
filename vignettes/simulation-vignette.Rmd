@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+Moving what's needed to results-extra vignette, then can delete this. TODO
+
 This investigation is what led to thinking
 we should not use the density approach to calculated the HDI.
 
