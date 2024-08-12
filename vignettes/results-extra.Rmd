@@ -127,6 +127,11 @@ chains will not result in the densities at the HDI endpoints being exactly
 equal. This is likely due to the true bumpy shape of the posterior and the
 approximations from the kernel density estimate required to estimate the densities.
 
+Also, the integral over the HDI is estimated to be 94.7%, which is a slight
+improvement to the 94.5% for the original chain of 8,000 samples, but still not
+exactly 95%, such that the issue of the HDI not being exactly 95% is not
+resolved by using the longer chain.
+
 ## Computing the HDI on the kernel density estimate
 
 Given the minor issue in Fig 1B that the densities at the endpoints of the HDI
