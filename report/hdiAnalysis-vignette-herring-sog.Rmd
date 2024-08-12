@@ -23,6 +23,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+TODO - not redone since changing back to `density=FALSE` as default and finalising
+the two results vignettes. To redo this might want to use and those as
+templates. TODO.
+
+
 Copying the current `hdiAnalysis-vignette.Rmd` to test code on herring. Cutting
 out the explanatory stuff here, just want to look at results.
 
