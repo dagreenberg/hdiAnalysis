@@ -6,7 +6,7 @@
 \usage{
 \method{create_intervals}{numeric}(
   dat,
-  density = TRUE,
+  density = FALSE,
   credibility = 0.95,
   from = 0,
   n = 1e+05,
@@ -18,10 +18,10 @@
 \arguments{
 \item{dat}{numeric vector of values, such as MCMC samples for a quantity}
 
-\item{density}{if TRUE (the default) then use the density approach for the HDI
+\item{density}{if TRUE then use the density approach for the HDI
 calculation, rather than the \code{hdi()} default of just the sample values. If
-FALSE then the density kernel is only used to estimate the y values of
-the pdf at specified points.}
+FALSE (the default) then the density kernel is only used to estimate the y
+values of the pdf at specified points.}
 
 \item{credibility}{numeric value between 0 and 1 specifying the interval to
 be specified (0.95 for 95\%, 0.90 for 90\%, etc.)}

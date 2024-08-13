@@ -36,6 +36,13 @@
 \item{obj}{a \code{pacea_recruitment} object, which is a time series. Function
 will run on other objects (not give an error) but is not tested on those.}
 
+\item{add_line_at_0.4}{logical whether to add a line at 0.4, specifically
+for Figure 2B, also adds the 'Now' and 'Projections' text}
+
+\item{add_line_at_0.4_col}{colour for 0.4 line}
+
+\item{add_line_at_0.4_lty}{linetype for 0.4 line}
+
 \item{...}{further options passed onto \code{plot.default()}}
 
 \item{value}{the column to plot if no uncertainties, or what to plot as dots

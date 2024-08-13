@@ -2,8 +2,7 @@
 % Please edit documentation in R/figure-1.R
 \name{figure_1}
 \alias{figure_1}
-\title{Plot Figure 1 for a specific size.
-\if{html}{\out{<desc>}}}
+\title{Plot Figure 1 for a specific dimension.}
 \usage{
 figure_1(
   file = "figure-1.pdf",
@@ -15,12 +14,13 @@ figure_1(
 )
 }
 \description{
-Plot Figure 1 for a specific size.
-\if{html}{\out{<desc>}}
+Useful for the manuscript, maybe less so for other users, though could be
+useful as a template. Generally running in
+the vignettes folder then copying over to the write up repository.
 }
 \examples{
 \dontrun{
-
+figure_1()
 }
 }
 \author{

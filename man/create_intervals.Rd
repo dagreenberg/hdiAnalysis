@@ -7,7 +7,7 @@
 create_intervals(dat, ...)
 }
 \description{
-Based on \code{plot()}.
+Based on \code{plot()}. The functions are \code{create_itervals.numeric()} and \code{create_intervals.data.frame()}.
 }
 \examples{
 \dontrun{
