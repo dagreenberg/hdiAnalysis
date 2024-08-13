@@ -305,9 +305,6 @@ create_intervals.numeric <- function(dat,
 
   class(res) = c("intervals_density",
                  class(res))
-
-  if(!is.null(attr(dat, "axis_name"))){
-    attr(res, "axis_name") <- attr(dat, "axis_name")
   }
 
   return(res)

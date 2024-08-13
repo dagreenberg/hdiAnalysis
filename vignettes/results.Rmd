@@ -127,6 +127,9 @@ each of the 8,000 rows representing an MCMC sample:
 hake_recruitment_mcmc
 ```
 
+For your own data, wrangle it into the same kind of tibble, with rows
+representing the MCMC samples.
+
 To create ETIs and HDIs for estimates of recruitment for each year, we can simply use
 `create_intervals()` which, because `hake_recruitment_mcmc` has class
 `data.frame`, uses our function `create_intervals.data.frame()` to automatically

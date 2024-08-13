@@ -421,4 +421,4 @@ and the number of upper endpoints above the true value is
 sum(ints_simulations_density_true$hdi_upper[-1] > ints_simulations_density_true$hdi_upper[1])
 ```
 
-So these values are quite a way off being the desired half (`r num_sims/2`). This convinced us to stick with the default no-density method.
+So these values are quite a way off being the desired half (`r num_sims/2`). This convinced us to stick with the simpler no-density method.
