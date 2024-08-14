@@ -305,7 +305,6 @@ create_intervals.numeric <- function(dat,
 
   class(res) = c("intervals_density",
                  class(res))
-  }
 
   return(res)
 }

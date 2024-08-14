@@ -4,31 +4,38 @@
 ##' TODO creates plot on object of class `intervals_density`, which is the
 ##' result of running `create_intervals()` on a vector of values.
 ##'
-##' @param dat_mcmc a numeric vector representing an MCMC sample.
-##' @param dens_intervals
-##' @param year Which year of recruitment (age-0) to plot
+##' @param ints_dens
+##' @param dat
 ##' @param type type of intervals: either `hdi` or `equal`
-##' @param x_lim
 ##' @param col_main
+##' @param col_main_text
 ##' @param col_tail
 ##' @param main_title
-##' @param main_title_include logical whether to include a main title
-##' @param x_lab
+##' @param col_hdi_horizontal
 ##' @param rug_top logical whether to show rug at the top for the density values
 ##' @param rug_bottom logical whether to show rug at the bottom for the raw data values
 ##' @param interval_arrows logical whether to show arrows depicting intervals
 ##' @param y_arrow value on y-axis to show the arrows depicting intervals
+##' @param arrowhead_length
+##' @param arrowhead_gap
 ##' @param col_bars colour of the bars showing regions A and B
 ##' @param bars_multiplier numeric multiplier, to nudge the bars higher (value of
 ##'   1.0 puts them exactly at the minimum density of the ends of the credible
 ##'   interval)
+##' @param lwd_border
+##' @param explanatory_lines_eti logical, whether to plot extra lines to explain the
+##'   ranges a and b for the ETI
+##' @param explanatory_lines_eti_hdi logical, whether to plot extra lines to explain the
+##'   ranges that are in the ETI TODO...a and b for the ETI
+##' @param ... arguments to pass onto `plot()`
+##' @param dat_mcmc a numeric vector representing an MCMC sample.
+##' @param main_title_include logical whether to include a main title
 ##' @param show_discontinuity logical, if `TRUE` then plot the discontinuity in
 ##'   the HDI that arises (only matters if `ints_dens$intervals$warning ==
 ##'   TRUE`).
 ##' @param discontinuity_multiplier numeric, y-axis value to plot points showing
 ##'   discontinuities, multiplies the minimum density of the ends of the
 ##'   credible interval.
-##' @param ... arguments to pass onto `plot()`
 ##' @param rec_intervals result of `create_intervals(dat_mcmc)`; is calculated
 ##'   if not supplied. May be worth supplying so it's not being repeatedly calculated.
 ##' @return invisible
@@ -69,6 +76,8 @@ plot.intervals_density <- function(ints_dens,
                                    # minor tick marks
                                    y_minor_ticks_by = 0.01,
                                    ticks_tcl = -0.2,
+                                   explanatory_lines_eti = FALSE,
+                                   explanatory_lines_eti_hdi = FALSE,
                                    show_discontinuity = FALSE,
                                    discontinuity_multiplier = 2,
                                    ...){
@@ -185,6 +194,40 @@ plot.intervals_density <- function(ints_dens,
            col = col_hdi_horizontal,
            lwd = 1)
   }
+
+  # Add explanatory lines for ETI
+  if(type == "eti" & explanatory_lines_eti){
+    abline(h = c(y_interval_low,
+                 y_interval_high),
+           col = col_hdi_horizontal,
+           lwd = 1)
+    abline(v = c(interval_low,
+                 interval_high,
+                 ints$a_lower,
+                 ints$b_lower),
+           col = col_hdi_horizontal,  # TODO change name
+           lwd = 1)                   # TODO generalise
+  }
+  # Add explanatory lines for ETI and HDI - to show the ranges in the ETI that
+  # are ***
+  if(explanatory_lines_eti_hdi){
+    # Need explicit hdi and eti values, and have it working on both
+    abline(h = c(ints$y_eti_lower,
+                 ints$y_eti_upper),
+           col = col_hdi_horizontal,
+           lwd = 1)
+    abline(v = c(ints$eti_lower,
+                 ints$eti_upper,
+                 ints$a_lower,
+                 ints$b_lower),
+           col = col_hdi_horizontal,  # TODO change name
+           lwd = 1)                   # TODO generalise
+    abline(h = mean(c(ints$y_eti_lower,
+                      ints$y_eti_upper)),
+           col = "darkgreen",  # TODO change name
+           lwd = 2)                   # TODO generalise
+  }
+
 
   if(rug_top){
     rug(dens$x,
