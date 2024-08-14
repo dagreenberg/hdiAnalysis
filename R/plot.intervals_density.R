@@ -23,10 +23,12 @@
 ##'   1.0 puts them exactly at the minimum density of the ends of the credible
 ##'   interval)
 ##' @param lwd_border
-##' @param explanatory_lines_eti logical, whether to plot extra lines to explain the
-##'   ranges a and b for the ETI
-##' @param explanatory_lines_eti_hdi logical, whether to plot extra lines to explain the
-##'   ranges that are in the ETI TODO...a and b for the ETI
+##' @param show_a_b logical, whether to show intervals a and b on ETI plot
+##' @param explanatory_lines_a_b logical, whether to plot extra lines to explain the
+##'   ranges a and b for the ETI.
+##' @param explanatory_lines_extra logical, whether to plot extra lines to explain the
+##'   ranges c and d for which all values in c are more likely than those in d,
+##'   yet c is outside the ETI and d is inside it.
 ##' @param ... arguments to pass onto `plot()`
 ##' @param dat_mcmc a numeric vector representing an MCMC sample.
 ##' @param main_title_include logical whether to include a main title
@@ -43,8 +45,9 @@
 ##' @author Andrew Edwards
 ##' @examples
 ##' \dontrun{
-##' plot_recruitment_density()
-##' plot_recruitment_density(year = 2021)
+##' res <- create_intervals(rec_2021)
+##' plot(res)
+##' # And see results and result-extra vignettes.
 ##' }
 plot.intervals_density <- function(ints_dens,
                                    dat = NULL,   # include if want rugs added
@@ -76,8 +79,9 @@ plot.intervals_density <- function(ints_dens,
                                    # minor tick marks
                                    y_minor_ticks_by = 0.01,
                                    ticks_tcl = -0.2,
-                                   explanatory_lines_eti = FALSE,
-                                   explanatory_lines_eti_hdi = FALSE,
+                                   show_a_b = TRUE,
+                                   explanatory_lines_a_b = FALSE,
+                                   explanatory_lines_extra = FALSE,
                                    show_discontinuity = FALSE,
                                    discontinuity_multiplier = 2,
                                    ...){
@@ -196,7 +200,7 @@ plot.intervals_density <- function(ints_dens,
   }
 
   # Add explanatory lines for ETI
-  if(type == "eti" & explanatory_lines_eti){
+  if(type == "eti" & explanatory_lines_a_b){
     abline(h = c(y_interval_low,
                  y_interval_high),
            col = col_hdi_horizontal,
@@ -208,26 +212,79 @@ plot.intervals_density <- function(ints_dens,
            col = col_hdi_horizontal,  # TODO change name
            lwd = 1)                   # TODO generalise
   }
-  # Add explanatory lines for ETI and HDI - to show the ranges in the ETI that
-  # are ***
-  if(explanatory_lines_eti_hdi){
-    # Need explicit hdi and eti values, and have it working on both
-    abline(h = c(ints$y_eti_lower,
-                 ints$y_eti_upper),
+
+  if(type == "eti" & explanatory_lines_extra){
+    # Add example line (at the mean) that then defines the interval on left that is
+    # outside ETI but more likely than the interval on right inside ETI - see
+    # results-extra vignette.
+    abline(h = c(y_interval_low,
+                 y_interval_high),
            col = col_hdi_horizontal,
            lwd = 1)
-    abline(v = c(ints$eti_lower,
-                 ints$eti_upper,
-                 ints$a_lower,
-                 ints$b_lower),
+
+    green_density <- mean(c(y_interval_low,
+                            y_interval_high)) # density for green line
+
+    i_green_left_min <- min(which(dens$y > green_density))
+
+    i_green_right_min <- max(which(dens$y > green_density))
+
+
+    abline(h = green_density,
+           col = "darkgreen",
+           lwd = 2)                   # TODO generalise
+
+    abline(v = c(interval_low,
+                 interval_high,
+                 dens$x[i_green_left_min],
+                 dens$x[i_green_right_min]),
            col = col_hdi_horizontal,  # TODO change name
            lwd = 1)                   # TODO generalise
-    abline(h = mean(c(ints$y_eti_lower,
-                      ints$y_eti_upper)),
-           col = "darkgreen",  # TODO change name
-           lwd = 2)                   # TODO generalise
-  }
 
+    # Also draw the new intervals:
+    shape::Arrows(dens$x[i_green_left_min],
+                  y_interval_low * bars_multiplier,
+                  interval_low,
+                  y_interval_low * bars_multiplier,
+                  lwd = 2,
+                  code = 3,
+                  col = col_bars,
+                  arr.type = "T",
+                  arr.adj = 1,
+                  arr.length = arrowhead_length/2)
+
+    text(mean(c(dens$x[i_green_left_min],
+                interval_low)),
+         y_interval_low * bars_multiplier,
+         "c",
+         col = col_bars,
+         pos = 3)
+
+
+    # Right-hand bar: area of included values but as probable as some of lower
+    # tail. Left side of bar:
+
+    shape::Arrows(dens$x[i_green_right_min],
+                  y_interval_low * bars_multiplier,
+                  interval_high,
+                  y_interval_low * bars_multiplier,
+                  lwd = 2,
+                  code = 3,
+                  col = col_bars,
+                  arr.type = "T",
+                  arr.adj = 1,
+                  arr.length = arrowhead_length/2)
+
+    text(mean(c(dens$x[i_green_right_min],
+                interval_high)),
+         y_interval_low * bars_multiplier,
+         "d",
+         col = col_bars,
+         pos = 3)
+
+
+
+  }
 
   if(rug_top){
     rug(dens$x,
@@ -314,8 +371,8 @@ plot.intervals_density <- function(ints_dens,
   }
 
 
-  # Show included/exluded values for ETI
-  if(type == "eti"){
+  # Show intervals a and b
+  if(type == "eti" & show_a_b){
     # TODO does this work if left-skewed?? Don't think it does. Need to adapt
     #  (figure out when testing).
     # TODO also rewrite as a and b to match figure, though need to think about
