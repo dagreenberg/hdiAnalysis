@@ -110,9 +110,6 @@ plot.intervals_density <- function(ints_dens,
     }
   }
 
-  # TODO do the attribute axis name, may be getting too clever
-
-
   # TODO change to x_interval_low etc.
   # low and high values of the interval for plotting, already calculated
   if(type == "eti"){
@@ -196,7 +193,8 @@ plot.intervals_density <- function(ints_dens,
                      y_interval_high)),  # If not a true HDI then use the min
                                          # TODO think more, and test with left-skewed
            col = col_hdi_horizontal,
-           lwd = 1)
+           lwd = 1.5)
+    box()
   }
 
   # Add explanatory lines for ETI
