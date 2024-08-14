@@ -364,3 +364,9 @@ plot(res_all_years_spawning$res_all[[which(res_all_years_spawning$intervals_all$
      xlab = "Female spawning biomass in 2024 (millions of tonnes)",
      type = "hdi")
 ```
+
+## Session information
+
+```{r sessioninfo}
+sessionInfo()
+```

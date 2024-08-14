@@ -31,7 +31,7 @@ This vignette follows on from the `results.Rmd` vignette, including:
 - calculation on a longer MCMC chain that used for the hake assessment.
 - exporation of additional options for calculating HDIs, based on the kernel
 density estimate of the MCMC sample.
-
+- session information (documenting R and package version numbers).
 
 Set up:
 ```{r setup}
