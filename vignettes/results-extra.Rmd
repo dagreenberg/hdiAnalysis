@@ -478,3 +478,9 @@ sum(ints_simulations_density_true$hdi_upper[-1] > ints_simulations_density_true$
 ```
 
 So these values are quite a way off being the desired half (`r num_sims/2`). This convinced us to stick with the simpler no-density method.
+
+## Session information
+
+```{r sessioninfo}
+sessionInfo()
+```
