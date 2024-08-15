@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Andrew Edwards" />
+
+
+<title>Results</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Results</h1>
+<h4 class="author">Andrew Edwards</h4>
+<h4 class="date">Last rendered on 15 August, 2024</h4>
+
+
+
+<!-- To build either run
+rmarkdown::render("results.Rmd")
+ or click the knit button in RStudio -->
+<p>This vignette reproduces the main results in the manuscript, and can easily be used as a template for users to apply to their own data or model outputs. The longer <code>results-extra</code> vignette gives more details of outputs and further examples of plotting features.</p>
+<p>Set up:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hdiAnalysis)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<div id="analyse-a-single-vector-of-values" class="section level2">
+<h2>Analyse a single vector of values</h2>
+<p>Our first ‘data’ set is the hake Markov chain Monte Carlo (MCMC) recruitment values for 2021, which is saved as a data object in the package as <code>rec_2021</code>. It is a simple vector of the 8,000 MCMC values, and we will use it to create Figure 1 and associated numbers. To run this code on your own data you just need to have your values in a vector, and replace <code>rec_2021</code> with the name of your vector.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vec <span class="ot">&lt;-</span> rec_2021</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(vec)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1.319   7.347  10.187  11.897  14.364 123.577</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(vec)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 8000</span></span></code></pre></div>
+<p>We use the <code>create_intervals</code> function to do the main calculations. We call the results here <code>res_vec</code> for results on a vector, so that the subsequent code will not need changing by users for their own analyses:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>res_vec <span class="ot">&lt;-</span> <span class="fu">create_intervals</span>(vec)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>res_vec</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $intervals</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 24</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi width_diff</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   10.2      4.09      29.5      2.80      25.2      25.4      22.4       3.03</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 16 more variables: a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;, i_eti_lower &lt;int&gt;,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;, i_hdi_lower &lt;int&gt;,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;, hdi_height &lt;lgl&gt;,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;, integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   allow_hdi_zero &lt;lgl&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $density</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  density.default(x = dat, n = n, from = from)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data: dat (8000 obs.);   Bandwidth &#39;bw&#39; = 0.781</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x                y            </span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :  0.00   Min.   :0.000e+00  </span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 31.48   1st Qu.:0.000e+00  </span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median : 62.96   Median :6.358e-05  </span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   : 62.96   Mean   :7.941e-03  </span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.: 94.44   3rd Qu.:1.623e-03  </span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :125.92   Max.   :9.302e-02  </span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $credibility</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;intervals_density&quot; &quot;list&quot;</span></span></code></pre></div>
+<p>As seen above, <code>res_vec</code> is a list, with first element <code>$intervals</code> containing results such as the median, lower and upper bounds for the equal-tailed interval (ETI) and for the highest density interval (HDI) , widths of the ETI and HDI, and more. See <code>?create_intervals</code> for full details of what is returned. We will show a summary table of the key values after plotting the figures.</p>
+<p>The second element of <code>res_vec</code> is <code>$density</code> (seen above), which is a kernel density estimate of the distribution represented by the samples in <code>vec</code>. It is useful for plotting and calculating approximate intervals.</p>
+<p>The HDI is calculated by <code>create_intervals()</code> using the <code>HDInterval::hdi()</code> function, and we explore other choices in the <code>results-extra</code> vignette.</p>
+</div>
+<div id="plot-the-distribution-showing-the-eti-and-hdi-figure-1" class="section level2">
+<h2>Plot the distribution showing the ETI and HDI – Figure 1</h2>
+<p>Plotting the resulting density function and intervals is simply done using our custom plotting functions, with options for automatically adding intervals and lines. The ETI plot (Figure 1A) is:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_vec,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;eti&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">40</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.11</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Recruitment (billions of age-0 fish)&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">arrowhead_gap =</span> <span class="fl">0.1</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --> and the HDI plot (Figure 1B) is</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_vec,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;hdi&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">40</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.11</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Recruitment (billions of age-0 fish)&quot;</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">arrowhead_gap =</span> <span class="fl">0.1</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --> The <code>plot()</code> command automatically uses our custom plotting function <code>plot.intervals_density()</code>, because the <code>res_vec</code> object has our class <code>intervals_density</code>. See <code>?plot.intervals_density()</code> for details and full options. Our complete Figure 1 is reproduced with the command <code>figure_1()</code>, which can be adapted by users if desired for their own data, or just adapt the above code as necessary (e.g., change the limits and labels).</p>
+<p>The main values of interest are simplified in our customised <code>summary_table()</code> function:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_table</span>(res_vec)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Quantity</th>
+<th align="right">Value</th>
+<th align="right">Interval width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Median</td>
+<td align="right">10.19</td>
+<td align="right">–</td>
+</tr>
+<tr class="even">
+<td align="left">ETI</td>
+<td align="right">4.09 – 29.50</td>
+<td align="right">25.41</td>
+</tr>
+<tr class="odd">
+<td align="left">HDI</td>
+<td align="right">2.80 – 25.18</td>
+<td align="right">22.38</td>
+</tr>
+<tr class="even">
+<td align="left">Range a</td>
+<td align="right">2.08 – 4.09</td>
+<td align="right">2.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Range b</td>
+<td align="right">15.62 – 29.50</td>
+<td align="right">13.88</td>
+</tr>
+</tbody>
+</table>
+<p>The full results are</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>res_vec<span class="sc">$</span>intervals <span class="sc">%&gt;%</span> <span class="fu">a</span>()       <span class="co"># a() is our shorthand function for as.data.frame()</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 10.1873  4.085088  29.49938   2.80205   25.1848   25.4143  22.38275</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   width_diff  a_lower  b_lower i_eti_lower y_eti_lower i_eti_upper y_eti_upper</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   3.031547 2.081478 15.62305        3245  0.03280246       23427 0.003579759</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   i_hdi_lower y_hdi_lower i_hdi_upper y_hdi_upper hdi_height integral_full</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1        2226  0.01002599       20001 0.007297533         NA             1</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   integral_eti integral_hdi warning allow_hdi_zero</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    0.9418215    0.9453085   FALSE          FALSE</span></span></code></pre></div>
+<p>for which definitions are given in the help file <code>?create_intervals</code>.</p>
+</div>
+<div id="mcmc-samples-for-multiple-years-recruitment-for-figure-2a" class="section level2">
+<h2>MCMC samples for multiple years – recruitment for Figure 2A</h2>
+<p>We now present calculations for multiple data sets, in our case multiple years of MCMC samples of hake recruitment.</p>
+<p>The values are saved in the package as the tibble <code>hake_recruitment_mcmc</code>, with each column corresponding to a year (with the first column representing the Virgin unfished equilibrium biomass) and each of the 8,000 rows representing an MCMC sample:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hake_recruitment_mcmc</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8,000 × 60</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    Virgin `1966` `1967` `1968` `1969` `1970` `1971` `1972` `1973` `1974` `1975`</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1   2.95   1.97  1.16    3.37  1.05    5.36  1.67   0.660   4.13  0.165   1.35</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2   3.64   4.73  1.09    4.29  1.57    6.83  0.991  1.01    4.55  0.533   1.60</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3   2.47   1.29  7.27    1.97  1.07    8.54  1.32   0.522   6.73  0.512   1.65</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4   3.01   2.82  6.69    4.29  1.59   11.3   1.00   1.05    8.23  1.18    1.80</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5   1.75   1.11  1.92    3.07  0.394   5.28  0.294  0.503   3.39  0.345   1.07</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6   3.90   2.13 12.5     1.69  2.81   13.3   1.47   0.775   9.15  0.326   3.05</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7   2.40   3.04  1.50    5.18  0.617   8.29  0.452  0.701   5.73  0.131   1.63</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8   1.64   3.06  0.877   2.71  0.267   4.51  0.233  0.344   3.84  0.307   1.30</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9   2.96   4.79  8.93    4.32  1.73   17.7   2.32   1.33   10.5   0.624   3.16</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10   3.02   1.02  1.50    3.45  0.696   5.52  1.35   0.529   3.94  0.431   1.30</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 7,990 more rows</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 49 more variables: `1976` &lt;dbl&gt;, `1977` &lt;dbl&gt;, `1978` &lt;dbl&gt;, `1979` &lt;dbl&gt;,</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   `1980` &lt;dbl&gt;, `1981` &lt;dbl&gt;, `1982` &lt;dbl&gt;, `1983` &lt;dbl&gt;, `1984` &lt;dbl&gt;,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   `1985` &lt;dbl&gt;, `1986` &lt;dbl&gt;, `1987` &lt;dbl&gt;, `1988` &lt;dbl&gt;, `1989` &lt;dbl&gt;,</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   `1990` &lt;dbl&gt;, `1991` &lt;dbl&gt;, `1992` &lt;dbl&gt;, `1993` &lt;dbl&gt;, `1994` &lt;dbl&gt;,</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   `1995` &lt;dbl&gt;, `1996` &lt;dbl&gt;, `1997` &lt;dbl&gt;, `1998` &lt;dbl&gt;, `1999` &lt;dbl&gt;,</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   `2000` &lt;dbl&gt;, `2001` &lt;dbl&gt;, `2002` &lt;dbl&gt;, `2003` &lt;dbl&gt;, `2004` &lt;dbl&gt;, …</span></span></code></pre></div>
+<p>For your own data, wrangle it into the same kind of tibble, with rows representing the MCMC samples.</p>
+<p>To create ETIs and HDIs for estimates of recruitment for each year, we can simply use <code>create_intervals()</code> which, because <code>hake_recruitment_mcmc</code> has class <code>data.frame</code>, uses our function <code>create_intervals.data.frame()</code> to automatically calculate intervals for each column (year in this case, and we will exclude the Virgin column) of samples.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>res_all_years <span class="ot">&lt;-</span> <span class="fu">create_intervals</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(hake_recruitment_mcmc,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                                                <span class="sc">-</span><span class="st">&quot;Virgin&quot;</span>))</span></code></pre></div>
+<p>This gives a list object, with element <code>res_all[[i]]</code> corresponding to column <code>i</code> of the data. Each <code>res_all[[i]]</code> element is itself a list, giving the same results as above for a single vector (and also with the <code>$name</code> element corresponding the column of the input, a year in this example). So the 2021 results from above are:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res_all_years<span class="sc">$</span>res_all[[<span class="dv">56</span>]]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $intervals</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 24</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi width_diff</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   10.2      4.09      29.5      2.80      25.2      25.4      22.4       3.03</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 16 more variables: a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;, i_eti_lower &lt;int&gt;,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;, i_hdi_lower &lt;int&gt;,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;, hdi_height &lt;lgl&gt;,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;, integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   allow_hdi_zero &lt;lgl&gt;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $density</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  density.default(x = dat, n = n, from = from)</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data: dat (8000 obs.);   Bandwidth &#39;bw&#39; = 0.781</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x                y            </span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Min.   :  0.00   Min.   :0.000e+00  </span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 31.48   1st Qu.:0.000e+00  </span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Median : 62.96   Median :6.358e-05  </span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Mean   : 62.96   Mean   :7.941e-03  </span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.: 94.44   3rd Qu.:1.623e-03  </span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Max.   :125.92   Max.   :9.302e-02  </span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $credibility</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.95</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $name</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2021&quot;</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;intervals_density&quot; &quot;list&quot;</span></span></code></pre></div>
+<p>For convenience, the intervals for all years are saved in a single tibble:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>res_all_years<span class="sc">$</span>intervals_all</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 59 × 25</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    quantity median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1     1966  1.63     0.0571     10.7    0.00613      8.43     10.6       8.43</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2     1967  4.65     0.214      14.9    0.00677     12.5      14.7      12.5 </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3     1968  3.13     0.209      10.3    0.0226       8.38     10.1       8.36</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4     1969  0.717    0.0394      4.07   0.00515      3.21      4.03      3.20</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5     1970  9.39     4.72       22.8    3.97        20.0      18.1      16.1 </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6     1971  0.860    0.0833      3.16   0.0135       2.59      3.08      2.57</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7     1972  0.554    0.0670      1.97   0.0138       1.65      1.90      1.63</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8     1973  6.28     3.24       14.7    2.52        12.8      11.5      10.3 </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9     1974  0.353    0.0367      1.42   0.00697      1.15      1.39      1.14</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10     1975  1.95     0.934       4.57   0.711        4.06      3.64      3.35</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 49 more rows</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 17 more variables: width_diff &lt;dbl&gt;, a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;,</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_eti_lower &lt;int&gt;, y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;,</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_hdi_lower &lt;int&gt;, y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;,</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   hdi_height &lt;lgl&gt;, integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;,</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;, allow_hdi_zero &lt;lgl&gt;</span></span></code></pre></div>
+<p>The first column is called <code>quantity</code> for generalisability so the code can be applied to different types of data; in this example it represents the years</p>
+<p>To see the main values of interest, namely the ETIs and HDIs and the difference between their widths:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_table</span>(res_all_years)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="15%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">quantity</th>
+<th align="right">Median</th>
+<th align="right">ETI lower</th>
+<th align="right">ETI upper</th>
+<th align="right">HDI lower</th>
+<th align="right">HDI upper</th>
+<th align="right">Interval difference</th>
+<th align="right">Range a lower</th>
+<th align="right">Range a upper</th>
+<th align="right">Range b lower</th>
+<th align="right">Range b upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1966</td>
+<td align="right">1.63</td>
+<td align="right">0.06</td>
+<td align="right">10.66</td>
+<td align="right">0.01</td>
+<td align="right">8.43</td>
+<td align="right">2.17</td>
+<td align="right">0.00</td>
+<td align="right">0.06</td>
+<td align="right">0.94</td>
+<td align="right">10.66</td>
+</tr>
+<tr class="even">
+<td align="right">1967</td>
+<td align="right">4.65</td>
+<td align="right">0.21</td>
+<td align="right">14.91</td>
+<td align="right">0.01</td>
+<td align="right">12.48</td>
+<td align="right">2.22</td>
+<td align="right">0.00</td>
+<td align="right">0.21</td>
+<td align="right">7.68</td>
+<td align="right">14.91</td>
+</tr>
+<tr class="odd">
+<td align="right">1968</td>
+<td align="right">3.13</td>
+<td align="right">0.21</td>
+<td align="right">10.28</td>
+<td align="right">0.02</td>
+<td align="right">8.38</td>
+<td align="right">1.71</td>
+<td align="right">0.00</td>
+<td align="right">0.21</td>
+<td align="right">5.15</td>
+<td align="right">10.28</td>
+</tr>
+<tr class="even">
+<td align="right">1969</td>
+<td align="right">0.72</td>
+<td align="right">0.04</td>
+<td align="right">4.07</td>
+<td align="right">0.01</td>
+<td align="right">3.21</td>
+<td align="right">0.82</td>
+<td align="right">0.00</td>
+<td align="right">0.04</td>
+<td align="right">0.55</td>
+<td align="right">4.07</td>
+</tr>
+<tr class="odd">
+<td align="right">1970</td>
+<td align="right">9.39</td>
+<td align="right">4.72</td>
+<td align="right">22.80</td>
+<td align="right">3.97</td>
+<td align="right">20.04</td>
+<td align="right">2.00</td>
+<td align="right">3.26</td>
+<td align="right">4.72</td>
+<td align="right">13.67</td>
+<td align="right">22.80</td>
+</tr>
+<tr class="even">
+<td align="right">1971</td>
+<td align="right">0.86</td>
+<td align="right">0.08</td>
+<td align="right">3.16</td>
+<td align="right">0.01</td>
+<td align="right">2.59</td>
+<td align="right">0.50</td>
+<td align="right">0.00</td>
+<td align="right">0.08</td>
+<td align="right">1.36</td>
+<td align="right">3.16</td>
+</tr>
+<tr class="odd">
+<td align="right">1972</td>
+<td align="right">0.55</td>
+<td align="right">0.07</td>
+<td align="right">1.97</td>
+<td align="right">0.01</td>
+<td align="right">1.65</td>
+<td align="right">0.27</td>
+<td align="right">0.00</td>
+<td align="right">0.07</td>
+<td align="right">0.89</td>
+<td align="right">1.97</td>
+</tr>
+<tr class="even">
+<td align="right">1973</td>
+<td align="right">6.28</td>
+<td align="right">3.24</td>
+<td align="right">14.70</td>
+<td align="right">2.52</td>
+<td align="right">12.78</td>
+<td align="right">1.20</td>
+<td align="right">2.30</td>
+<td align="right">3.24</td>
+<td align="right">9.20</td>
+<td align="right">14.70</td>
+</tr>
+<tr class="odd">
+<td align="right">1974</td>
+<td align="right">0.35</td>
+<td align="right">0.04</td>
+<td align="right">1.42</td>
+<td align="right">0.01</td>
+<td align="right">1.15</td>
+<td align="right">0.25</td>
+<td align="right">0.00</td>
+<td align="right">0.04</td>
+<td align="right">0.53</td>
+<td align="right">1.42</td>
+</tr>
+<tr class="even">
+<td align="right">1975</td>
+<td align="right">1.95</td>
+<td align="right">0.93</td>
+<td align="right">4.57</td>
+<td align="right">0.71</td>
+<td align="right">4.06</td>
+<td align="right">0.29</td>
+<td align="right">0.65</td>
+<td align="right">0.93</td>
+<td align="right">2.92</td>
+<td align="right">4.57</td>
+</tr>
+<tr class="odd">
+<td align="right">1976</td>
+<td align="right">0.21</td>
+<td align="right">0.02</td>
+<td align="right">0.92</td>
+<td align="right">0.00</td>
+<td align="right">0.76</td>
+<td align="right">0.14</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.31</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="even">
+<td align="right">1977</td>
+<td align="right">6.98</td>
+<td align="right">3.71</td>
+<td align="right">14.87</td>
+<td align="right">3.17</td>
+<td align="right">13.38</td>
+<td align="right">0.96</td>
+<td align="right">2.79</td>
+<td align="right">3.71</td>
+<td align="right">10.35</td>
+<td align="right">14.87</td>
+</tr>
+<tr class="odd">
+<td align="right">1978</td>
+<td align="right">0.14</td>
+<td align="right">0.02</td>
+<td align="right">0.72</td>
+<td align="right">0.00</td>
+<td align="right">0.57</td>
+<td align="right">0.14</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.17</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="even">
+<td align="right">1979</td>
+<td align="right">1.45</td>
+<td align="right">0.55</td>
+<td align="right">3.49</td>
+<td align="right">0.35</td>
+<td align="right">3.08</td>
+<td align="right">0.21</td>
+<td align="right">0.29</td>
+<td align="right">0.55</td>
+<td align="right">2.35</td>
+<td align="right">3.49</td>
+</tr>
+<tr class="odd">
+<td align="right">1980</td>
+<td align="right">17.67</td>
+<td align="right">10.32</td>
+<td align="right">34.58</td>
+<td align="right">9.18</td>
+<td align="right">31.63</td>
+<td align="right">1.81</td>
+<td align="right">8.34</td>
+<td align="right">10.32</td>
+<td align="right">26.03</td>
+<td align="right">34.58</td>
+</tr>
+<tr class="even">
+<td align="right">1981</td>
+<td align="right">0.27</td>
+<td align="right">0.03</td>
+<td align="right">1.12</td>
+<td align="right">0.01</td>
+<td align="right">0.92</td>
+<td align="right">0.18</td>
+<td align="right">0.00</td>
+<td align="right">0.03</td>
+<td align="right">0.38</td>
+<td align="right">1.12</td>
+</tr>
+<tr class="odd">
+<td align="right">1982</td>
+<td align="right">0.33</td>
+<td align="right">0.05</td>
+<td align="right">1.06</td>
+<td align="right">0.01</td>
+<td align="right">0.89</td>
+<td align="right">0.13</td>
+<td align="right">0.00</td>
+<td align="right">0.05</td>
+<td align="right">0.58</td>
+<td align="right">1.06</td>
+</tr>
+<tr class="even">
+<td align="right">1983</td>
+<td align="right">0.56</td>
+<td align="right">0.10</td>
+<td align="right">1.60</td>
+<td align="right">0.02</td>
+<td align="right">1.36</td>
+<td align="right">0.16</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">1.02</td>
+<td align="right">1.60</td>
+</tr>
+<tr class="odd">
+<td align="right">1984</td>
+<td align="right">14.42</td>
+<td align="right">9.17</td>
+<td align="right">25.63</td>
+<td align="right">8.34</td>
+<td align="right">23.52</td>
+<td align="right">1.29</td>
+<td align="right">7.71</td>
+<td align="right">9.17</td>
+<td align="right">20.42</td>
+<td align="right">25.63</td>
+</tr>
+<tr class="even">
+<td align="right">1985</td>
+<td align="right">0.14</td>
+<td align="right">0.02</td>
+<td align="right">0.57</td>
+<td align="right">0.01</td>
+<td align="right">0.47</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.19</td>
+<td align="right">0.57</td>
+</tr>
+<tr class="odd">
+<td align="right">1986</td>
+<td align="right">0.19</td>
+<td align="right">0.02</td>
+<td align="right">0.69</td>
+<td align="right">0.01</td>
+<td align="right">0.58</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.30</td>
+<td align="right">0.69</td>
+</tr>
+<tr class="even">
+<td align="right">1987</td>
+<td align="right">6.78</td>
+<td align="right">4.34</td>
+<td align="right">11.60</td>
+<td align="right">3.95</td>
+<td align="right">10.77</td>
+<td align="right">0.43</td>
+<td align="right">3.66</td>
+<td align="right">4.34</td>
+<td align="right">9.48</td>
+<td align="right">11.60</td>
+</tr>
+<tr class="odd">
+<td align="right">1988</td>
+<td align="right">2.14</td>
+<td align="right">1.13</td>
+<td align="right">4.00</td>
+<td align="right">0.90</td>
+<td align="right">3.64</td>
+<td align="right">0.13</td>
+<td align="right">0.86</td>
+<td align="right">1.13</td>
+<td align="right">3.28</td>
+<td align="right">4.00</td>
+</tr>
+<tr class="even">
+<td align="right">1989</td>
+<td align="right">0.11</td>
+<td align="right">0.02</td>
+<td align="right">0.44</td>
+<td align="right">0.00</td>
+<td align="right">0.36</td>
+<td align="right">0.06</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.16</td>
+<td align="right">0.44</td>
+</tr>
+<tr class="odd">
+<td align="right">1990</td>
+<td align="right">4.40</td>
+<td align="right">2.87</td>
+<td align="right">7.19</td>
+<td align="right">2.73</td>
+<td align="right">6.79</td>
+<td align="right">0.25</td>
+<td align="right">2.49</td>
+<td align="right">2.87</td>
+<td align="right">6.15</td>
+<td align="right">7.19</td>
+</tr>
+<tr class="even">
+<td align="right">1991</td>
+<td align="right">1.26</td>
+<td align="right">0.60</td>
+<td align="right">2.40</td>
+<td align="right">0.52</td>
+<td align="right">2.27</td>
+<td align="right">0.05</td>
+<td align="right">0.46</td>
+<td align="right">0.60</td>
+<td align="right">1.98</td>
+<td align="right">2.40</td>
+</tr>
+<tr class="odd">
+<td align="right">1992</td>
+<td align="right">0.13</td>
+<td align="right">0.02</td>
+<td align="right">0.52</td>
+<td align="right">0.00</td>
+<td align="right">0.43</td>
+<td align="right">0.08</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.19</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="even">
+<td align="right">1993</td>
+<td align="right">3.23</td>
+<td align="right">2.20</td>
+<td align="right">5.17</td>
+<td align="right">2.05</td>
+<td align="right">4.88</td>
+<td align="right">0.14</td>
+<td align="right">1.95</td>
+<td align="right">2.20</td>
+<td align="right">4.47</td>
+<td align="right">5.17</td>
+</tr>
+<tr class="odd">
+<td align="right">1994</td>
+<td align="right">3.33</td>
+<td align="right">2.27</td>
+<td align="right">5.26</td>
+<td align="right">2.15</td>
+<td align="right">5.03</td>
+<td align="right">0.11</td>
+<td align="right">2.05</td>
+<td align="right">2.27</td>
+<td align="right">4.50</td>
+<td align="right">5.26</td>
+</tr>
+<tr class="even">
+<td align="right">1995</td>
+<td align="right">1.27</td>
+<td align="right">0.77</td>
+<td align="right">2.15</td>
+<td align="right">0.73</td>
+<td align="right">2.05</td>
+<td align="right">0.05</td>
+<td align="right">0.66</td>
+<td align="right">0.77</td>
+<td align="right">1.81</td>
+<td align="right">2.15</td>
+</tr>
+<tr class="odd">
+<td align="right">1996</td>
+<td align="right">1.86</td>
+<td align="right">1.20</td>
+<td align="right">3.06</td>
+<td align="right">1.09</td>
+<td align="right">2.86</td>
+<td align="right">0.09</td>
+<td align="right">1.04</td>
+<td align="right">1.20</td>
+<td align="right">2.61</td>
+<td align="right">3.06</td>
+</tr>
+<tr class="even">
+<td align="right">1997</td>
+<td align="right">1.03</td>
+<td align="right">0.56</td>
+<td align="right">1.85</td>
+<td align="right">0.52</td>
+<td align="right">1.74</td>
+<td align="right">0.06</td>
+<td align="right">0.46</td>
+<td align="right">0.56</td>
+<td align="right">1.55</td>
+<td align="right">1.85</td>
+</tr>
+<tr class="odd">
+<td align="right">1998</td>
+<td align="right">2.01</td>
+<td align="right">1.28</td>
+<td align="right">3.42</td>
+<td align="right">1.20</td>
+<td align="right">3.19</td>
+<td align="right">0.16</td>
+<td align="right">1.09</td>
+<td align="right">1.28</td>
+<td align="right">2.87</td>
+<td align="right">3.42</td>
+</tr>
+<tr class="even">
+<td align="right">1999</td>
+<td align="right">12.90</td>
+<td align="right">8.95</td>
+<td align="right">20.68</td>
+<td align="right">8.10</td>
+<td align="right">19.17</td>
+<td align="right">0.66</td>
+<td align="right">8.10</td>
+<td align="right">8.95</td>
+<td align="right">17.29</td>
+<td align="right">20.68</td>
+</tr>
+<tr class="odd">
+<td align="right">2000</td>
+<td align="right">0.31</td>
+<td align="right">0.09</td>
+<td align="right">0.71</td>
+<td align="right">0.05</td>
+<td align="right">0.64</td>
+<td align="right">0.03</td>
+<td align="right">0.04</td>
+<td align="right">0.09</td>
+<td align="right">0.57</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="right">2001</td>
+<td align="right">1.26</td>
+<td align="right">0.85</td>
+<td align="right">2.06</td>
+<td align="right">0.78</td>
+<td align="right">1.93</td>
+<td align="right">0.06</td>
+<td align="right">0.74</td>
+<td align="right">0.85</td>
+<td align="right">1.70</td>
+<td align="right">2.06</td>
+</tr>
+<tr class="odd">
+<td align="right">2002</td>
+<td align="right">0.04</td>
+<td align="right">0.01</td>
+<td align="right">0.13</td>
+<td align="right">0.01</td>
+<td align="right">0.11</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.07</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="even">
+<td align="right">2003</td>
+<td align="right">1.71</td>
+<td align="right">1.17</td>
+<td align="right">2.80</td>
+<td align="right">1.08</td>
+<td align="right">2.62</td>
+<td align="right">0.09</td>
+<td align="right">1.04</td>
+<td align="right">1.17</td>
+<td align="right">2.30</td>
+<td align="right">2.80</td>
+</tr>
+<tr class="odd">
+<td align="right">2004</td>
+<td align="right">0.04</td>
+<td align="right">0.01</td>
+<td align="right">0.14</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+<td align="right">0.02</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.07</td>
+<td align="right">0.14</td>
+</tr>
+<tr class="even">
+<td align="right">2005</td>
+<td align="right">2.86</td>
+<td align="right">1.99</td>
+<td align="right">4.79</td>
+<td align="right">1.82</td>
+<td align="right">4.39</td>
+<td align="right">0.23</td>
+<td align="right">1.72</td>
+<td align="right">1.99</td>
+<td align="right">3.84</td>
+<td align="right">4.79</td>
+</tr>
+<tr class="odd">
+<td align="right">2006</td>
+<td align="right">2.08</td>
+<td align="right">1.42</td>
+<td align="right">3.42</td>
+<td align="right">1.33</td>
+<td align="right">3.19</td>
+<td align="right">0.13</td>
+<td align="right">1.25</td>
+<td align="right">1.42</td>
+<td align="right">2.78</td>
+<td align="right">3.42</td>
+</tr>
+<tr class="even">
+<td align="right">2007</td>
+<td align="right">0.02</td>
+<td align="right">0.01</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0.08</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.04</td>
+<td align="right">0.09</td>
+</tr>
+<tr class="odd">
+<td align="right">2008</td>
+<td align="right">5.63</td>
+<td align="right">3.97</td>
+<td align="right">9.33</td>
+<td align="right">3.75</td>
+<td align="right">8.68</td>
+<td align="right">0.43</td>
+<td align="right">3.49</td>
+<td align="right">3.97</td>
+<td align="right">7.44</td>
+<td align="right">9.33</td>
+</tr>
+<tr class="even">
+<td align="right">2009</td>
+<td align="right">1.37</td>
+<td align="right">0.77</td>
+<td align="right">2.71</td>
+<td align="right">0.66</td>
+<td align="right">2.44</td>
+<td align="right">0.16</td>
+<td align="right">0.60</td>
+<td align="right">0.77</td>
+<td align="right">2.02</td>
+<td align="right">2.71</td>
+</tr>
+<tr class="odd">
+<td align="right">2010</td>
+<td align="right">15.98</td>
+<td align="right">10.71</td>
+<td align="right">28.57</td>
+<td align="right">9.87</td>
+<td align="right">25.76</td>
+<td align="right">1.96</td>
+<td align="right">9.26</td>
+<td align="right">10.71</td>
+<td align="right">21.45</td>
+<td align="right">28.57</td>
+</tr>
+<tr class="even">
+<td align="right">2011</td>
+<td align="right">0.38</td>
+<td align="right">0.15</td>
+<td align="right">0.90</td>
+<td align="right">0.11</td>
+<td align="right">0.79</td>
+<td align="right">0.07</td>
+<td align="right">0.09</td>
+<td align="right">0.15</td>
+<td align="right">0.63</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="odd">
+<td align="right">2012</td>
+<td align="right">1.58</td>
+<td align="right">1.01</td>
+<td align="right">2.97</td>
+<td align="right">0.89</td>
+<td align="right">2.70</td>
+<td align="right">0.16</td>
+<td align="right">0.81</td>
+<td align="right">1.01</td>
+<td align="right">2.24</td>
+<td align="right">2.97</td>
+</tr>
+<tr class="even">
+<td align="right">2013</td>
+<td align="right">0.37</td>
+<td align="right">0.13</td>
+<td align="right">0.88</td>
+<td align="right">0.08</td>
+<td align="right">0.78</td>
+<td align="right">0.06</td>
+<td align="right">0.07</td>
+<td align="right">0.13</td>
+<td align="right">0.64</td>
+<td align="right">0.88</td>
+</tr>
+<tr class="odd">
+<td align="right">2014</td>
+<td align="right">8.26</td>
+<td align="right">5.67</td>
+<td align="right">14.93</td>
+<td align="right">5.23</td>
+<td align="right">13.44</td>
+<td align="right">1.05</td>
+<td align="right">4.84</td>
+<td align="right">5.67</td>
+<td align="right">10.96</td>
+<td align="right">14.93</td>
+</tr>
+<tr class="even">
+<td align="right">2015</td>
+<td align="right">0.03</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">0.02</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.05</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="odd">
+<td align="right">2016</td>
+<td align="right">5.64</td>
+<td align="right">3.72</td>
+<td align="right">10.99</td>
+<td align="right">3.26</td>
+<td align="right">9.78</td>
+<td align="right">0.76</td>
+<td align="right">3.03</td>
+<td align="right">3.72</td>
+<td align="right">7.50</td>
+<td align="right">10.99</td>
+</tr>
+<tr class="even">
+<td align="right">2017</td>
+<td align="right">1.57</td>
+<td align="right">0.85</td>
+<td align="right">3.55</td>
+<td align="right">0.74</td>
+<td align="right">3.16</td>
+<td align="right">0.29</td>
+<td align="right">0.62</td>
+<td align="right">0.85</td>
+<td align="right">2.28</td>
+<td align="right">3.55</td>
+</tr>
+<tr class="odd">
+<td align="right">2018</td>
+<td align="right">0.40</td>
+<td align="right">0.11</td>
+<td align="right">1.29</td>
+<td align="right">0.07</td>
+<td align="right">1.08</td>
+<td align="right">0.16</td>
+<td align="right">0.02</td>
+<td align="right">0.11</td>
+<td align="right">0.64</td>
+<td align="right">1.29</td>
+</tr>
+<tr class="even">
+<td align="right">2019</td>
+<td align="right">0.27</td>
+<td align="right">0.05</td>
+<td align="right">1.02</td>
+<td align="right">0.01</td>
+<td align="right">0.83</td>
+<td align="right">0.15</td>
+<td align="right">0.00</td>
+<td align="right">0.05</td>
+<td align="right">0.46</td>
+<td align="right">1.02</td>
+</tr>
+<tr class="odd">
+<td align="right">2020</td>
+<td align="right">4.75</td>
+<td align="right">2.06</td>
+<td align="right">12.73</td>
+<td align="right">1.67</td>
+<td align="right">11.14</td>
+<td align="right">1.19</td>
+<td align="right">1.13</td>
+<td align="right">2.06</td>
+<td align="right">7.07</td>
+<td align="right">12.73</td>
+</tr>
+<tr class="even">
+<td align="right">2021</td>
+<td align="right">10.19</td>
+<td align="right">4.09</td>
+<td align="right">29.50</td>
+<td align="right">2.80</td>
+<td align="right">25.18</td>
+<td align="right">3.03</td>
+<td align="right">2.08</td>
+<td align="right">4.09</td>
+<td align="right">15.62</td>
+<td align="right">29.50</td>
+</tr>
+<tr class="odd">
+<td align="right">2022</td>
+<td align="right">1.88</td>
+<td align="right">0.29</td>
+<td align="right">8.86</td>
+<td align="right">0.05</td>
+<td align="right">6.82</td>
+<td align="right">1.80</td>
+<td align="right">0.00</td>
+<td align="right">0.29</td>
+<td align="right">2.63</td>
+<td align="right">8.86</td>
+</tr>
+<tr class="even">
+<td align="right">2023</td>
+<td align="right">0.98</td>
+<td align="right">0.04</td>
+<td align="right">20.27</td>
+<td align="right">0.01</td>
+<td align="right">13.48</td>
+<td align="right">6.75</td>
+<td align="right">0.00</td>
+<td align="right">0.04</td>
+<td align="right">0.70</td>
+<td align="right">20.27</td>
+</tr>
+<tr class="odd">
+<td align="right">2024</td>
+<td align="right">0.98</td>
+<td align="right">0.05</td>
+<td align="right">20.19</td>
+<td align="right">0.01</td>
+<td align="right">13.70</td>
+<td align="right">6.45</td>
+<td align="right">0.00</td>
+<td align="right">0.05</td>
+<td align="right">0.69</td>
+<td align="right">20.19</td>
+</tr>
+</tbody>
+</table>
+<p>The sum of the differences over all years between the width of the ETI and width of the HDI, (but excluding 2023 and 2024 as these are not informed by data for our hake recruitment values), is</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>res_all_years<span class="sc">$</span>intervals_all <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>quantity <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2023</span>, <span class="dv">2024</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(width_diff) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 30.80084</span></span></code></pre></div>
+<p>which is the source of the <code>&gt;30 billion fish</code> statement reported in the main text.</p>
+<p>To plot the time series shown in Fig. 2A, we have a custom plotting function <code>plot.intervals_density_list()</code>, that gets called because <code>res_all_years</code> is defined to have class <code>intervals_density_list</code>, so we can just use:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Recruitment (billions of fish)&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<!-- The ETIs match those shown in Table 24 of the 2024 hake assessment (values
+manually checked, code is below but not run or printed in vignette): -->
+</div>
+<div id="mcmc-samples-for-multiple-years-relative-spawning-biomass-for-figure-2b" class="section level2">
+<h2>MCMC samples for multiple years – relative spawning biomass for Figure 2B</h2>
+<p>We now use the same approach for the relative spawning biomass calculations shown in Figure 2B.</p>
+<p>The female spawning biomass is the estimated total biomass of all females in the population that are mature (for context, roughly half of age-2 females are considered mature). The relative spawning biomass is the females spawning biomass divided by that for the unfished equilibrium state (the calculation is already done for each MCMC sample and then the ratios saved).</p>
+<p>The values are saved in the package as a tibble <code>hake_relative_biomass_mcmc</code> with years as column headings, and also includes forecasts made assuming constant catches in 2024, 2025, and 2026 of 350,000 t, which is close to the average coastwide catch from 2014-2023. Values correspond to the relative spawning biomass at the start of the corresponding year (before any fishing).</p>
+<p>We can use similar code to above (since the values are in a tibble):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>res_all_years_2 <span class="ot">&lt;-</span> <span class="fu">create_intervals</span>(hake_relative_biomass_mcmc)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>res_all_years_2<span class="sc">$</span>intervals_all</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 61 × 25</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    quantity median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1     1967  0.508     0.297     0.897     0.265     0.842     0.600     0.576</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2     1968  0.511     0.299     0.918     0.267     0.858     0.619     0.591</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3     1969  0.578     0.340     1.05      0.315     0.987     0.708     0.672</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4     1970  0.664     0.387     1.22      0.346     1.13      0.835     0.782</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5     1971  0.687     0.395     1.27      0.349     1.16      0.871     0.816</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6     1972  0.772     0.443     1.43      0.388     1.31      0.988     0.917</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7     1973  0.925     0.526     1.70      0.478     1.58      1.18      1.11 </span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8     1974  0.904     0.515     1.65      0.457     1.53      1.13      1.07 </span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9     1975  1.12      0.631     2.05      0.561     1.90      1.41      1.34 </span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10     1976  1.27      0.718     2.32      0.638     2.14      1.60      1.50 </span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 51 more rows</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 17 more variables: width_diff &lt;dbl&gt;, a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;,</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_eti_lower &lt;int&gt;, y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;,</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_hdi_lower &lt;int&gt;, y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;,</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   hdi_height &lt;lgl&gt;, integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;,</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;, allow_hdi_zero &lt;lgl&gt;</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>res_all_years_2<span class="sc">$</span>intervals_all <span class="sc">%&gt;%</span> <span class="fu">tail</span>()</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 25</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   quantity median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     2022  0.586     0.317      1.19     0.266      1.08     0.868     0.810</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2023  0.699     0.342      1.55     0.288      1.41     1.20      1.12 </span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     2024  0.987     0.450      2.30     0.355      2.04     1.85      1.69 </span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     2025  1.01      0.428      2.43     0.347      2.18     2.00      1.83 </span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     2026  0.960     0.360      2.58     0.251      2.22     2.22      1.97 </span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     2027  0.885     0.282      2.61     0.164      2.23     2.33      2.07 </span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 17 more variables: width_diff &lt;dbl&gt;, a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;,</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_eti_lower &lt;int&gt;, y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;,</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_hdi_lower &lt;int&gt;, y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;,</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   hdi_height &lt;lgl&gt;, integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;,</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;, allow_hdi_zero &lt;lgl&gt;</span></span></code></pre></div>
+<!-- To confirm that the ETIs match those in Table b of the 2024 hake assessment -->
+<!-- (which does not have 2025 onwards); keeping the code for reference -->
+<p>To create Figure 2B, which includes the forecasts:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years_2,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">2027</span>),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">2.6</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">add_line_at_0.4 =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">inc =</span> <span class="fl">0.05</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">leg_loc =</span> <span class="st">&quot;topleft&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">&quot;Relative spawning biomass&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Whether the relative spawning biomass is above or below the management reference point of 0.4 is key in forming stakeholders’ perception of the health of the hake stock. As seen in the figure, in 2024 and 2025 the ETI does not dip below 0.4 but the HDI does. Thus, the perception of current and future stock status can depend upon the definition of credible intervals (ETI versus HDI). The specific years across the whole time series for which this happens are:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">filter</span>(res_all_years_2<span class="sc">$</span>intervals_all,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>              eti_lower <span class="sc">&gt;</span> <span class="fl">0.4</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>              hdi_lower <span class="sc">&lt;</span> <span class="fl">0.4</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 25</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   quantity median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1972  0.772     0.443      1.43     0.388      1.31     0.988     0.917</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2024  0.987     0.450      2.30     0.355      2.04     1.85      1.69 </span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     2025  1.01      0.428      2.43     0.347      2.18     2.00      1.83 </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 17 more variables: width_diff &lt;dbl&gt;, a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;,</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_eti_lower &lt;int&gt;, y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;,</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_hdi_lower &lt;int&gt;, y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;,</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   hdi_height &lt;lgl&gt;, integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;,</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;, allow_hdi_zero &lt;lgl&gt;</span></span></code></pre></div>
+<p>Also, on the plot the years 2016 and 2020 look like they are also exhibiting this behaviour, but in fact the HDI is very slightly above 0.4:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">filter</span>(res_all_years_2<span class="sc">$</span>intervals_all,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>              quantity <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2016</span>, <span class="dv">2020</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 25</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   quantity median eti_lower eti_upper hdi_lower hdi_upper width_eti width_hdi</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     2016  0.650     0.422      1.01     0.400     0.974     0.593     0.573</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2020  0.715     0.433      1.25     0.401     1.19      0.821     0.785</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 17 more variables: width_diff &lt;dbl&gt;, a_lower &lt;dbl&gt;, b_lower &lt;dbl&gt;,</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_eti_lower &lt;int&gt;, y_eti_lower &lt;dbl&gt;, i_eti_upper &lt;int&gt;, y_eti_upper &lt;dbl&gt;,</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   i_hdi_lower &lt;int&gt;, y_hdi_lower &lt;dbl&gt;, i_hdi_upper &lt;int&gt;, y_hdi_upper &lt;dbl&gt;,</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   hdi_height &lt;lgl&gt;, integral_full &lt;dbl&gt;, integral_eti &lt;dbl&gt;,</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   integral_hdi &lt;dbl&gt;, warning &lt;lgl&gt;, allow_hdi_zero &lt;lgl&gt;</span></span></code></pre></div>
+<p>To see all the values of interest:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_table</span>(res_all_years_2)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="15%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">quantity</th>
+<th align="right">Median</th>
+<th align="right">ETI lower</th>
+<th align="right">ETI upper</th>
+<th align="right">HDI lower</th>
+<th align="right">HDI upper</th>
+<th align="right">Interval difference</th>
+<th align="right">Range a lower</th>
+<th align="right">Range a upper</th>
+<th align="right">Range b lower</th>
+<th align="right">Range b upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1967</td>
+<td align="right">0.51</td>
+<td align="right">0.30</td>
+<td align="right">0.90</td>
+<td align="right">0.27</td>
+<td align="right">0.84</td>
+<td align="right">0.02</td>
+<td align="right">0.25</td>
+<td align="right">0.30</td>
+<td align="right">0.74</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="even">
+<td align="right">1968</td>
+<td align="right">0.51</td>
+<td align="right">0.30</td>
+<td align="right">0.92</td>
+<td align="right">0.27</td>
+<td align="right">0.86</td>
+<td align="right">0.03</td>
+<td align="right">0.25</td>
+<td align="right">0.30</td>
+<td align="right">0.75</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="odd">
+<td align="right">1969</td>
+<td align="right">0.58</td>
+<td align="right">0.34</td>
+<td align="right">1.05</td>
+<td align="right">0.31</td>
+<td align="right">0.99</td>
+<td align="right">0.04</td>
+<td align="right">0.29</td>
+<td align="right">0.34</td>
+<td align="right">0.85</td>
+<td align="right">1.05</td>
+</tr>
+<tr class="even">
+<td align="right">1970</td>
+<td align="right">0.66</td>
+<td align="right">0.39</td>
+<td align="right">1.22</td>
+<td align="right">0.35</td>
+<td align="right">1.13</td>
+<td align="right">0.05</td>
+<td align="right">0.32</td>
+<td align="right">0.39</td>
+<td align="right">0.99</td>
+<td align="right">1.22</td>
+</tr>
+<tr class="odd">
+<td align="right">1971</td>
+<td align="right">0.69</td>
+<td align="right">0.40</td>
+<td align="right">1.27</td>
+<td align="right">0.35</td>
+<td align="right">1.16</td>
+<td align="right">0.05</td>
+<td align="right">0.32</td>
+<td align="right">0.40</td>
+<td align="right">1.02</td>
+<td align="right">1.27</td>
+</tr>
+<tr class="even">
+<td align="right">1972</td>
+<td align="right">0.77</td>
+<td align="right">0.44</td>
+<td align="right">1.43</td>
+<td align="right">0.39</td>
+<td align="right">1.31</td>
+<td align="right">0.07</td>
+<td align="right">0.35</td>
+<td align="right">0.44</td>
+<td align="right">1.16</td>
+<td align="right">1.43</td>
+</tr>
+<tr class="odd">
+<td align="right">1973</td>
+<td align="right">0.92</td>
+<td align="right">0.53</td>
+<td align="right">1.70</td>
+<td align="right">0.48</td>
+<td align="right">1.58</td>
+<td align="right">0.07</td>
+<td align="right">0.42</td>
+<td align="right">0.53</td>
+<td align="right">1.39</td>
+<td align="right">1.70</td>
+</tr>
+<tr class="even">
+<td align="right">1974</td>
+<td align="right">0.90</td>
+<td align="right">0.52</td>
+<td align="right">1.65</td>
+<td align="right">0.46</td>
+<td align="right">1.53</td>
+<td align="right">0.06</td>
+<td align="right">0.42</td>
+<td align="right">0.52</td>
+<td align="right">1.35</td>
+<td align="right">1.65</td>
+</tr>
+<tr class="odd">
+<td align="right">1975</td>
+<td align="right">1.12</td>
+<td align="right">0.63</td>
+<td align="right">2.05</td>
+<td align="right">0.56</td>
+<td align="right">1.90</td>
+<td align="right">0.07</td>
+<td align="right">0.51</td>
+<td align="right">0.63</td>
+<td align="right">1.68</td>
+<td align="right">2.05</td>
+</tr>
+<tr class="even">
+<td align="right">1976</td>
+<td align="right">1.27</td>
+<td align="right">0.72</td>
+<td align="right">2.32</td>
+<td align="right">0.64</td>
+<td align="right">2.14</td>
+<td align="right">0.10</td>
+<td align="right">0.58</td>
+<td align="right">0.72</td>
+<td align="right">1.90</td>
+<td align="right">2.32</td>
+</tr>
+<tr class="odd">
+<td align="right">1977</td>
+<td align="right">1.14</td>
+<td align="right">0.64</td>
+<td align="right">2.07</td>
+<td align="right">0.58</td>
+<td align="right">1.91</td>
+<td align="right">0.08</td>
+<td align="right">0.52</td>
+<td align="right">0.64</td>
+<td align="right">1.70</td>
+<td align="right">2.07</td>
+</tr>
+<tr class="even">
+<td align="right">1978</td>
+<td align="right">0.95</td>
+<td align="right">0.55</td>
+<td align="right">1.70</td>
+<td align="right">0.49</td>
+<td align="right">1.58</td>
+<td align="right">0.06</td>
+<td align="right">0.45</td>
+<td align="right">0.55</td>
+<td align="right">1.40</td>
+<td align="right">1.70</td>
+</tr>
+<tr class="odd">
+<td align="right">1979</td>
+<td align="right">1.03</td>
+<td align="right">0.60</td>
+<td align="right">1.81</td>
+<td align="right">0.53</td>
+<td align="right">1.68</td>
+<td align="right">0.07</td>
+<td align="right">0.49</td>
+<td align="right">0.60</td>
+<td align="right">1.50</td>
+<td align="right">1.81</td>
+</tr>
+<tr class="even">
+<td align="right">1980</td>
+<td align="right">0.91</td>
+<td align="right">0.53</td>
+<td align="right">1.57</td>
+<td align="right">0.48</td>
+<td align="right">1.47</td>
+<td align="right">0.04</td>
+<td align="right">0.45</td>
+<td align="right">0.53</td>
+<td align="right">1.32</td>
+<td align="right">1.57</td>
+</tr>
+<tr class="odd">
+<td align="right">1981</td>
+<td align="right">0.87</td>
+<td align="right">0.52</td>
+<td align="right">1.49</td>
+<td align="right">0.46</td>
+<td align="right">1.39</td>
+<td align="right">0.04</td>
+<td align="right">0.44</td>
+<td align="right">0.52</td>
+<td align="right">1.27</td>
+<td align="right">1.49</td>
+</tr>
+<tr class="even">
+<td align="right">1982</td>
+<td align="right">0.93</td>
+<td align="right">0.56</td>
+<td align="right">1.56</td>
+<td align="right">0.53</td>
+<td align="right">1.49</td>
+<td align="right">0.04</td>
+<td align="right">0.48</td>
+<td align="right">0.56</td>
+<td align="right">1.35</td>
+<td align="right">1.56</td>
+</tr>
+<tr class="odd">
+<td align="right">1983</td>
+<td align="right">1.20</td>
+<td align="right">0.73</td>
+<td align="right">1.97</td>
+<td align="right">0.69</td>
+<td align="right">1.88</td>
+<td align="right">0.05</td>
+<td align="right">0.63</td>
+<td align="right">0.73</td>
+<td align="right">1.72</td>
+<td align="right">1.97</td>
+</tr>
+<tr class="even">
+<td align="right">1984</td>
+<td align="right">1.23</td>
+<td align="right">0.75</td>
+<td align="right">1.99</td>
+<td align="right">0.72</td>
+<td align="right">1.91</td>
+<td align="right">0.05</td>
+<td align="right">0.67</td>
+<td align="right">0.75</td>
+<td align="right">1.76</td>
+<td align="right">1.99</td>
+</tr>
+<tr class="odd">
+<td align="right">1985</td>
+<td align="right">1.22</td>
+<td align="right">0.76</td>
+<td align="right">1.97</td>
+<td align="right">0.72</td>
+<td align="right">1.88</td>
+<td align="right">0.06</td>
+<td align="right">0.67</td>
+<td align="right">0.76</td>
+<td align="right">1.75</td>
+<td align="right">1.97</td>
+</tr>
+<tr class="even">
+<td align="right">1986</td>
+<td align="right">1.22</td>
+<td align="right">0.77</td>
+<td align="right">1.93</td>
+<td align="right">0.73</td>
+<td align="right">1.85</td>
+<td align="right">0.04</td>
+<td align="right">0.69</td>
+<td align="right">0.77</td>
+<td align="right">1.71</td>
+<td align="right">1.93</td>
+</tr>
+<tr class="odd">
+<td align="right">1987</td>
+<td align="right">1.26</td>
+<td align="right">0.81</td>
+<td align="right">1.97</td>
+<td align="right">0.77</td>
+<td align="right">1.90</td>
+<td align="right">0.02</td>
+<td align="right">0.72</td>
+<td align="right">0.81</td>
+<td align="right">1.75</td>
+<td align="right">1.97</td>
+</tr>
+<tr class="even">
+<td align="right">1988</td>
+<td align="right">1.25</td>
+<td align="right">0.81</td>
+<td align="right">1.94</td>
+<td align="right">0.76</td>
+<td align="right">1.87</td>
+<td align="right">0.02</td>
+<td align="right">0.73</td>
+<td align="right">0.81</td>
+<td align="right">1.73</td>
+<td align="right">1.94</td>
+</tr>
+<tr class="odd">
+<td align="right">1989</td>
+<td align="right">1.11</td>
+<td align="right">0.72</td>
+<td align="right">1.71</td>
+<td align="right">0.68</td>
+<td align="right">1.65</td>
+<td align="right">0.02</td>
+<td align="right">0.65</td>
+<td align="right">0.72</td>
+<td align="right">1.54</td>
+<td align="right">1.71</td>
+</tr>
+<tr class="even">
+<td align="right">1990</td>
+<td align="right">1.08</td>
+<td align="right">0.70</td>
+<td align="right">1.66</td>
+<td align="right">0.67</td>
+<td align="right">1.60</td>
+<td align="right">0.03</td>
+<td align="right">0.64</td>
+<td align="right">0.70</td>
+<td align="right">1.51</td>
+<td align="right">1.66</td>
+</tr>
+<tr class="odd">
+<td align="right">1991</td>
+<td align="right">0.98</td>
+<td align="right">0.64</td>
+<td align="right">1.50</td>
+<td align="right">0.61</td>
+<td align="right">1.45</td>
+<td align="right">0.02</td>
+<td align="right">0.58</td>
+<td align="right">0.64</td>
+<td align="right">1.36</td>
+<td align="right">1.50</td>
+</tr>
+<tr class="even">
+<td align="right">1992</td>
+<td align="right">0.89</td>
+<td align="right">0.58</td>
+<td align="right">1.35</td>
+<td align="right">0.56</td>
+<td align="right">1.31</td>
+<td align="right">0.02</td>
+<td align="right">0.53</td>
+<td align="right">0.58</td>
+<td align="right">1.23</td>
+<td align="right">1.35</td>
+</tr>
+<tr class="odd">
+<td align="right">1993</td>
+<td align="right">0.69</td>
+<td align="right">0.45</td>
+<td align="right">1.04</td>
+<td align="right">0.41</td>
+<td align="right">1.00</td>
+<td align="right">0.01</td>
+<td align="right">0.41</td>
+<td align="right">0.45</td>
+<td align="right">0.95</td>
+<td align="right">1.04</td>
+</tr>
+<tr class="even">
+<td align="right">1994</td>
+<td align="right">0.66</td>
+<td align="right">0.43</td>
+<td align="right">1.00</td>
+<td align="right">0.41</td>
+<td align="right">0.97</td>
+<td align="right">0.01</td>
+<td align="right">0.40</td>
+<td align="right">0.43</td>
+<td align="right">0.92</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1995</td>
+<td align="right">0.60</td>
+<td align="right">0.39</td>
+<td align="right">0.91</td>
+<td align="right">0.38</td>
+<td align="right">0.89</td>
+<td align="right">0.01</td>
+<td align="right">0.36</td>
+<td align="right">0.39</td>
+<td align="right">0.83</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="even">
+<td align="right">1996</td>
+<td align="right">0.57</td>
+<td align="right">0.37</td>
+<td align="right">0.87</td>
+<td align="right">0.36</td>
+<td align="right">0.83</td>
+<td align="right">0.01</td>
+<td align="right">0.34</td>
+<td align="right">0.37</td>
+<td align="right">0.79</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="right">1997</td>
+<td align="right">0.57</td>
+<td align="right">0.37</td>
+<td align="right">0.86</td>
+<td align="right">0.35</td>
+<td align="right">0.83</td>
+<td align="right">0.01</td>
+<td align="right">0.34</td>
+<td align="right">0.37</td>
+<td align="right">0.79</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="right">1998</td>
+<td align="right">0.48</td>
+<td align="right">0.31</td>
+<td align="right">0.72</td>
+<td align="right">0.30</td>
+<td align="right">0.70</td>
+<td align="right">0.01</td>
+<td align="right">0.29</td>
+<td align="right">0.31</td>
+<td align="right">0.67</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="right">1999</td>
+<td align="right">0.41</td>
+<td align="right">0.27</td>
+<td align="right">0.62</td>
+<td align="right">0.26</td>
+<td align="right">0.60</td>
+<td align="right">0.01</td>
+<td align="right">0.24</td>
+<td align="right">0.27</td>
+<td align="right">0.57</td>
+<td align="right">0.62</td>
+</tr>
+<tr class="even">
+<td align="right">2000</td>
+<td align="right">0.46</td>
+<td align="right">0.30</td>
+<td align="right">0.70</td>
+<td align="right">0.29</td>
+<td align="right">0.68</td>
+<td align="right">0.01</td>
+<td align="right">0.28</td>
+<td align="right">0.30</td>
+<td align="right">0.65</td>
+<td align="right">0.70</td>
+</tr>
+<tr class="odd">
+<td align="right">2001</td>
+<td align="right">0.67</td>
+<td align="right">0.44</td>
+<td align="right">1.02</td>
+<td align="right">0.43</td>
+<td align="right">1.00</td>
+<td align="right">0.01</td>
+<td align="right">0.40</td>
+<td align="right">0.44</td>
+<td align="right">0.94</td>
+<td align="right">1.02</td>
+</tr>
+<tr class="even">
+<td align="right">2002</td>
+<td align="right">1.00</td>
+<td align="right">0.65</td>
+<td align="right">1.51</td>
+<td align="right">0.62</td>
+<td align="right">1.46</td>
+<td align="right">0.02</td>
+<td align="right">0.60</td>
+<td align="right">0.65</td>
+<td align="right">1.38</td>
+<td align="right">1.51</td>
+</tr>
+<tr class="odd">
+<td align="right">2003</td>
+<td align="right">0.92</td>
+<td align="right">0.61</td>
+<td align="right">1.39</td>
+<td align="right">0.57</td>
+<td align="right">1.34</td>
+<td align="right">0.02</td>
+<td align="right">0.56</td>
+<td align="right">0.61</td>
+<td align="right">1.28</td>
+<td align="right">1.39</td>
+</tr>
+<tr class="even">
+<td align="right">2004</td>
+<td align="right">0.77</td>
+<td align="right">0.50</td>
+<td align="right">1.15</td>
+<td align="right">0.48</td>
+<td align="right">1.12</td>
+<td align="right">0.01</td>
+<td align="right">0.46</td>
+<td align="right">0.50</td>
+<td align="right">1.06</td>
+<td align="right">1.15</td>
+</tr>
+<tr class="odd">
+<td align="right">2005</td>
+<td align="right">0.60</td>
+<td align="right">0.40</td>
+<td align="right">0.91</td>
+<td align="right">0.37</td>
+<td align="right">0.87</td>
+<td align="right">0.01</td>
+<td align="right">0.36</td>
+<td align="right">0.40</td>
+<td align="right">0.83</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="even">
+<td align="right">2006</td>
+<td align="right">0.49</td>
+<td align="right">0.32</td>
+<td align="right">0.73</td>
+<td align="right">0.30</td>
+<td align="right">0.71</td>
+<td align="right">0.01</td>
+<td align="right">0.29</td>
+<td align="right">0.32</td>
+<td align="right">0.67</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="odd">
+<td align="right">2007</td>
+<td align="right">0.37</td>
+<td align="right">0.24</td>
+<td align="right">0.56</td>
+<td align="right">0.23</td>
+<td align="right">0.54</td>
+<td align="right">0.01</td>
+<td align="right">0.22</td>
+<td align="right">0.24</td>
+<td align="right">0.51</td>
+<td align="right">0.56</td>
+</tr>
+<tr class="even">
+<td align="right">2008</td>
+<td align="right">0.39</td>
+<td align="right">0.25</td>
+<td align="right">0.59</td>
+<td align="right">0.24</td>
+<td align="right">0.57</td>
+<td align="right">0.00</td>
+<td align="right">0.23</td>
+<td align="right">0.25</td>
+<td align="right">0.53</td>
+<td align="right">0.59</td>
+</tr>
+<tr class="odd">
+<td align="right">2009</td>
+<td align="right">0.33</td>
+<td align="right">0.21</td>
+<td align="right">0.50</td>
+<td align="right">0.20</td>
+<td align="right">0.48</td>
+<td align="right">0.01</td>
+<td align="right">0.19</td>
+<td align="right">0.21</td>
+<td align="right">0.45</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="even">
+<td align="right">2010</td>
+<td align="right">0.39</td>
+<td align="right">0.26</td>
+<td align="right">0.60</td>
+<td align="right">0.24</td>
+<td align="right">0.58</td>
+<td align="right">0.01</td>
+<td align="right">0.23</td>
+<td align="right">0.26</td>
+<td align="right">0.54</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="odd">
+<td align="right">2011</td>
+<td align="right">0.39</td>
+<td align="right">0.25</td>
+<td align="right">0.59</td>
+<td align="right">0.24</td>
+<td align="right">0.57</td>
+<td align="right">0.01</td>
+<td align="right">0.23</td>
+<td align="right">0.25</td>
+<td align="right">0.53</td>
+<td align="right">0.59</td>
+</tr>
+<tr class="even">
+<td align="right">2012</td>
+<td align="right">0.47</td>
+<td align="right">0.31</td>
+<td align="right">0.73</td>
+<td align="right">0.28</td>
+<td align="right">0.69</td>
+<td align="right">0.02</td>
+<td align="right">0.27</td>
+<td align="right">0.31</td>
+<td align="right">0.66</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="odd">
+<td align="right">2013</td>
+<td align="right">0.88</td>
+<td align="right">0.57</td>
+<td align="right">1.37</td>
+<td align="right">0.53</td>
+<td align="right">1.30</td>
+<td align="right">0.04</td>
+<td align="right">0.51</td>
+<td align="right">0.57</td>
+<td align="right">1.23</td>
+<td align="right">1.37</td>
+</tr>
+<tr class="even">
+<td align="right">2014</td>
+<td align="right">1.05</td>
+<td align="right">0.68</td>
+<td align="right">1.63</td>
+<td align="right">0.66</td>
+<td align="right">1.58</td>
+<td align="right">0.03</td>
+<td align="right">0.61</td>
+<td align="right">0.68</td>
+<td align="right">1.46</td>
+<td align="right">1.63</td>
+</tr>
+<tr class="odd">
+<td align="right">2015</td>
+<td align="right">0.77</td>
+<td align="right">0.50</td>
+<td align="right">1.20</td>
+<td align="right">0.48</td>
+<td align="right">1.16</td>
+<td align="right">0.02</td>
+<td align="right">0.45</td>
+<td align="right">0.50</td>
+<td align="right">1.08</td>
+<td align="right">1.20</td>
+</tr>
+<tr class="even">
+<td align="right">2016</td>
+<td align="right">0.65</td>
+<td align="right">0.42</td>
+<td align="right">1.01</td>
+<td align="right">0.40</td>
+<td align="right">0.97</td>
+<td align="right">0.02</td>
+<td align="right">0.38</td>
+<td align="right">0.42</td>
+<td align="right">0.91</td>
+<td align="right">1.01</td>
+</tr>
+<tr class="odd">
+<td align="right">2017</td>
+<td align="right">0.88</td>
+<td align="right">0.56</td>
+<td align="right">1.39</td>
+<td align="right">0.53</td>
+<td align="right">1.33</td>
+<td align="right">0.02</td>
+<td align="right">0.50</td>
+<td align="right">0.56</td>
+<td align="right">1.23</td>
+<td align="right">1.39</td>
+</tr>
+<tr class="even">
+<td align="right">2018</td>
+<td align="right">0.91</td>
+<td align="right">0.58</td>
+<td align="right">1.48</td>
+<td align="right">0.55</td>
+<td align="right">1.42</td>
+<td align="right">0.03</td>
+<td align="right">0.50</td>
+<td align="right">0.58</td>
+<td align="right">1.29</td>
+<td align="right">1.48</td>
+</tr>
+<tr class="odd">
+<td align="right">2019</td>
+<td align="right">0.74</td>
+<td align="right">0.46</td>
+<td align="right">1.25</td>
+<td align="right">0.43</td>
+<td align="right">1.18</td>
+<td align="right">0.04</td>
+<td align="right">0.40</td>
+<td align="right">0.46</td>
+<td align="right">1.06</td>
+<td align="right">1.25</td>
+</tr>
+<tr class="even">
+<td align="right">2020</td>
+<td align="right">0.71</td>
+<td align="right">0.43</td>
+<td align="right">1.25</td>
+<td align="right">0.40</td>
+<td align="right">1.19</td>
+<td align="right">0.04</td>
+<td align="right">0.36</td>
+<td align="right">0.43</td>
+<td align="right">1.02</td>
+<td align="right">1.25</td>
+</tr>
+<tr class="odd">
+<td align="right">2021</td>
+<td align="right">0.59</td>
+<td align="right">0.34</td>
+<td align="right">1.10</td>
+<td align="right">0.31</td>
+<td align="right">1.02</td>
+<td align="right">0.05</td>
+<td align="right">0.28</td>
+<td align="right">0.34</td>
+<td align="right">0.86</td>
+<td align="right">1.10</td>
+</tr>
+<tr class="even">
+<td align="right">2022</td>
+<td align="right">0.59</td>
+<td align="right">0.32</td>
+<td align="right">1.19</td>
+<td align="right">0.27</td>
+<td align="right">1.08</td>
+<td align="right">0.06</td>
+<td align="right">0.24</td>
+<td align="right">0.32</td>
+<td align="right">0.87</td>
+<td align="right">1.19</td>
+</tr>
+<tr class="odd">
+<td align="right">2023</td>
+<td align="right">0.70</td>
+<td align="right">0.34</td>
+<td align="right">1.55</td>
+<td align="right">0.29</td>
+<td align="right">1.41</td>
+<td align="right">0.08</td>
+<td align="right">0.23</td>
+<td align="right">0.34</td>
+<td align="right">1.09</td>
+<td align="right">1.55</td>
+</tr>
+<tr class="even">
+<td align="right">2024</td>
+<td align="right">0.99</td>
+<td align="right">0.45</td>
+<td align="right">2.30</td>
+<td align="right">0.35</td>
+<td align="right">2.04</td>
+<td align="right">0.16</td>
+<td align="right">0.29</td>
+<td align="right">0.45</td>
+<td align="right">1.56</td>
+<td align="right">2.30</td>
+</tr>
+<tr class="odd">
+<td align="right">2025</td>
+<td align="right">1.01</td>
+<td align="right">0.43</td>
+<td align="right">2.43</td>
+<td align="right">0.35</td>
+<td align="right">2.18</td>
+<td align="right">0.17</td>
+<td align="right">0.26</td>
+<td align="right">0.43</td>
+<td align="right">1.60</td>
+<td align="right">2.43</td>
+</tr>
+<tr class="even">
+<td align="right">2026</td>
+<td align="right">0.96</td>
+<td align="right">0.36</td>
+<td align="right">2.58</td>
+<td align="right">0.25</td>
+<td align="right">2.22</td>
+<td align="right">0.25</td>
+<td align="right">0.18</td>
+<td align="right">0.36</td>
+<td align="right">1.57</td>
+<td align="right">2.58</td>
+</tr>
+<tr class="odd">
+<td align="right">2027</td>
+<td align="right">0.88</td>
+<td align="right">0.28</td>
+<td align="right">2.61</td>
+<td align="right">0.16</td>
+<td align="right">2.23</td>
+<td align="right">0.26</td>
+<td align="right">0.09</td>
+<td align="right">0.28</td>
+<td align="right">1.50</td>
+<td align="right">2.61</td>
+</tr>
+</tbody>
+</table>
+<p>To plot results for a single year, for example 2024, extract the results from the list and use our plotting function, and tailor the figure as necessary by setting the arguments (see <code>?plot.intervals_density</code>):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>index_for_2024 <span class="ot">&lt;-</span> <span class="fu">which</span>(res_all_years_2<span class="sc">$</span>intervals_all<span class="sc">$</span>quantity <span class="sc">==</span> <span class="dv">2024</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years_2[[<span class="st">&quot;res_all&quot;</span>]][[index_for_2024]],</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;eti&quot;</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">3.5</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Relative spawning biomass in 2024&quot;</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_arrow =</span> <span class="fl">1.07</span>,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">arrowhead_gap =</span> <span class="fl">0.01</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">x_minor_ticks_by =</span> <span class="fl">0.25</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_minor_ticks_by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years_2[[<span class="st">&quot;res_all&quot;</span>]][[index_for_2024]],</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;hdi&quot;</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">3.5</span>),</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>),</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Relative spawning biomass in 2024&quot;</span>,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_arrow =</span> <span class="fl">1.07</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">arrowhead_gap =</span> <span class="fl">0.01</span>,</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">x_minor_ticks_by =</span> <span class="fl">0.25</span>,</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_minor_ticks_by =</span> <span class="fl">0.05</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAPACAMAAADdYTsZAAAAulBMVEUAAAAAACsAAFUAAP8AKysAK4AAK/8AVaoAVf8rAAArACsrAFUrAP8rKysrK4ArK/8rgKorgNQrgP9VAABVACtVAP9VVQBVVVVVgIBVqqpVqv+AKwCAK/+AVQCAgFWAqoCA1P+pqamqVQCqVf+qgCuqqlWq1ICq/6qq///UgCvUgP/U/6rU////AAD/ACv/AFX/KwD/Kyv/K4D/VQD/Var/gCv/gNT/qlX/qv//1ID/1P///6r//9T////qiaJNAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAgAElEQVR4nO2dC3vjNnZAOaN1HSfpw6NMd2unXVfTbkdZq91umlUcmf//b5UEHyJlURYBXOCCOOdLbEsjghB5dPEghVuUAIopYlcA4BIICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRU41nQAuAqZATdViU/mD8+fvVQHGSLjKDbD0/lYX1bIig4IiLo6+O9+XnzjKDghoigh7Vp3svNzTOCghOCEbRic4ug4IRQH7TV8rAuEBRcEBvFN4386yOCggtCgoYuDpYKgoJqpAVlkAROBI6g869gQd7QxINqEBRUg6CgGgQF1Qhdiz8OhhjFgwsyEXTyApJdcZAvQk386+Otz+IgW6T6oPv2Yryn4iBXGCSBalQL+vqX3W73t/bBYVfzf2X5stv91fzjr36r5MRPq9Xqqf7jc/XH6puy/O371d89V49/vNySpEWEE6JZ0Ne//Pdv5S/1Iah5qR40z/7t9S/Vc/v/81sjJ75Udv72/UPt5VPzzI+fyh8rT3/9Jm7FvBLjhMQQ9Npr8S+7+iP5y/80j/bt7/q4/PLX8vV/f/NXI2c+f6p+/FSFzF9XzfRFLWr9+MenuBXzSowTojmCNuzbD+ovgw9udTxUBdBfTfNe//ypjZitoIsKoC1hT4h+QX9uP6g//2/T/zEtyt90BdBO0Ifyyz9WXdA6nNZN/KdlBdCWsCdEvaD7tlN+MB3xn//W9slVBdCm+1kNlB7Kz/XI6MundpC0yAAa9oRoF3S/G73xrt9TfV6rQeT/+K2TA80gadWO2LuOaB1Aq1H9OxfV0iL0CVEu6L6f1GhouulmxPhz9d9f/VbKgS9Vy/71c9ugNwHVDOG/VP+Z6aaFEPyE6Bb0l5PD0U1tmM/r3/qPrxJ++/5r90djah1APx3j6QIIf0JUC/rL7jj123xU2yNQfV4VClqN2pvY2SpZ90CXJWiEE6JZ0JfRx/Xnuu/zs3nGjBhVNfGfv2mH8l/qYVE9SCpNAF1WEx/jhGgW9BdzLW3337+ZCxXlz9XfzQfYzMCpGiSZK5ymXa87o00PtJkSXdIgKcYJ0SwoAIKCbjRfiwcggoJuEBRUg6CgGgQF1WgUdLfbzSrrzOtXq9XcGi2Fc2997hFVhDZBm6ng2YIOt1k1uNQuZU7e/s7miCpClaA7V/rTA6vaUecDqgAno+whgkpx8vbnnmdtqIqgLRaCnj6Vt6BvnkNQuf2GgZWftYKgpdGz67fhqDK4Fj/Us3U0do3giNjqdhdXB9UUQU/0xFBdyAi6LdpknfvuD6fiBDkNn107H7te0CIiaJ9MtlL15vz3HZQYcE5PgqgmhJYA75d026teAnzKz8rQ2FWDhqwj6LSfhFAtSPVB2xCqug96wU8M1YLQKL7L8zERP1UIetFPDFVCxhP1l/2kG6qDfAV9J4ASQnUgLajadNzv+omhKggcQdXclHGFnzTyGsi1ib/GT0KoAjIV9KoASghVQJ6CXuknITQ+mQp6nZ+E0PgIXYvXnY772gBKCI2PTARVno77aj8JodERu2FZcTru6wMoITQ6Un1Qzem4Z/hJCI1NhoOkOQGUEBqbHAWd4ychNDL5CTovgCJoZPL72vFMP2nj45JdBJ0bQAmhcclP0Ll+EkKjgqCEUNXkJuj8Fh5Bo5KdoPP9pI2PSWaC2gRQQmhMchPUxk8EjQiCXiMohkYjL0HtWnhCaEQyE9TOTwSNB4JeJSiGxiKra/G2LTwhNB5ZRVBrPxE0Ggh6naAYGomcBLVv4Qmh0chKUHs/ETQWCHqloBgah4wEdWnhCaGxyElQFz8RNBIIeq2gGBqFfAR1a+EJoZHISFA3PxE0Dvlc6nQWFENjkE0EdW3hCaFxEBJ0UxS3JiX31BJi4QV19RNBoyAjaJ2hc1Pc1kvZakmF6EFQDI2AiKAmmez+w1OpKJmsu6CE0BiICGrScTeJuLWk43bvgiJoFHKJoB78pI2PgXAfdJA53qE4D/gQlBAagVxG8QiaKJnMg/rogtLGxyAXQX34SQiNgLSgStJx+xIUQ0MTOIJGSsftp4VfEULDk0cT78tPBA0Ogs4TFEMDIySomWKaTiWbrKCE0NAITdQX7fz8vtAwUe+tC4qgwZG71Nmg4lKnPz9p40Mjd7NIg4qbRTwKSggNDBF0rqAYGhSpPmgbQlX0QT12QVeE0MAIjeIP62YUPxE/Awvq008EDUsO86CeBcXQkCDofEMDVh0y+F683y4oITQsGURQz34SQoOCoBaCYmg4ENTG0HCVz57lC+q7C7oihIYkA0G9+0kIDQiCWgmKoaFAUDtDg1U/dxDUTlAMDcR8QQ/resmQYPt13pGIoITQUNhE0G1RTN2k5H+/rsj4SQgNhWUT7+Ro0EudQoJiaCCs+6DbS1+J87hfV6QEpZEPg52ge7Ms2Ovj5O2e/vbriFAXdEUIDYSFoPXNyI2ZU1848rlfR8T8xNAw2Izizcq0ofbruh85QWnkQ2Ah6A+Nnw7hc85+HREVFEPlsRd0at06z/t1Q64LiqFhmCvo5rg+ndNUaChBJf2kkQ+AfQQNtF/H3QgLiqHSLPxavLCgGCoOgjoaGuZ95MtMQQ/r+25NBpfrSKEElR0jGUExVJZlf+1Y3E8MlWbZTXwAQWnkZbG61Hlf3ypy8Tr8pmr/X+6KYvKi04IExVBJLATd3Dy/3N2Wmwu3LRs/v30arRRquV8X5LugxtAQbyVbbK7FP5T74uHSpU6TJb4ROOr6oEH8JISKYidoHSEvXOqsX9IuYht1heUwghJCJbFp4m8P65vnw/pSE1/92zaXCEoIlcTuftAPT6+Pl745d1h//DpIGu+yXxcCCUoIFURqmmnfTOZPWhzinIYZI60IoZIseR40lJ+EUEEsBH03i5zX/brsI5ygGCqFzSBpjpkx03GHE1QyhL7cTUwl54HNNJPDncpB03GHFFTu/SDozBdOXhyS2a/DLgIKKhhCEXTmCy9PMHnf7ztszDf0z+8ioJ+CIfTl7g937ksNJYtFH3Q/ZcSAUOm4zRWBibnWoILKhdCXu+r9vdzlaqjV6nbvjuJDpeM234+aagMDCyplaOOm23doE0ZkHjRoMtn9RBsftAu6kguhzedv8pLc0hERNFw67m0VyP90PoIG9lNO0Pq2xfZnhtgIWjXyN8+bC52iYBHURJeJJj64oEKGEkHnvrA6Vtv6bqYLhoZKx23i88SgLbSgUiG07YPaLySYNjbTTPfmcF3stgdKx11Hl2pXZz8E4QWVMdSM4q+ZOVkmdhP1taAqFg/b1l972pxr/kKPkVZSIbSZB83VT4cIunFqdMSvJIX3k1tGJLDug27tP9RBrsVHEJS77gSwHMVf+EKx5/1a7wBBF8Fib1iOIiiGemepgkYYI60IoQLYXot3nZYTFzSGn4RQ/8wWdNMMjraON4AtU1BCqHfmCtpfcnO8j9bxTE6EquPTsQR9732FjLGLiOczBR3crXxpbSaP+53YfIr+BXEEfTeETlZcBLeDrIKZgg6uwEfN8vHeKYkzRlq9H0ID2lnkKei7N9J53u/E5u808bH8fDeE0sTPBEF9C3r5nSHoTGIIGqD1iScoA3m/JBpB3ys9pqAY6pPZgh574JoFjecnIdQvy7zUGVdQDPUIggoYKvreMgNBBQTFUH8sUtCYYyRjqOSby4xlChrXT0KoRxBUxFDJd5cXCCoiKIb6AkFlDJV8e1mxREFjj5FWhFB/xBBU+lp8fD8x1BuLjKCx7axBUD+ICnrhayHLFxRDvSAi6BW3lAiePgVd0BoM9YJMBG1XXYwTQXX4SSPvB6Emvs6HnL2gGOoBsT7oxuSmyFlQDPWB3CBpW9xnLiiGekBwFP9y97sYgioZIxkQ1BnJaabXx+k1RAUFjW3lAEKoM8ubqNckKIY6Iy1o+HTcqgTFUFcCR1D5VVk0dUFrMNSNxTXxyvzEUEcQVBwMdUFI0FDpuM8UHNvHt2CoAzKChkrHfa7g2DqeAUPtERE0aDruk3I1Coqh9gjdbhcqHffbcmO7eB4MtWVxETS2ihNgqCVSfdAw6bjPlBvbxCkw1A6x+0GbUbxwOu63xaoVFEPtWNg8qF4/a0NRdD4L+9qxZkEJojYQQUNCEJ3NsgRV3AVtQdGZLEzQXWwB3wdDZ4GgwSGIzgFBI4Ch14OgMSCIXs2iBC12iQhKEL0aBI0Ehl4HgsYCQ68CQaNBR/QaliRokZagBNFrWNK1+MrPtATF0PdZVARNTlAMfRcEjQuGvsOCBC1SFJQF8N5hSYLukhQUQy+CoLHB0IssR9AiUUEx9CILEnSXqKAYegkEVQCGToOgGsDQSRYjaJGyoBg6yXIE3aUsKIpOsZhr8akLiqHnIYKqAUPPISTotoqRZv2wUFk+ivQFxdBzCK1u9+GpPKxvy4CC7tIXFEPPILg+6OvjzTOCzgJD3yAiaLfC8ubmOZCgxTIExdA3CEbQis1tKEF3yxAUQ08R6oO2Wh7WU4loEHQCDB0jNopvGvnXRwSdCYaOWMY8aLEgQTF0xEIE3S1IUL4wP0Ra0DCDpGUJShAdEDiCyqTjLpYmKIb2LKKJP/q5FEExtANBlYKhDUKChk3HvURBMbRBaKI+aDrugZ8LEhRDDbKXOsMkk12ooBhaI3qzSBkmHfdSBWVCtFxEBC0WKyhBVK4PGjAd99DPpQmKoUKj+JDpuBctaPaGpj8PWixb0Nw7oul/7Xjk5wIFzTyIJh9Bi+ULmnUQTV/Q3fIFzTmIImgaZBtEUxe0yETQbBVNXtBdLoIaRfNzFEGTIj9FExf0tIVfuqD5hdHUBd3lJugqszCatqBvAmgWgmalaOKCnvqZiaAZKZq0oG8DaDaCZqNo0tfi3/qZkaCZKJp2BM1b0CwUTVnQMy18ZoJmoGjSgr71MztBF69owoKeC6AZCrrwuft0BT3rZ5aCrhpHlylpwoKe8zNXQWv8L8qmgWQFPR9AcxbUsDhL0xX0rJ/ZC2pYkqSpCjoRQBG0YymOJirolJ8IOmARjqYq6ISfCDpkt0vf0TSvxU8GUAQdYo5I4o4KCSq7gO20nwg6pDsoKTsqtXiY5AK2F/xE0CGD4yKQuiIMCS6/eMlPBB3y5ugck6wko6qIoKIL2F70E0GHXDhOyaiaWgQtLvuJoEMuHqkzqo6xPEOekeqDCi1g+46eCDriKkGvE9fudHlAaBQvs4Dte+ETQcc4CTphq815cyGdifriCj0RdIQ/Qc+pOk0UUeIKep2dCDpGQtAr8GqstKDu2Y6bt3jtwYnthCokLZyDi7GBI+jlKp5vMGYdi9hOqELIN3eu6SfMdTl6HxSyBEFBNUneLAL5kOLNIpARqV3qhMxI72YRyAoiKKgmsZtFIDeSulkE8oN5UFANgoJqogkKcBWRBLXex1X1CFpQotVO9P3LbOxxHwoPWZrVTvT9y2zscR8KD1ma1U70/ctsHHofFBSwICVVQlAKki4JQSlIoCAlVUJQCpIuCUEpSKAgJVVCUAqSLkm9oADWICioBkFBNQgKqkFQUA2CgmoQFFSDoKAaBAXVICioBkFBNQgKqkFQUI2goPui+PB09oFDQc3aJre2dXr5rl/0zKVGw4JcamTWW+1XEXKo0aggt2O09XXatl5Om5yg+6p2+66GowcuBb18ay9VfZz6VflcajQqyKFGr49VBbbdeXOo0bggp2NUp8fwctpGBdlXSUzQZim8ze3bBy4FTa77eBX749rQLjUaFeRSo5e7ejG2NmOKS41GBTkdo8P6vq6K+2kbFeRQJTFBR8dsfAAdCiq31q27WZOvP1AuNRoV5FSjprQmzDjVaFiQe406r5yr1AtqXyU5QU1Qb8/j6IFLQeXm74e9ttkcBXWo0agg1xpVBbgfo1FB7jXatqY7V6kryKFKYoI2H+f2Qz164FLQYV2v/LixPvr9wXap0agg1xr1a6261qgvyPkY9So5VulYkEOVEhO0fco98HkT1LlGwzGSU43Gg2SXUPz62CwA6/yZ6QpyqFJqTXzz1N3D5MsvI9DEu9XouFa1Y41OF722P0blsVvs3OsYyW1VpdQGSc1T1pMWfgZJ5VtBLWu0PWrlVqPtaQ/Paa6pVcl93DZy0qpKiU0zNW/YQ+Bzm2Z6Y7pljfpF/11rNCzIqUajjd1nvvbDAKWriReaqDdHy8MgyXGifjiKt6/Ry91wM4cajQtyOkabqtfYp3NxOUijguyrJHips73U1cyFbd2vmTUFbYqisO9dGa/cazQqyL5G22ax4Q9PrjU6KcjpGLUbux+kUUHWVeJmEVANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUk42gJlHLyTrUh/VguaD9w/ixLZOF9EsRWu7mzWbH3DNdtphRNprNcPHYZMlIULOK4H64hNXwlHuR8yJOS8qe4Zh7pluEbpSNZl8gaEq0gvZ5J2rSFrRfXrZfxnO44OxhjaBJ0ZlpGr5t0xIaKZuFAV/uiuLmz+uHdqlVE4mOrWX9r/WLvv3jXftks5Up1ATlTbXxv6zr5+pCD+3f5nUf/q3LM/OHu+Nu62a5fvByV7/0vt7DQ3lcprDdY/+7LE8K7qiqerIQcrOg5/bmXxE0JYYRtM6OUq/5Wp/yTfu4Of0P7WqWN8/da2qMAZWHlS0PrY/tVttKgrpNrYLYYV0//vDUFNT8bTLD7ItO0MFuTTGH9W3z7LbOC1Ybtulr1+3xoe+WjAruqfZwspS8yUZTPUcfNClaQbfGi9q76oRWp/zww1MjYCuo0aR6Qf+a8virFbaSst+qjlab3988Vz6YLarnmoKav5vYtukENVub3bZrD5vwd9/+U71tX+6ZpHHDgvsn69wJ42QcJptCXTyCJkU3in/oTmXrUmka26Og9f/VC/rX1C/oMnMe2//BVocf/vjd18Z2I1FXSP2j8WuUSm7fxNjmQefw8UdfbrPHQU7Qclhw99y+GyMNqmVWRq7kRNCkMBH05a4+e/uiddVEzKL4+KdBBK1b2erU9q9pN277oJ0J3Vbl5v7lH/78w1O10TlBtyNBzdYm1naCHtYngvbltnvsf5dnBW1yzwyb+MEzCJoUTRNvzl+fFmDoR3/69x//qwmiJwVUDXUv6NGq7c1/VEL/0+PDWUHnRtBhJO27Bt3vt4K2uWcGg6T2me3o45U0mQlqTnZ/gjuF9oMmvvrxe9MNPT25xmYzn1PF126r8uW7f74vt7/79umsoK06oz5o1YMd90EHgh7Lbfc4/P1G0G0f37tsMcNsNETQtGgFNVkjjTEbE8qa4Fncm+FHc+Y3TS+ufU29kQmBRqZ6Rrx4KPutmmG1mRM/J+jbUXz3WRiM4k8iqCm322P3u6n6WNBj7pluov4kGw2CpkQ3D2oawboJbMOkSbRSi7gx86BlH8Ha1xj2JsdLO5P5UJbHrYyCRoyzgtbzmh//sxtitVufzIOe9EGbcts99r/Lt4L2uWf6bDGDZ0oEzRDLa0EuyS6zB0FnMFtQs0EzpQp2IOgM5kfQ/ULG0vFAUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRU41nQAuAqZATdViU/mD8+fvVQHGSLjKDbD0/lYX1bIig4IiLo6+O9+XnzjKDghoigh7Vp3svNzTOCghOCEbRic4ug4IRQH7TV8rAuEBRcEBvFN4386yOCggtCgoYuDpYKgoJqpAVlkAROBI6g869gQd7QxINqEBRUg6CgGgQF1Qhdiz8OhhjFgwsyEXTyApJdcZAvQk386+Otz+IgW6T6oPv2Yryn4iBXGCSBahB0Dj+tVqun+o/P1R+rb8ryt+9Xf/dcPf7xcnsB1iDoDL5Udv72/UPt5VPzzI+fyh8rT3/9Jm7FFkwMQZO9Fv/5U/Xjpypk/rpqJilqUevHPz7FrdiCIYJez6+mea9//tRGzFZQAqgcCHo9naAP5Zd/rLqgdTitm/hPBFBBEPR6TPezGig9lJ/rkdGXT+0giQAqCILOoBkkrdoRe9cRrQNoNap/59IZ2IGgc/hStexfP7cNehNQzRD+S/WfmW4C3yDoXH77/mv3R2NqHUA/HeMpeAVB51KN2pvY2SpZ90ARVAwEncHnb9qh/Jd6WFQPkkoTQGni5UDQOXzuLnXWndGmB9pMiTJIkgJBQTUICqrhWjyohggKqkFQUA2CgmoQFFSjUdDdbvfO1mdesVqt3GqUAOfe4/sHK220CbpreGfrk1etGvzVTikn73N33cFKG1WC7ubTn7W8sDpWaeJklD1EUAtO3ufcU5gkqiJoy1WCnj6ViaBvnkPQuS+MUpwrrPysFQQtjZ5d5w5HlcG1+KGeraOxawRHxFa3u7g6qKYIeqInhupCRtBt0Sbr3Hd/OBUnyGn47Nr52PWCFhFB+2Sylao3578JocSAc3oSRDUhtAR4v9jbXvUS4FN+VobGrho0ZB1Bp/0khGpBqg/ahlDVfdALfmKoFoRG8V2ej4n4qULQi35iqBIynqi/7CfdUB3kK+g7AZQQqgNpQdWm437XTwxVQeAIquamjCv8pJHXQK5N/DV+EkIVkKmgVwVQQqgC8hT0Sj8JofHJVNDr/CSExkfoWrzudNzXBlBCaHxkIqjydNxX+0kIjY7YDcuK03FfH0AJodGR6oNqTsc9w09CaGwyHCTNCaCE0NjkKOgcPwmhkclP0HkBFEEjk9/Xjmf6SRsfl+wi6NwASgiNS36CzvWTEBoVBCWEqiY3Qee38AgalewEne8nbXxMMhPUJoASQmOSm6A2fiJoRBD0GkExNBp5CWrXwhNCI5KZoHZ+Img8EPQqQTE0Flldi7dt4Qmh8cgqglr7iaDRQNDrBMXQSOQkqH0LTwiNRlaC2vuJoLFA0CsFxdA4ZCSoSwtPCI1FToK6+ImgkUDQawXF0CjkI6hbC08IjURGgrr5iaBxyOdSp7OgGBqDbCKoawtPCI2DkKCborg1KbmnlhALL6irnwgaBRlB6wydm+K2XspWSypED4JiaAREBDXJZPcfnkpFyWTdBSWExkBEUJOOu0nErSUdt3sXFEGjkEsE9eAnbXwMhPugg8zxDsV5wIeghNAI5DKKR9BEyWQe1EcXlDY+BrkI6sNPQmgEpAVVko7bl6AYGprAETRSOm4/LfyKEBqePJp4X34iaHAQdJ6gGBoYIUHNFNN0KtlkBSWEhkZoor5o5+f3hYaJem9dUAQNjtylzgYVlzr9+UkbHxq5m0UaVNws4lFQQmhgiKBzBcXQoEj1QdsQqqIP6rELuiKEBkZoFH9YN6P4ifgZWFCffiJoWHKYB/UsKIaGBEHnGxqw6pDB9+L9dkEJoWHJIIJ69pMQGhQEtRAUQ8OBoDaGhqt89ixfUN9d0BUhNCQZCOrdT0JoQBDUSlAMDQWC2hkarPq5g6B2gmJoIOYLeljXS4YE26/zjkQEJYSGwiaCboti6iYl//t1RcZPQmgoLJt4J0eDXuoUEhRDA2HdB91e+kqcx/26IiUojXwY7ATdm2XBXh8nb/f0t19HhLqgK0JoICwErW9Gbsyc+sKRz/06IuYnhobBZhRvVqYNtV/X/cgJSiMfAgtBf2j8dAifc/briKigGCqPvaBT69Z53q8bcl1QDA3DXEE3x/XpnKZCQwkq6SeNfADsI2ig/TruRlhQDJVm4dfihQXFUHEQ1NHQMO8jX2YKeljfd2syuFxHCiWo7BjJCIqhsiz7a8fifmKoNMtu4gMISiMvi9Wlzvv6VpGL1+E3Vfv/clcUkxedFiQohkpiIejm5vnl7rbcXLht2fj57dNopVDL/bog3wU1hoZ4K9licy3+odwXD5cudZos8Y3AUdcHDeInIVQUO0HrCHnhUmf9knYR26grLIcRlBAqiU0Tf3tY3zwf1pea+OrftrlEUEKoJHb3g354en289M25w/rj10HSeJf9uhBIUEKoIFLTTPtmMn/S4hDnNMwYaUUIlWTJ86Ch/CSECmIh6LtZ5Lzu12Uf4QTFUClsBklzzIyZjjucoIRQMWymmRzuVA6ajjukoBgqhN08aMD9OuwioKCEUCnmC3p5gsn7fh12EdBPQqgUFn3QffF+CNWQjjuooIRQIaxWt3t3FK8iHXdgQTFUBJF5UBXJZIN2QVeEUCFEBFWRjjuwnwgqg42gVSN/87y5MNmkIwD9jR4AAAyrSURBVIKGFhRDJbAZJH142tZ3M10wVEM67tCCEkJFsJlmujdx8eLSNwrScYcXFEMFsJuorwVVvnhY6DHSihAqgn0E3divXjtnv9Y7CO4nIVQC6z7o9orp+qmiQlyLjyAoIVQAy1H8hS8Ue96v9Q4QdBEs9oblKIJiqHeWKmiEMdKKECqA7bV4pxHSnP3alh/DT0Kof2YLumkGR1vHXHPLFJQQ6p25gvbfI365c7pveamCYqhnZgo6uFv50tpMHvdrW34cQQmhvpkp6OAKvOosH3HGSCtCqHdmC/rujXSe92tZfCQ/CaG+QVDfgmKoV2IIGuBSZzxBCaF+WWYEjdYFXRFCPTNb0OPSC5oFjecnIdQvy7zUGVdQDPUIggoYKvreMgNBBQTFUH8sUtCYYyRjqOSby4xlChrXT0KoRxBUxFDJd5cXCCoiKIb6AkFlDJV8e1mxREFjj5FWhFB/xBBU+lp8fD8x1BuLjKCx7axBUD+ICnrhayHLFxRDvSAi6BW3lAiePgVd0BoM9YJMBG1XXYwTQXX4SSPvB6Emvs6HnL2gGOoBsT7o5sNT5oJiqA/kBknb4j5zQTHUA4Kj+Je738UQVMkYyYCgzkhOM70+Tq8hKihobCsHEEKdWd5EvSZBMdQZaUHDp+NWJSiGuhI4gsqn49bUBa3BUDcW18Qr8xNDHUFQcTDUBSFB46Xj1icohrogI2jEdNwKBcVQB0QEjZhMVtsYqQFDrRG63S5aOm6VfmKoPYuLoLFVnABDLZHqg8ZKx61VUAy1ROx+0DjpuHV2QQ0YasXC5kH1+lkbiqLzWdjXjjULShC1gQgaEoLobJYlqOIuaAuKzmRhgsb27wowdBYIGhyC6BwQNAIYej0IGgOC6NUsStBU/FwRRK8GQSOBodeBoLHA0KtA0GjQEb2GJQmqf5r+BAx9nyVdi0/NTwy9gkVF0Ni+zQdD3wNB44Kh77AgQZPrghoQ9DJLEjS2a1YQQi+DoLHB0IssR9A0W/gVhl5mQYLGFs0aDL0AgioAQ6dBUA1g6CSLETTZLqgBQ6dYjqCxHXMERc+zmGvxqQuKoechgqoBQ88hJOi2ipFm/bBQWT7S7oI2YOgZhFa3+/BUHta3ZUBBY9vlAwx9i+D6oK+PN88IOgsMfYOIoN0Ky5ub50CCLqGFr8HQUwQjaMXmNpSgsc3yBYaeINQHbbU8rKcS0SDoBBg6RmwU3zTyr48IOhMMHbGMedCldEENGDpkIYLGlsorfGF+gLSgYQZJyxKUIDogcASVSce9qBbegKEdi2jiF+cnhvYgqFIwtEFI0LDpuJcoKIY2CE3UB03HvUg/MbRB9lJnmGSyCxUUQ2tEbxYpw6TjXqqgTIiWi4igy5tkOoKhUn3QgOm4F+wnhkqN4kOm4160oNkbmv486JJb+JrMO6Lpf+144X6uMg+iyUfQpQfQmpyDaPqCxrYnCPkaiqBpkG0QTV3QHFr4hkwVTV7QXWxxwiGUXko3CJoU+SmauKBFZoLmF0ZTF3SXm6CrzMJoNEH/HeAK0o6gVQDNMILWZBNFkxa0yFfQ3S4TRZO+Fl/7ma2gmSiadgTNW9AsFE1Z0CJ7QTNQNGlBdwi6eEUTFrRA0F7R5TqarqCtnwjaObpMSRMWdIegbyVdnKXJClog6DkWZ2m6gu4Q9KKlPs6SAlIVtEDQyyzF0UQFPfqJoMt2NFVBj6chtipxuEbQRTia5rX4AkGvJnFHhQSVXcB26CeCLttRqcXDJBewHfmJoFc7mqSmCS6/OPYTQedrmpKqIoKKLmB74ieCLlvV1CJoceongvpTdYzlGfKMVB9UaAHbN3oiqBRKbBUaxcssYPs2fCJoGOKZms5EfXFWTwQNzGSPQCjcJiLolJ07BNWHV2OlBXXPdty8xenDEVuVOITTzQMuxgaOoJereL7BeOfdx1YlDkHEEuOafsJcl6P3QSFLEBRUk+TNIpAPKd4sAhmR2qVOyIz0bhaBrCCCgmoSu1kEciOpm0UgP5gHBdUgKKgmmqAAVxFJUOt9XFWPoAUlWu1E37/Mxh73ofCQpVntRN+/zMYe96HwkKVZ7UTfv8zGofdBQQELUlIlBKUg6ZIQlIIEClJSJQSlIOmSEJSCBApSUiUEpSDpktQLCmANgoJqEBRUg6CgGgQF1SAoqAZBQTUICqpBUFANgoJqEBRUg6CgGgQF1QgKui+KD09nHzgU1Kxtcmtbp5fv+kXPXGo0LMilRma91X4VIYcajQpyO0ZbX6dt6+W0yQm6r2q372o4euBS0Mu39lLVx6lflc+lRqOCHGr0+lhVYNudN4cajQtyOkZ1egwvp21UkH2VxARtlsLb3L594FLQ5LqPV7E/rg3tUqNRQS41ermrF2NrM6a41GhUkNMxOqzv66q4n7ZRQQ5VEhN0dMzGB9ChoHJr3bqbNfn6A+VSo1FBTjVqSmvCjFONhgW516jzyrlKvaD2VZIT1AT19jyOHrgUVG7+fthrm81RUIcajQpyrVFVgPsxGhXkXqNta7pzlbqCHKokJmjzcW4/1KMHLgUd1vXKjxvro98fbJcajQpyrVG/1qprjfqCnI9Rr5JjlY4FOVQpMUHbp9wDnzdBnWs0HCM51Wg8SHYJxa+PzQKwzp+ZriCHKqXWxDdP3T1MvvwyAk28W42Oa1U71uh00Wv7Y1Qeu8XOvY6R3FZVSm2Q1DxlPWnhZ5BUvhXUskbbo1ZuNdqe9vCc5ppaldzHbSMnraqU2DRT84Y9BD63aaY3plvWqF/037VGw4KcajTa2H3maz8MULqaeKGJenO0PAySHCfqh6N4+xq93A03c6jRuCCnY7Speo19OheXgzQqyL5Kgpc620tdzVzY1v2aWVPQpigK+96V8cq9RqOC7Gu0bRYb/vDkWqOTgpyOUbux+0EaFWRdJW4WAdUgKKgGQUE1CAqqQVBQDYKCahAUVIOgoBoEBdUgKKgGQUE1CAqqQVBQDYKCahAUVIOgoBoEBdUgKKgGQUE1CAqqQVBQDYKCahAUVIOgoBoEBdUgKKgGQUE12QhqErWcrEN9WA+WC9o/jB/bMllIvxSh5W7ebHbMPdNlixllo9kMF49NlowENasI7odLWA1PuRc5L+K0pOwZjrlnukXoRtlo9gWCpkQraJ93oiZtQfvlZftlPIcLzh7WCJoUnZmm4ds2LaGRslkY8OWuKG7+vH5ol1o1kejYWtb/Wr/o2z/etU82W5lCTVDeVBv/y7p+ri700P5tXvfh37o8M3+4O+62bpbrBy939Uvv6z08lMdlCts99r/L8qTgjqqqJwshNwt6bm/+FUFTYhhB6+wo9Zqv9SnftI+b0//QrmZ589y9psYYUHlY2fLQ+thuta0kqNvUKogd1vXjD09NQc3fJjPMvugEHezWFHNY3zbPbuu8YLVhm7523R4f+m7JqOCeag8nS8mbbDTVc/RBk6IVdGu8qL2rTmh1yg8/PDUCtoIaTaoX9K8pj79aYSsp+63qaLX5/c1z5YPZonquKaj5u4ltm05Qs7XZbbv2sAl/9+0/1dv25Z5JGjcsuH+yzp0wTsZhsinUxSNoUnSj+IfuVLYulaaxPQpa/1+9oH9N/YIuM+ex/R9sdfjhj999bWw3EnWF1D8av0ap5PZNjG0edA4ff/TlNnsc5AQthwV3z+27MdKgWmZl5EpOBE0KE0Ff7uqzty9aV03ELIqPfxpE0LqVrU5t/5p247YP2pnQbVVu7l/+4c8/PFUbnRN0OxLUbG1ibSfoYX0iaF9uu8f+d3lW0Cb3zLCJHzyDoEnRNPHm/PVpAYZ+9Kd///G/miB6UkDVUPeCHq3a3vxHJfQ/PT6cFXRuBB1G0r5r0P1+K2ibe2YwSGqf2Y4+XkmTmaDmZPcnuFNoP2jiqx+/N93Q05NrbDbzOVV87bYqX7775/ty+7tvn84K2qoz6oNWPdhxH3Qg6LHcdo/D328E3fbxvcsWM8xGQwRNi1ZQkzXSGLMxoawJnsW9GX40Z37T9OLa19QbmRBoZKpnxIuHst+qGVabOfFzgr4dxXefhcEo/iSCmnK7PXa/m6qPBT3mnukm6k+y0SBoSnTzoKYRrJvANkyaRCu1iBszD1r2Eax9jWFvcry0M5kPZXncyihoxDgraD2v+fE/uyFWu/XJPOhJH7Qpt91j/7t8K2ife6bPFjN4pkTQDLG8FuSS7DJ7EHQGswU1GzRTqmAHgs5gfgTdL2QsHQ8EBdUgKKgGQUE1CAqqQVBQDYKCahAUVIOgoBoEBdUgKKgGQUE1CAqqQVBQDYKCahAUVIOgoBoEBdUgKKgGQUE1CAqqQVBQzf8DAC+OsjiUSQcAAAAASUVORK5CYII=" /><!-- --></p>
+</div>
+<div id="absolute-female-spawning-biomass" class="section level2">
+<h2>Absolute female spawning biomass</h2>
+<p>The above was for relative female spawning biomass. We now briefly look at absolute female spawning biomass, in units of millions of tonnes. This is also saved as a data object in the package (<code>hake_spawning_biomass_mcmc</code>). We focus on the values for 2023 and 2024 which are given prominence in a bullet in the one-page summary of the hake assessment:</p>
+<p>“The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t (with 95% credible interval from 853,207 to 4,828,382 t). This is an upward shift from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t (with 95% credible interval from 652,495 to 3,224,819 t).”</p>
+<p>So those credible intervals are ETIs. How would HDIs compare? The results are (in millions of tonnes):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>res_all_years_spawning <span class="ot">&lt;-</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_intervals</span>(dplyr<span class="sc">::</span><span class="fu">select</span>(hake_spawning_biomass_mcmc,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">`</span><span class="at">2023</span><span class="st">`</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">`</span><span class="at">2024</span><span class="st">`</span>))</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary_table</span>(res_all_years_spawning)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="15%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">quantity</th>
+<th align="right">Median</th>
+<th align="right">ETI lower</th>
+<th align="right">ETI upper</th>
+<th align="right">HDI lower</th>
+<th align="right">HDI upper</th>
+<th align="right">Interval difference</th>
+<th align="right">Range a lower</th>
+<th align="right">Range a upper</th>
+<th align="right">Range b lower</th>
+<th align="right">Range b upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2023</td>
+<td align="right">1.34</td>
+<td align="right">0.65</td>
+<td align="right">3.22</td>
+<td align="right">0.52</td>
+<td align="right">2.83</td>
+<td align="right">0.26</td>
+<td align="right">0.43</td>
+<td align="right">0.65</td>
+<td align="right">2.00</td>
+<td align="right">3.22</td>
+</tr>
+<tr class="even">
+<td align="right">2024</td>
+<td align="right">1.88</td>
+<td align="right">0.85</td>
+<td align="right">4.83</td>
+<td align="right">0.68</td>
+<td align="right">4.25</td>
+<td align="right">0.40</td>
+<td align="right">0.53</td>
+<td align="right">0.85</td>
+<td align="right">2.89</td>
+<td align="right">4.83</td>
+</tr>
+</tbody>
+</table>
+<p>The above quote, using HDIs instead of ETIs, becomes:</p>
+<p>“The median estimate of female spawning biomass at the start of 2024 is 1,884,950 t (with 95% credible interval from 684,752 to 4,254,940 t). This is an upward shift from this assessment’s estimate for the 2023 female spawning biomass of 1,335,485 t (with 95% credible interval from 515,395 to 2,827,000 t).”</p>
+<p>The reduction in uncertainty for 2024 from switching from the ETI to the HDI is 404,988 t. This is larger than the average catch from 2014-2023 of 338,606 t, of which less than half would be considered as spawning biomass (mature females; catch is males plus females). Thus, the reduction in uncertainty is certainly not trivial. Again, intervals are shifted downwards, implying the stock biomass is lower than implied when using the original ETIs.</p>
+<p>The ETI and HDI plots are</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years_spawning<span class="sc">$</span>res_all[[<span class="fu">which</span>(res_all_years_spawning<span class="sc">$</span>intervals_all<span class="sc">$</span>quantity <span class="sc">==</span> <span class="dv">2024</span>)]],</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_arrow =</span> <span class="fl">0.57</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Female spawning biomass in 2024 (millions of tonnes)&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;eti&quot;</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res_all_years_spawning<span class="sc">$</span>res_all[[<span class="fu">which</span>(res_all_years_spawning<span class="sc">$</span>intervals_all<span class="sc">$</span>quantity <span class="sc">==</span> <span class="dv">2024</span>)]],</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>),</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>),</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">interval_arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">y_arrow =</span> <span class="fl">0.57</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">&quot;Female spawning biomass in 2024 (millions of tonnes)&quot;</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">&quot;hdi&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; R version 4.3.2 (2023-10-31 ucrt)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Running under: Windows 10 x64 (build 19045)</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] LC_COLLATE=English_United States.utf8 </span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] LC_CTYPE=English_United States.utf8   </span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] LC_MONETARY=English_United States.utf8</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] LC_NUMERIC=C                          </span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] LC_TIME=English_United States.utf8    </span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; time zone: America/Los_Angeles</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] dplyr_1.1.4            hdiAnalysis_0.0.0.9000 testthat_3.2.1        </span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] devtools_2.4.5         usethis_2.2.2         </span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] sass_0.4.8        utf8_1.2.4        generics_0.1.3    shape_1.4.6      </span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] stringi_1.8.3     HDInterval_0.2.4  digest_0.6.33     magrittr_2.0.3   </span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] evaluate_0.23     pkgload_1.3.3     fastmap_1.1.1     jsonlite_1.8.8   </span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] pkgbuild_1.4.3    sessioninfo_1.2.2 brio_1.1.4        urlchecker_1.0.1 </span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [17] promises_1.2.1    purrr_1.0.2       fansi_1.0.6       jquerylib_0.1.4  </span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [21] cli_3.6.2         shiny_1.8.0       rlang_1.1.2       ellipsis_0.3.2   </span></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [25] withr_2.5.2       remotes_2.4.2.1   cachem_1.0.8      yaml_2.3.8       </span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [29] tools_4.3.2       memoise_2.0.1     httpuv_1.6.13     vctrs_0.6.5      </span></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [33] R6_2.5.1          mime_0.12         lifecycle_1.0.4   stringr_1.5.1    </span></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [37] fs_1.6.3          htmlwidgets_1.6.4 miniUI_0.1.1.1    pkgconfig_2.0.3  </span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [41] pillar_1.9.0      bslib_0.6.1       later_1.3.2       glue_1.6.2       </span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [45] profvis_0.3.8     Rcpp_1.0.11       highr_0.10        xfun_0.41        </span></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [49] tibble_3.2.1      tidyselect_1.2.0  knitr_1.45        xtable_1.8-4     </span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [53] htmltools_0.5.7   rmarkdown_2.25    compiler_4.3.2</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
