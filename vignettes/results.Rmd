@@ -30,7 +30,7 @@ plotting features.
 
 Set up:
 ```{r setup}
-load_all()      # TODO change to library(hdiAnalysis) when done
+library(hdiAnalysis)
 library(dplyr)
 ```
 
@@ -60,15 +60,15 @@ As seen above, `res_vec` is a list, with first element `$intervals` containing
 results such as the median, lower and upper bounds for the equal-tailed interval
 (ETI) and for the highest density interval (HDI) , widths of the
 ETI and HDI, and more. See `?create_intervals` for full details of what is returned.
-We will show a table of the key values after plotting the
+We will show a summary table of the key values after plotting the
 figures.
 
 The second element of `res_vec` is `$density` (seen above), which is a
 kernel density estimate of the distribution represented by the samples in
 `vec`. It is useful for plotting and calculating approximate intervals.
 
-The HDI is calculated using the `HDInterval::hdi()` function, and we explore other
-choices in the `results-extra` vignette.
+The HDI is calculated by `create_intervals()` using the `HDInterval::hdi()`
+function, and we explore other choices in the `results-extra` vignette.
 
 ## Plot the distribution showing the ETI and HDI -- Figure 1
 
@@ -134,12 +134,12 @@ To create ETIs and HDIs for estimates of recruitment for each year, we can simpl
 `create_intervals()` which, because `hake_recruitment_mcmc` has class
 `data.frame`, uses our function `create_intervals.data.frame()` to automatically
 calculate intervals for each column (year in this case, and we will exclude the
-Virgin sample) of samples.
+Virgin column) of samples.
 ```{r hake_mcmc2}
 res_all_years <- create_intervals(dplyr::select(hake_recruitment_mcmc,
                                                 -"Virgin"))
 ```
-This gives a list object, with element `res_all[[i]]` corresponding to row `i`
+This gives a list object, with element `res_all[[i]]` corresponding to column `i`
 of the data. Each `res_all[[i]]` element is itself a list, giving the same
 results as above for a single vector (and also with the `$name`
 element corresponding the column of the input, a year in this example). So the
@@ -162,7 +162,8 @@ summary_table(res_all_years)
 ```
 
 The sum of the differences over all years between the width of the ETI and width
-of the HDI, but excluding 2023 and 2024 as these are not informed by data, is
+of the HDI, (but excluding 2023 and 2024 as these are not informed by data for
+our hake recruitment values), is
 ```{r hake_mcmc6}
 res_all_years$intervals_all %>%
   dplyr::filter(!quantity %in% c(2023, 2024)) %>%

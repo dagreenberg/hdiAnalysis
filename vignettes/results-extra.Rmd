@@ -35,11 +35,14 @@ density estimate of the MCMC sample.
 
 Set up:
 ```{r setup}
-load_all()      # TODO change to library(hdiAnalysis) when done
+library(hdiAnalysis)
 library(dplyr)
 ```
 
-## MCMC samples for multiple years -- recruitment for Figure 2A, plotting all the distributions
+## MCMC samples for multiple years -- recruitments as in Figure 2A but plotting the full distributions
+
+It is instructive to look at the full distributions of recruitment for each
+year.
 
 For the multiple years of MCMC samples of hake recruitment, we calculate the
 results as in `results.Rmd` (see that for more details) and plot the full
@@ -81,7 +84,7 @@ plot(res_all_years,
 
 The calculation of intervals 'a' and 'b' in Fig. 1A is described in the Extended
 Methods, with explicit options given here to add helpful lines to further
-understanding, as shown here:
+understanding:
 
 ```{r ab}
 res_vec <- create_intervals(rec_2021)
@@ -127,7 +130,7 @@ densities at the ends of the ETI (horizontal grey lines are as in the previous
 figure). Its intersections with the density curve define the left ends of `c`
 and `d`, and all values within `c` are more likely than all those in `d`, but
 `c` is outside the ETI and `d` is inside it. The green line can be placed at any
-point between the two grey lines to create such ranges `c` and `d`, including at
+point between the two grey lines to create such ranges `c` and `d`. This includes at
 the density corresponding the HDI, as in Figure 12.2 of Kruschke (2015; Doing
 Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan. 2nd Edition).
 
@@ -185,7 +188,7 @@ approximations from the kernel density estimate required to estimate the densiti
 
 Also, the integral over the HDI is estimated to be 94.7%, which is a slight
 improvement to the 94.5% for the original chain of 8,000 samples, but still not
-exactly 95%, such that the issue of the HDI not being exactly 95% is not
+exactly 95%, such that the minor issue of the HDI not being exactly 95% is not
 resolved by using the longer chain.
 
 ## Computing the HDI on the kernel density estimate
