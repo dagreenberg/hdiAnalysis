@@ -1,0 +1,22 @@
+s1=matrix(nrow=30,ncol=50)
+s1t=matrix(nrow=30,ncol=50)
+for(i in 1:30){
+  s1[i,]=exp(-rlnorm(50,log(0.08),0.3)) #draw survival lambdas
+  for(t in 1:50){
+    s1t[i,t]=prod(s1[i,1:t]) #cumulative survival through time
+  }
+  }
+s2=matrix(nrow=30,ncol=50)
+s2t=matrix(nrow=30,ncol=50)
+for(i in 1:30){
+  s2[i,]=exp(-rlnorm(50,log(0.2),0.3)) #draw survival lambdas
+  for(t in 1:50){
+    s2t[i,t]=prod(s2[i,1:t]) #cumulative survival through time
+  }
+}
+
+plot(c(0,1)~c(1,50),type='n',ylab='S(t)',xlab='t')
+for(i in 1:30){lines(s1t[i,]~seq(1,50))}
+for(i in 1:30){lines(s2t[i,]~seq(1,50),col='darkred')}
+abline(v=8,col='darkred')
+abline(v=25)
